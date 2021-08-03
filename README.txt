@@ -1,0 +1,149 @@
+FCEUX TX
+===================
+
+FCEUX TX is based on original FCE Ultra GX: https://github.com/dborth/fceugx
+(Under GPL License)
+
+Update History
+--------------
+
+---FCEUX TX 1.1.1---
+---April 13 2021---
+
+- Updated to the latest FCEUX (git 029cea5)
+- Fixed inverted names of Soft and Sharp video filtering
+- Optimized swap duty cycles setting code
+- Added new FBX's Magnum/Smootz color palettes
+  Magnum is recommended for crt monitors and Smootz for digital displays
+- Removed deprecated color palettes
+- Removed "Auto" of name of saves and option to activate/disable it
+
+---FCEUX TX 1.1.0---
+---March 25 2021---
+
+- Updated to the latest FCEUX (git 4be5045)
+- Updated to the latest FCE Ultra GX 3.5.1 (git 3f6ea5b)
+- Updated UI PNG images
+- Updated French translation
+- Updated Forwarder Channel (1.3)
+- Added new alternate Forwarder Channel (based on Flo_o's channel)
+- Added compiled GameCube version
+
+---FCEUX TX 1.0.9---
+---February 22 2021---
+
+- Updated to the latest FCEUX 2.3.0 (git c544c13)
+- Updated to the latest FCE Ultra GX 3.5.0 (git 373e12b)
+- Removed SMB support (SMB 1.0 has a major security issue due to flaws in the protocol)
+- Added Mayflash 2-port Snes USB adapter support (by EthanArmbrust)
+- Removed Retrode 2 and Hornet USB controller support (not really useful for Wii)
+- Removed PocketNES interoperability
+- Removed Dendy support (priority to PAL 576i/288p video mode which does not suit Dendy mode)
+- Changed Game Timing name to Region
+- Changed max game image dimensions to 640x512 to fix screenshots
+- Changed UI stripes size
+- Reorganized credits
+- Reverted the app version in menu
+- Reworked UI PNG images (improved colors, shadow effects and logo)
+- Added setting to activate/disable swap duty cycles to simulate sound of Famiclones
+- Added audio settings in game menu (by Bladeoner)
+- Removed menu music (use a bg_music.ogg file in root fceuxtx folder)
+- Updated French translation
+- Changed root folder name to fceuxtx
+- Changed color palettes order
+- Added original Virtual Console color palette
+- Removed experimental Game Boy DMG color palette
+- Compiled with latest devkitPPC/libogc
+- Updated Forwarder Channel (1.2)
+
+---FCEUX TX 1.0.8---
+---June 16 2020---
+
+- Updated to the latest FCEUX (git 8490dd9)
+- Updated UI PNG images
+- Updated Forwarder Channel (1.1)
+
+---FCEUX TX 1.0.7---
+---June 5 2020---
+
+- Updated UI PNG images
+- Added new Forwarder Channel (based on qwertymodo's channel)
+- Updated to the latest FCE Ultra GX (git 917dae0)
+- Added experimental Game Boy DMG color palette
+- Moved the app version in menu to credits box info
+- Changed fceugx root folder name to fceux
+- Changed 1UP name to FCEUX TX and add new logo
+- Removed RGBSource's RetronHD color palette
+- Updated to the latest FCEUX (git d89ead7)
+- Disabled low pass audio filter
+
+---FCEUX TX 1.0.6---
+---February 26 2020---
+
+- Updated Wii/vWii Forwarder Channel (1.2)
+- Updated UI PNG images
+
+---FCEUX TX 1.0.5---
+---February 20 2020---
+
+- Updated UI PNG images
+- Enabled low pass audio filter
+- Updated to the latest FCE Ultra GX (git a93dc16)
+
+---FCEUX TX 1.0.4---
+---February 13 2020---
+
+- Added RGBSource's RetronHD color palette
+- Changed Mod name: welcome to FCE Ultra GX 1UP
+- Modified credits box PNG image
+- Reorganized credits
+
+---FCEUX TX 1.0.3---
+---February 10 2020---
+
+- Reorganized credits
+- Added Xbox 360/Hornet controller support
+- Updated to the latest FCEUX (git 747fba7)
+- Removed "Power On" and Insert/Eject disk messages
+- Changed audio buffering values
+- Updated to the latest FCE Ultra GX (git 82006ec)
+- Compiled with latest libraries
+
+---FCEUX TX 1.0.2---
+---December 28 2019---
+
+- Updated to the latest FCE Ultra GX (git a8caf23)
+- Added Restored Wii VC color palette (by SuperrSonic)
+  restored version adjusts brightness levels significantly
+- Updated to the latest FCEUX (git 0b4be4b)
+- Updated UI color and added Wii/vWii Forwarder Channel (1.1)
+- Removed turbo mode on right joystick
+
+---FCEUX TX 1.0.1---
+---November 24 2019---
+
+- Updated to the latest FCEUX (git 88d7f39)
+- Added vWii Forwarder Channel for Wii U
+- Updated PPU color palettes from FCEUmm (by libretro)
+- Added A+B+START trigger to go back to menu with Classic Controller
+  work with NES/Snes Classic Mini controllers
+- Fixed dialogue box text color to screen position and controller settings
+- Corrected PAL audio sample rate
+
+---FCEUX TX 1.0.0---
+---October 13 2019---
+
+- Added separate PAL audio sample rate
+- Increased sound volume in games
+- Added Retrode support (by revvv)
+- Changed default mapping of buttons A and B
+- Added button mapping for NES Zapper (by niuus)
+- Corrected the PAL noise frequency table
+- Added all PAL regions detection
+- Removed PAL 60Hz video mode
+- Corrected the PAL 50Hz video mode resolution to 576i/288p
+- Enabled normal quality sound
+- Updated to the latest FCEUX (git 0fc18be)
+- Updated color palettes
+- Changed UI and Forwarder Channel colors
+- Based on the latest commit of FCE Ultra GX

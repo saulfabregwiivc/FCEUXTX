@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<app version="1">
+  <name>FCEUX TX</name>
+  <coder>Tanooki</coder>
+  <version>1.1.1</version>
+  <release_date>20210413</release_date>
+  <short_description>NES/Famicom Emulator</short_description>
+  <long_description>FCEUX TX is a fork of FCE Ultra GX on Wii.</long_description>
+  <ahb_access />
+</app>
