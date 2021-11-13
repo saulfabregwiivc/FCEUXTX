@@ -201,7 +201,8 @@ static void SetInput(void) {
 		{0x41ef9ac4,	SI_UNSET,		SI_UNSET,		SIFC_SUBORKB	},	// Subor
 		{0x8b265862,	SI_UNSET,		SI_UNSET,		SIFC_SUBORKB	},	// Subor
 		{0x82f1fb96,	SI_UNSET,		SI_UNSET,		SIFC_SUBORKB	},	// Subor 1.0 Russian
-		{0x9f8f200a,	SI_GAMEPAD,		SI_GAMEPAD,		SIFC_FTRAINERA	},	// Super Mogura Tataki!! - Pokkun Moguraa
+		{0x9f8f200a,	SI_GAMEPAD,		SI_GAMEPAD,		SIFC_FTRAINERA	},	// Super Mogura Tataki!! - Pokkun Moguraa (bad dump)
+		{0xc7bcc981,	SI_GAMEPAD,		SI_GAMEPAD,		SIFC_FTRAINERA	},	// Super Mogura Tataki!! - Pokkun Moguraa
 		{0xd74b2719,	SI_GAMEPAD,		SI_POWERPADB,	SIFC_UNSET		},	// Super Team Games
 		{0x74bea652,	SI_GAMEPAD,		SI_ZAPPER,		SIFC_NONE		},	// Supergun 3-in-1
 		{0x5e073a1b,	SI_UNSET,		SI_UNSET,		SIFC_SUBORKB	},	// Supor English (Chinese)
@@ -294,6 +295,7 @@ static void CheckHInfo(void) {
 		0x2b7103b7a27bd72fULL,	/* AD&D Pool of Radiance */
 		0x498c10dc463cfe95ULL,	/* Battle Fleet */
 		0x854d7947a3177f57ULL,	/* Crystalis */
+		0xfad22d265cd70820ULL,	/* Downtown Special: Kunio-kun no Jidaigeki Dayo Zenin Shuugou! */
 		0x4a1f5336b86851b6ULL,	/* DW */
 		0xb0bcc02c843c1b79ULL,	/* DW */
 		0x2dcf3a98c7937c22ULL,	/* DW 2 */
@@ -729,6 +731,7 @@ BMAPPINGLocal bmap[] = {
 	{"F-15 MMC3 Based",		259, BMCF15_Init},
 	{"HP10xx/H20xx Boards",	260, BMCHPxx_Init},
 	{"810544-CA-1",			261, BMC810544CA1_Init},
+	{"SMD132/SMD133",		268, SMD132_SMD133_Init},
 
 	{"Impact Soft MMC3 Flash Board",	406, Mapper406_Init },
 

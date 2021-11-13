@@ -7,16 +7,33 @@ FCEUX TX is based on original FCE Ultra GX: https://github.com/dborth/fceugx
 Update History
 --------------
 
+---FCEUX TX 1.1.2---
+---September 1 2021---
+
+- Updated to the latest FCEUX 2.4.0 (git f45ba2f)
+- Updated to the latest FCE Ultra GX (git d07dc9e)
+- Removed Soft and Sharp video filtering (no difference with filtered and unfiltered)
+- Reorganized color palettes order
+- Removed Wavebeam color palette (Smooth V2 is similar)
+- Added Digital Prime color palette by FBX and renamed Smootz to Smooth V2
+- Replaced old PAL color palette by that of r57Shell (more accurate)
+- Removed rumble function from menu (your batteries will last longer)
+- Updated Korean translation (by DDinghoya)
+- Updated UI PNG images
+- Compiled with latest devkitPPC/libogc
+- Updated Forwarder Channel (1.5)
+
 ---FCEUX TX 1.1.1---
 ---April 13 2021---
 
 - Updated to the latest FCEUX (git 029cea5)
 - Fixed inverted names of Soft and Sharp video filtering
 - Optimized swap duty cycles setting code
-- Added new FBX's Magnum/Smootz color palettes
+- Added new Magnum/Smootz color palettes by FBX
   Magnum is recommended for crt monitors and Smootz for digital displays
 - Removed deprecated color palettes
-- Removed "Auto" of name of saves and option to activate/disable it
+- Removed "Auto" of name of saves and option to enable/disable it
+- Updated Forwarder Channel (1.4)
 
 ---FCEUX TX 1.1.0---
 ---March 25 2021---
@@ -39,18 +56,18 @@ Update History
 - Removed Retrode 2 and Hornet USB controller support (not really useful for Wii)
 - Removed PocketNES interoperability
 - Removed Dendy support (priority to PAL 576i/288p video mode which does not suit Dendy mode)
-- Changed Game Timing name to Region
+- Changed Game Timing setting name to Region
 - Changed max game image dimensions to 640x512 to fix screenshots
 - Changed UI stripes size
 - Reorganized credits
 - Reverted the app version in menu
 - Reworked UI PNG images (improved colors, shadow effects and logo)
-- Added setting to activate/disable swap duty cycles to simulate sound of Famiclones
+- Added setting to enable/disable swap duty cycles to simulate sound of Famiclones
 - Added audio settings in game menu (by Bladeoner)
 - Removed menu music (use a bg_music.ogg file in root fceuxtx folder)
 - Updated French translation
 - Changed root folder name to fceuxtx
-- Changed color palettes order
+- Reorganized color palettes order
 - Added original Virtual Console color palette
 - Removed experimental Game Boy DMG color palette
 - Compiled with latest devkitPPC/libogc
@@ -124,7 +141,7 @@ Update History
 
 - Updated to the latest FCEUX (git 88d7f39)
 - Added vWii Forwarder Channel for Wii U
-- Updated PPU color palettes from FCEUmm (by libretro)
+- Updated PPU color palettes from FCEUmm (libretro)
 - Added A+B+START trigger to go back to menu with Classic Controller
   work with NES/Snes Classic Mini controllers
 - Fixed dialogue box text color to screen position and controller settings

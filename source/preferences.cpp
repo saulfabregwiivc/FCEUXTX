@@ -150,7 +150,7 @@ preparePrefsData ()
 
 	createXMLSection("Audio", "Audio Settings");
 
-    createXMLSetting("swapduty", "Swap Duty Cycles", toStr(GCSettings.swapduty));
+    createXMLSetting("swapDuty", "Swap Duty Cycles", toStr(GCSettings.swapDuty));
 
 	createXMLSection("Menu", "Menu Settings");
 
@@ -160,7 +160,6 @@ preparePrefsData ()
 	createXMLSetting("ExitAction", "Exit Action", toStr(GCSettings.ExitAction));
 	createXMLSetting("MusicVolume", "Music Volume", toStr(GCSettings.MusicVolume));
 	createXMLSetting("SFXVolume", "Sound Effects Volume", toStr(GCSettings.SFXVolume));
-	createXMLSetting("Rumble", "Rumble", toStr(GCSettings.Rumble));
 	createXMLSetting("language", "Language", toStr(GCSettings.language));
 	createXMLSetting("PreviewImage", "Preview Image", toStr(GCSettings.PreviewImage));
 
@@ -319,7 +318,7 @@ decodePrefsData ()
 
 			// Audio Settings
 
-			loadXMLSetting(&GCSettings.swapduty, "swapduty");
+			loadXMLSetting(&GCSettings.swapDuty, "swapDuty");
 
 			// Menu Settings
 
@@ -327,7 +326,6 @@ decodePrefsData ()
 			loadXMLSetting(&GCSettings.ExitAction, "ExitAction");
 			loadXMLSetting(&GCSettings.MusicVolume, "MusicVolume");
 			loadXMLSetting(&GCSettings.SFXVolume, "SFXVolume");
-			loadXMLSetting(&GCSettings.Rumble, "Rumble");
 			loadXMLSetting(&GCSettings.language, "language");
 			loadXMLSetting(&GCSettings.PreviewImage, "PreviewImage");
 			
@@ -378,8 +376,8 @@ void FixInvalidSettings()
 		GCSettings.language = LANG_ENGLISH;
 	if(GCSettings.Controller > CTRL_PAD4 || GCSettings.Controller < CTRL_ZAPPER)
 		GCSettings.Controller = CTRL_PAD2;
-	if(!(GCSettings.render >= 0 && GCSettings.render < 5))
-		GCSettings.render = 4;
+	if(!(GCSettings.render >= 0 && GCSettings.render < 3))
+		GCSettings.render = 2;
 	if(GCSettings.region < 0 || GCSettings.region > 2)
 		GCSettings.region = 2;
 	if(!(GCSettings.videomode >= 0 && GCSettings.videomode < 5))
@@ -397,10 +395,10 @@ DefaultSettings ()
 	memset (&GCSettings, 0, sizeof (GCSettings));
 	ResetControls(); // controller button mappings
 
-	GCSettings.currpal = 0; // color palette
+	GCSettings.currpal = 1; // color palette
 	GCSettings.region = 2; // 0 - NTSC, 1 - PAL, 2 - Automatic
 	GCSettings.videomode = 0; // automatic video mode detection
-	GCSettings.swapduty = 0; // Off
+	GCSettings.swapDuty = 0; // Off
 	GCSettings.Controller = CTRL_PAD2; // NES pad, Four Score, Zapper
 	GCSettings.crosshair = 1; // show zapper crosshair
 	GCSettings.spritelimit = 1; // enforce 8 sprite limit
@@ -424,9 +422,8 @@ DefaultSettings ()
 	GCSettings.WiimoteOrientation = 0;
 	GCSettings.AutoloadGame = 0;
 	GCSettings.ExitAction = 0; // Auto
-	GCSettings.MusicVolume = 20;
+	GCSettings.MusicVolume = 100;
 	GCSettings.SFXVolume = 40;
-	GCSettings.Rumble = 1; // Enabled
 	GCSettings.PreviewImage = 0;
 	
 #ifdef HW_RVL

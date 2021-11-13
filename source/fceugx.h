@@ -17,7 +17,7 @@
 #include "fceux/driver.h"
 
 #define APPNAME			"FCEUX TX"
-#define APPVERSION		"1.1.1"
+#define APPVERSION		"1.1.2"
 #define APPFOLDER 		"fceuxtx"
 #define PREF_FILE_NAME	"settings.xml"
 
@@ -84,35 +84,34 @@ struct SGCSettings
     int		AutoSave;
     int		LoadMethod; // For ROMS: Auto, SD, DVD, USB
 	int		SaveMethod; // For SRAM, Freeze, Prefs: Auto, SD, USB
-	char	LoadFolder[MAXPATHLEN]; // Path to game files
-	char	LastFileLoaded[MAXPATHLEN]; //Last file loaded filename
-	char	SaveFolder[MAXPATHLEN]; // Path to save files
-	char	CheatFolder[MAXPATHLEN]; // Path to cheat files
-	char	ScreenshotsFolder[MAXPATHLEN]; // Path to screenshot files
+	char	LoadFolder[MAXPATHLEN];     // Path to game files
+	char	LastFileLoaded[MAXPATHLEN]; // Last file loaded filename
+	char	SaveFolder[MAXPATHLEN];     // Path to save files
+	char	CheatFolder[MAXPATHLEN];    // Path to cheat files
+	char	ScreenshotsFolder[MAXPATHLEN]; // Path to screenshots files
 	char	CoverFolder[MAXPATHLEN]; 	// Path to cover files
 	char	ArtworkFolder[MAXPATHLEN]; 	// Path to artwork files
 	int		AutoloadGame;
 
 	float	zoomHor; // horizontal zoom amount
 	float	zoomVert; // vertical zoom amount
-	int		render;		// 0 - original, 1 - filtered, 2 - unfiltered
-	int		videomode; // 0 - automatic, 1 - NTSC (480i), 2 - progressive (480p), 3 - PAL (50Hz)
-	int		widescreen;
-	int		hideoverscan; // 0 = off, 1 = vertical, 2 = horizontal, 3 = both
-	int		gamegenie;
-	int		currpal;
-	int		region;
+	int		videomode; // 0 - Automatic, 1 - NTSC (480i), 2 - Progressive (480p), 3 - PAL (50Hz)
+	int		render;		// 0 - Original, 1 - Filtered, 2 - Unfiltered, 3 - Filtered (Soft), 4 - Filtered (Sharp)
+	int		hideoverscan; // 0 = Off, 1 = Vertical, 2 = Horizontal, 3 = Both
 	int		Controller;
 	int		crosshair;
-	int		spritelimit;
+	int		widescreen;	// 0 - 4:3 aspect, 1 - 16:9 aspect
 	int		xshift;		// video output shift
 	int		yshift;
-    int     swapduty;
+	int		currpal;
+	int		region;
+	int		spritelimit;
+    int     swapDuty;
+	int		gamegenie;
 	int		WiimoteOrientation;
 	int		ExitAction;
 	int		MusicVolume;
 	int		SFXVolume;
-	int		Rumble;
 	int 	language;
 	int		PreviewImage;
 

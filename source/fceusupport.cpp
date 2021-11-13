@@ -26,7 +26,7 @@ int KillFCEUXonFrame = 0;
 // Enable or disable swap duty cycles
 void SetSwapDuty()
 {
-	if(GCSettings.swapduty == 1) {
+	if(GCSettings.swapDuty == 1) {
 		swapDuty = 1;
 	}
 	else {
