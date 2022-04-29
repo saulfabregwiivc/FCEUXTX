@@ -1,0 +1,62 @@
+name: FCEUX TX Build
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    name: Build FCEUX TX
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        image: ["Wii", "GameCube"]
+    container: devkitpro/devkitppc:latest
+
+    steps:
+    - uses: actions/checkout@v1
+      with:
+        submodules: true
+
+    - name: Build Wii
+      if: ${{ matrix.image == 'Wii' }}
+      run: |
+        make -f Makefile.wii -j2
+    
+    - name: Copy Wii artifact
+      if: ${{ matrix.image == 'Wii' }}
+      run: | 
+        mkdir -p dist/FCEUXTX/apps/fceuxtx
+        mkdir -p dist/FCEUXTX/fceuxtx/roms
+        mkdir dist/FCEUXTX/fceuxtx/cheats
+        mkdir dist/FCEUXTX/fceuxtx/saves
+        touch dist/FCEUXTX/fceuxtx/roms/romsdir
+        touch dist/FCEUXTX/fceuxtx/cheats/cheatsdir
+        touch dist/FCEUXTX/fceuxtx/saves/savesdir
+        cp hbc/* dist/FCEUXTX/apps/fceuxtx/
+        cp executables/fceuxtx-wii.dol dist/FCEUXTX/apps/fceuxtx/boot.dol
+  
+    - name: Upload Wii artifacts
+      uses: actions/upload-artifact@v2
+      if: ${{ matrix.image == 'Wii' }}
+      with: 
+        name: FCEUXTX
+        path: |
+         dist/FCEUXTX/
+    
+    - name: Build GameCube
+      if: ${{ matrix.image == 'GameCube' }}
+      run: |
+        make -f Makefile.gc -j2
+        
+    - name: Copy GameCube artifact
+      if: ${{ matrix.image == 'GameCube' }}
+      run: | 
+        mkdir -p dist/FCEUXTX-GameCube
+        cp executables/fceuxtx-gc.dol dist/FCEUXTX-GameCube/
+    
+    - name: Upload GameCube artifact
+      uses: actions/upload-artifact@v2
+      if: ${{ matrix.image == 'GameCube' }}
+      with: 
+        name: FCEUXTX-GameCube
+        path: |
+         dist/FCEUXTX-GameCube/
