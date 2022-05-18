@@ -1,8 +1,8 @@
 /****************************************************************************
  * FCE Ultra
- * Nintendo Wii/Gamecube Port
+ * Nintendo Wii/GameCube Port
  *
- * Tantric 2008-2021
+ * Tantric 2008-2022
  *
  * fceusupport.h
  *
@@ -34,7 +34,6 @@
 
 extern unsigned char * nesrom;
 
-void SetSwapDuty();
 void RebuildSubCheats(void);
 int AddCheatEntry(const char *name, uint32 addr, uint8 val, int compare, int status, int type);
 

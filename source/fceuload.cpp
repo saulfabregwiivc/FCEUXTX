@@ -1,8 +1,8 @@
 /****************************************************************************
  * FCE Ultra
- * Nintendo Wii/Gamecube Port
+ * Nintendo Wii/GameCube Port
  *
- * Tantric 2008-2021
+ * Tantric 2008-2022
  *
  * fceload.c
  *
@@ -20,7 +20,7 @@
 
 #include "fceux/file.h"
 
-#include "fceugx.h"
+#include "fceuxtx.h"
 #include "gcaudio.h"
 #include "fceusupport.h"
 #include "pad.h"
@@ -54,9 +54,7 @@ int GCMemROM(int size)
 
 	/*** Set internal sound information ***/
 	SetSampleRate();
-    SetSwapDuty();
 	FCEUI_SetSoundVolume(150);
-	FCEUI_SetLowPass(0);
 
 	FCEUFILE * fceufp = new FCEUFILE();
 	fceufp->size = size;

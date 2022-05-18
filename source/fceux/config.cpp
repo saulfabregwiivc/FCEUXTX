@@ -13,19 +13,23 @@
 
 static char *aboutString = 0;
 
+#ifndef FCEUX_BUILD_TIMESTAMP
+#define FCEUX_BUILD_TIMESTAMP  __TIME__ " " __DATE__
+#endif
+
 // returns a string suitable for use in an aboutbox
 const char *FCEUI_GetAboutString(void) 
 {
 	const char *aboutTemplate =
 		FCEU_NAME_AND_VERSION "\n\n"
 		"Administrators:\n"
-		"zeromus, mjbudd77, feos\n"
+		"zeromus, feos\n"
 		"\n"
 		"Current Contributors:\n"
 		"CaH4e3, rainwarrior, owomomo, punkrockguy318\n"
 		"\n"
 		"Past Contributors:\n"
-		"xhainingx, gocha, AnS\n"
+		"xhainingx, gocha, AnS, mjbudd77\n"
 		"\n"
 		"FCEUX 2.0:\n"
 		"mz, nitsujrehtona, SP, Ugly Joe,\n"
@@ -48,7 +52,8 @@ const char *FCEUI_GetAboutString(void)
 		"of NES emulation. In Memoriam --\n"
 		"ugetab\n"
 		"\n"
-		__TIME__ " " __DATE__ "\n";
+		"\n"
+		FCEUX_BUILD_TIMESTAMP "\n";
 
 	if (aboutString) return aboutString;
 

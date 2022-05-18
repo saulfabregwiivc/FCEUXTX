@@ -1,8 +1,8 @@
 /****************************************************************************
  * FCE Ultra
- * Nintendo Wii/Gamecube Port
+ * Nintendo Wii/GameCube Port
  *
- * Tantric 2008-2021
+ * Tantric 2008-2022
  *
  * fceustate.cpp
  *
@@ -20,7 +20,7 @@
 #include <fat.h>
 #include <string.h>
 
-#include "fceugx.h"
+#include "fceuxtx.h"
 #include "fceusupport.h"
 #include "menu.h"
 #include "filebrowser.h"

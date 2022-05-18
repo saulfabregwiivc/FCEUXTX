@@ -1,8 +1,8 @@
 /****************************************************************************
  * FCE Ultra
- * Nintendo Wii/Gamecube Port
+ * Nintendo Wii/GameCube Port
  *
- * Tantric 2008-2021
+ * Tantric 2008-2022
  *
  * preferences.cpp
  *
@@ -17,7 +17,7 @@
 #include <ogcsys.h>
 #include <mxml.h>
 
-#include "fceugx.h"
+#include "fceuxtx.h"
 #include "filelist.h"
 #include "button_mapping.h"
 #include "filebrowser.h"
@@ -137,20 +137,23 @@ preparePrefsData ()
 	createXMLSection("Video", "Video Settings");
 
 	createXMLSetting("videomode", "Video Mode", toStr(GCSettings.videomode));
-	createXMLSetting("currpal", "Palette", toStr(GCSettings.currpal));
+	createXMLSetting("currpal", "Color Palette", toStr(GCSettings.currpal));
 	createXMLSetting("region", "Region", toStr(GCSettings.region));
 	createXMLSetting("spritelimit", "Sprite Limit", toStr(GCSettings.spritelimit));
+	createXMLSetting("crosshair", "Zapper Crosshair", toStr(GCSettings.crosshair));
 	createXMLSetting("zoomHor", "Horizontal Zoom Level", FtoStr(GCSettings.zoomHor));
 	createXMLSetting("zoomVert", "Vertical Zoom Level", FtoStr(GCSettings.zoomVert));
 	createXMLSetting("render", "Video Filtering", toStr(GCSettings.render));
 	createXMLSetting("widescreen", "Aspect Ratio Correction", toStr(GCSettings.widescreen));
-	createXMLSetting("hideoverscan", "Video Cropping", toStr(GCSettings.hideoverscan));
+	createXMLSetting("hideoverscan", "Crop Overscan", toStr(GCSettings.hideoverscan));
 	createXMLSetting("xshift", "Horizontal Video Shift", toStr(GCSettings.xshift));
 	createXMLSetting("yshift", "Vertical Video Shift", toStr(GCSettings.yshift));
 
 	createXMLSection("Audio", "Audio Settings");
 
-    createXMLSetting("swapDuty", "Swap Duty Cycles", toStr(GCSettings.swapDuty));
+	createXMLSetting("sndquality", "Sound Quality", toStr(GCSettings.sndquality));
+	createXMLSetting("lowpass", "Low Pass Filtering", toStr(GCSettings.lowpass));
+	createXMLSetting("swapDuty", "Swap Duty Cycles", toStr(GCSettings.swapDuty));
 
 	createXMLSection("Menu", "Menu Settings");
 
@@ -166,7 +169,8 @@ preparePrefsData ()
 	createXMLSection("Controller", "Controller Settings");
 
 	createXMLSetting("Controller", "Controller", toStr(GCSettings.Controller));
-	createXMLSetting("crosshair", "Zapper Crosshair", toStr(GCSettings.crosshair));
+	createXMLSetting("TurboMode", "Turbo Mode", toStr(GCSettings.TurboMode));
+	createXMLSetting("TurboModeButton", "Turbo Mode Button", toStr(GCSettings.TurboModeButton));
 
 	createXMLController(btnmap[CTRL_PAD][CTRLR_GCPAD], "btnmap_pad_gcpad", "NES Pad - GameCube Controller");
 	createXMLController(btnmap[CTRL_PAD][CTRLR_WIIMOTE], "btnmap_pad_wiimote", "NES Pad - Wiimote");
@@ -189,7 +193,6 @@ preparePrefsData ()
  *
  * Load XML elements into variables for an individual variable
  ***************************************************************************/
-
 static void loadXMLSetting(char * var, const char * name, int maxsize)
 {
 	item = mxmlFindElement(xml, xml, "setting", "name", name, MXML_DESCEND);
@@ -226,7 +229,6 @@ static void loadXMLSetting(float * var, const char * name)
  *
  * Load XML elements into variables for a controller mapping
  ***************************************************************************/
-
 static void loadXMLController(u32 controller[], const char * name)
 {
 	item = mxmlFindElement(xml, xml, "controller", "name", name, MXML_DESCEND);
@@ -252,7 +254,6 @@ static void loadXMLController(u32 controller[], const char * name)
  *
  * Decodes preferences - parses XML and loads preferences into the variables
  ***************************************************************************/
-
 static bool
 decodePrefsData ()
 {
@@ -309,6 +310,7 @@ decodePrefsData ()
 			loadXMLSetting(&GCSettings.currpal, "currpal");
 			loadXMLSetting(&GCSettings.region, "region");
 			loadXMLSetting(&GCSettings.spritelimit, "spritelimit");
+			loadXMLSetting(&GCSettings.crosshair, "crosshair");
 			loadXMLSetting(&GCSettings.zoomHor, "zoomHor");
 			loadXMLSetting(&GCSettings.zoomVert, "zoomVert");
 			loadXMLSetting(&GCSettings.render, "render");
@@ -318,6 +320,8 @@ decodePrefsData ()
 
 			// Audio Settings
 
+			loadXMLSetting(&GCSettings.sndquality, "sndquality");
+			loadXMLSetting(&GCSettings.lowpass, "lowpass");
 			loadXMLSetting(&GCSettings.swapDuty, "swapDuty");
 
 			// Menu Settings
@@ -332,7 +336,8 @@ decodePrefsData ()
 			// Controller Settings
 
 			loadXMLSetting(&GCSettings.Controller, "Controller");
-			loadXMLSetting(&GCSettings.crosshair, "crosshair");
+			loadXMLSetting(&GCSettings.TurboMode, "TurboMode");
+			loadXMLSetting(&GCSettings.TurboModeButton, "TurboModeButton");
 
 			loadXMLController(btnmap[CTRL_PAD][CTRLR_GCPAD], "btnmap_pad_gcpad");
 			loadXMLController(btnmap[CTRL_PAD][CTRLR_WIIMOTE], "btnmap_pad_wiimote");
@@ -393,18 +398,26 @@ void
 DefaultSettings ()
 {
 	memset (&GCSettings, 0, sizeof (GCSettings));
+
 	ResetControls(); // controller button mappings
 
-	GCSettings.currpal = 1; // color palette
-	GCSettings.region = 2; // 0 - NTSC, 1 - PAL, 2 - Automatic
+	GCSettings.currpal = 1; // FBX's Digital Prime Palette
+	GCSettings.region = 2; // automatic region detection
 	GCSettings.videomode = 0; // automatic video mode detection
-	GCSettings.swapDuty = 0; // Off
-	GCSettings.Controller = CTRL_PAD2; // NES pad, Four Score, Zapper
-	GCSettings.crosshair = 1; // show zapper crosshair
-	GCSettings.spritelimit = 1; // enforce 8 sprite limit
-	GCSettings.gamegenie = 0; // Off
 
-	GCSettings.render = 2; // unfiltered
+	GCSettings.Controller = CTRL_PAD2; // NES Pad, Four Score, Zapper
+	GCSettings.TurboMode = 1; // turbo mode enabled
+	GCSettings.TurboModeButton = 0; // right analog stick
+
+	GCSettings.spritelimit = 1; // sprite limit enabled
+	GCSettings.crosshair = 1; // show crosshair enabled
+	GCSettings.gamegenie = 0; // game genie disabled
+
+	GCSettings.sndquality = 0; // low sound quality
+	GCSettings.lowpass = 0; // lowpass disabled
+	GCSettings.swapDuty = 0; // swap duty cycles disabled
+
+	GCSettings.render = 1; // unfiltered rendering
 	GCSettings.hideoverscan = 1; // hide vertical
 
 	GCSettings.widescreen = 0;

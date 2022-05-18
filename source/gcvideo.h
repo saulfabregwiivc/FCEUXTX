@@ -1,19 +1,19 @@
 /****************************************************************************
  * FCE Ultra
- * Nintendo Wii/Gamecube Port
+ * Nintendo Wii/GameCube Port
  *
- * Tantric 2008-2021
+ * Tantric 2008-2022
  *
  * gcvideo.h
  *
- * Video rendering
+ * Video routines
  ****************************************************************************/
 
 #ifndef _GCVIDEO_H_
 #define _GCVIDEO_H_
 
 // color palettes
-#define MAXPAL 9
+#define MAXPAL 10
 
 struct st_palettes {
     char name[32], desc[32];

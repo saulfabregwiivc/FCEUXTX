@@ -1,10 +1,11 @@
 /****************************************************************************
  * FCE Ultra
- * Nintendo Wii/Gamecube Port
+ * Nintendo Wii/GameCube Port
  *
- * Tantric 2008-2021
+ * Tantric 2008-2022
+ * Tanooki 2019-2022
  *
- * fceugx.cpp
+ * fceuxtx.cpp
  *
  * This file controls overall program flow. Most things start and end here!
  ****************************************************************************/
@@ -24,7 +25,7 @@
 #include <di/di.h>
 #endif
 
-#include "fceugx.h"
+#include "fceuxtx.h"
 #include "fceuload.h"
 #include "fceustate.h"
 #include "fceuram.h"
@@ -82,7 +83,6 @@ unsigned char * nesrom = NULL;
 /****************************************************************************
  * Shutdown / Reboot / Exit
  ***************************************************************************/
-
 static void ExitCleanup()
 {
 	ShutdownAudio();
@@ -187,7 +187,6 @@ void ResetCB(u32 irq, void *ctx)
  * ipl_set_config
  * lowlevel Qoob Modchip disable
  ***************************************************************************/
-
 static void ipl_set_config(unsigned char c)
 {
 	volatile unsigned long* exi = (volatile unsigned long*)0xCC006800;
@@ -282,7 +281,6 @@ bool SaneIOS(u32 ios)
 /****************************************************************************
  * USB Gecko Debugging
  ***************************************************************************/
-
 static bool gecko = false;
 static mutex_t gecko_mutex = 0;
 
@@ -344,7 +342,6 @@ extern "C" {
  * main
  * This is where it all happens!
  ***************************************************************************/
-
 int main(int argc, char *argv[])
 {
 	#ifdef USE_VM
@@ -423,11 +420,10 @@ int main(int argc, char *argv[])
 		ExitApp();
 
 	FCEUI_SetGameGenie(1); // 0 - OFF, 1 - ON
-	
+
 	FDSBIOS=(uint8 *)malloc(8192);
 	memset(FDSBIOS, 0, sizeof(FDSBIOS)); // clear FDS BIOS memory
 
-	FCEUI_SetSoundQuality(0); // 0 - normal, 1 - high, 2 - very high
 	int currentRegion = 0;
 
 	bool autoboot = false;
@@ -465,6 +461,24 @@ int main(int argc, char *argv[])
 				MainMenu(MENU_GAME);
 		}
 
+		if (GCSettings.swapDuty == 0)
+			swapDuty = 0;
+		else
+			swapDuty = 1;
+
+		switch (GCSettings.sndquality)
+		{
+			case 0:
+				FCEUI_SetSoundQuality(0);
+				break;
+			case 1:
+				FCEUI_SetSoundQuality(1);
+				break;
+			case 2:
+				FCEUI_SetSoundQuality(2);
+				break;
+		}
+
 		if(currentRegion != GCSettings.region)
 		{
 			GameInfo->vidsys=(EGIV)GCSettings.region;
@@ -486,6 +500,7 @@ int main(int argc, char *argv[])
 		setFrameTimer(); // set frametimer method before emulation
 		SetPalette();
 		FCEUI_DisableSpriteLimitation(GCSettings.spritelimit ^ 1);
+		FCEUI_SetLowPass(GCSettings.lowpass == 1);
 
 		fskip=0;
 		fskipc=0;

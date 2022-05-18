@@ -25,14 +25,8 @@ msgstr "Error descomprimint 7z: El fitxer fa servir paràmetres incompatibles"
 msgid "A (Rapid)"
 msgstr "A (Ràpid)"
 
-msgid "Additional coding"
+msgid "Additional improvements"
 msgstr "Programació addic."
-
-msgid "Aim Offscreen"
-msgstr "Apunteu fora"
-
-msgid "An update is available!"
-msgstr "Actualització disponible!"
 
 msgid "Are you sure that you want to reset this game? Any unsaved progress will be lost."
 msgstr "Segur que voleu reiniciar aquest joc? Es perdrà qualsevol progrés no desat."
@@ -43,17 +37,11 @@ msgstr "Segur que voleu reiniciar els controls?"
 msgid "Are you sure that you want to reset your settings?"
 msgstr "Segur que voleu reiniciar la configuració?"
 
-msgid "Maintain Aspect Ratio"
-msgstr "Conservar proporcions"
-
 msgid "Attempting to determine load device..."
 msgstr "Detectant dispositiu de càrrega..."
 
 msgid "Attempting to determine save device..."
 msgstr "Detectant el dispositiu d'enmagatzament"
-
-msgid "Auto"
-msgstr "Auto"
 
 msgid "Auto Detect"
 msgstr "Auto detectar"
@@ -76,9 +64,6 @@ msgstr "Enrera"
 msgid "Both"
 msgstr "Tots dos"
 
-msgid "Controles"
-msgstr "Controls"
-
 msgid "Button Mappings"
 msgstr "Redefinir botons"
 
@@ -87,9 +72,6 @@ msgstr "Cancel.la"
 
 msgid "Caps"
 msgstr "Maj."
-
-msgid "Cheats"
-msgstr "Cheats"
 
 msgid "Cheats file not found!"
 msgstr "No trobo fitxer cheats!"
@@ -106,17 +88,11 @@ msgstr "Comandament clàssic"
 msgid "Close"
 msgstr "Tancar"
 
-msgid "Coding"
-msgstr "Programació"
-
 msgid "Coding & menu design"
 msgstr "Programació & disseny menú"
 
-msgid "Compressed GBA files are not supported!"
-msgstr "Els fitxers GBA comprimits incompatibles!"
-
-msgid "Connecting to network share..."
-msgstr "Connectant a xarxa compartida..."
+msgid "Controles"
+msgstr "Controls"
 
 msgid "Controller"
 msgstr "Comandament"
@@ -130,14 +106,8 @@ msgstr "Carpeta covers"
 msgid "Credits"
 msgstr "Crèdits"
 
-msgid "Cropping"
+msgid "Crop Overscan"
 msgstr "Retallar"
-
-msgid "Crosshair"
-msgstr "Punter"
-
-msgid "Cursor"
-msgstr "Cursor"
 
 msgid "Data DVD"
 msgstr "Dades DVD"
@@ -148,14 +118,8 @@ msgstr "Per defecte"
 msgid "Directory name is too long!"
 msgstr "Nom de directori massa larg!"
 
-msgid "Disabled"
-msgstr "Desactivat"
-
 msgid "DISABLED"
 msgstr "DESACTIVAT"
-
-msgid "distributed, or modified under the terms of the"
-msgstr "distribuït, o modificat sota els termes de"
 
 msgid "Don't Save"
 msgstr "No desis"
@@ -166,26 +130,14 @@ msgstr "Avall"
 msgid "DOWN"
 msgstr "AVALL"
 
-msgid "Downloading..."
-msgstr "Descarregant"
-
 msgid "Dutch"
 msgstr "Holandès"
 
 msgid "Empty or invalid ZIP file!"
 msgstr "Fitxer zip buit o invàlid!"
 
-msgid "Enabled"
-msgstr "Activat"
-
-msgid "ENABLED"
-msgstr "ACTIVAT"
-
 msgid "English"
 msgstr "Anglès"
-
-msgid "Error"
-msgstr "Error"
 
 msgid "Error - Invalid ZIP file!"
 msgstr "Error - Fitxer ZIP invàlid!"
@@ -217,9 +169,6 @@ msgstr "Surt"
 msgid "Exit Action"
 msgstr "Mode sortida"
 
-msgid "Failed to connect to network share."
-msgstr "Error de connexió a xarxa compartida."
-
 msgid "FDS BIOS file is invalid!"
 msgstr "Fitxer BIOS FDS invàlid!"
 
@@ -229,17 +178,11 @@ msgstr "Fitxer BIOS FDS no trobat!"
 msgid "Filtered"
 msgstr "Filtrat"
 
-msgid "Filtering"
-msgstr "Filtrar"
-
 msgid "Fire"
 msgstr "Foc"
 
 msgid "French"
 msgstr "Francès"
-
-msgid "GBA Screen Zoom"
-msgstr "Zoom pantalla GBA"
 
 msgid "Game Genie ROM not found!"
 msgstr "No es troba ROM GameGenie!"
@@ -249,20 +192,15 @@ msgstr "Configuració"
 
 msgid "Game Settings - Button Mappings"
 msgstr "Configuració - Redefinir botons"
+
 msgid "Game Settings - Cheats"
 msgstr "Configuració - Cheats"
 
 msgid "Game Settings - Video"
 msgstr "Configuració - Vídeo"
 
-msgid "Game Timing"
-msgstr "Timing de joc"
-
-msgid "Game Genie DISABLED"
-msgstr "GameGenie DESACTIVAT"
-
-msgid "Game Genie ENABLED"
-msgstr "GameGenie ACTIVAT"
+msgid "Region"
+msgstr "regió"
 
 msgid "GameCube Controller"
 msgstr "Comandament Gamecube"
@@ -270,21 +208,20 @@ msgstr "Comandament Gamecube"
 msgid "German"
 msgstr "Alemany"
 
-msgid "GNU General Public License (GPL) Version 2."
-msgstr "GNU General Public License (GPL) Versió 2."
-
 msgid "Go Back"
 msgstr "Tornar"
+
+msgid "High"
+msgstr "Alt"
+
+msgid "Highest"
+msgstr "Molt alt"
 
 msgid "Horizontal"
 msgstr "Horitzontal"
 
 msgid "Information"
 msgstr "Informació"
-
-msgid "Initializing network..."
-msgstr "Iniciant la xarxa..."
-
 
 msgid "Insert Coin"
 msgstr "Ficar Moneda"
@@ -298,15 +235,6 @@ msgstr "Format fitxer invàlid!"
 msgid "Invalid game file!"
 msgstr "Fitxer de joc invàlid!"
 
-msgid "Invalid network settings - Check settings.xml."
-msgstr "Error de xarxa - Comproveu fitxer settings.xml."
-
-msgid "Invalid network settings - Share IP is blank."
-msgstr "Configuració de xarxa invàlida - IP en blanc."
-
-msgid "Invalid network settings - Share name is blank."
-msgstr "Configuració de xarxa invàlida - Nom en blanc."
-
 msgid "Invalid save file"
 msgstr "Fitxer de save invàlid"
 
@@ -318,15 +246,6 @@ msgstr "Italià"
 
 msgid "Japanese"
 msgstr "Japonès"
-
-msgid "Justifier"
-msgstr "Justifier"
-
-msgid "Justifier - GameCube Controller"
-msgstr "Justifier - Comandament GameCube"
-
-msgid "Justifier - Wiimote"
-msgstr "Justifier - Wiimote"
 
 msgid "Korean"
 msgstr "Coreà"
@@ -345,9 +264,6 @@ msgstr "Esquerra"
 
 msgid "LEFT"
 msgstr "ESQUERRA"
-
-msgid "Left Button"
-msgstr "Botó esquerre"
 
 msgid "Load"
 msgstr "Carregar"
@@ -373,6 +289,12 @@ msgstr "Carregant patch..."
 msgid "Loading..."
 msgstr "Carregant..."
 
+msgid "Low (Recommended)"
+msgstr "Baix (Recomanat)"
+
+msgid "Low Pass Filtering"
+msgstr "Filtre de pas baix"
+
 msgid "Main Menu"
 msgstr "Inici"
 
@@ -383,16 +305,13 @@ msgid "Match Wii Controls"
 msgstr "Coincidir controls Wii"
 
 msgid "Maximum filepath length reached!"
-msgid "Llargada màxima de ruta!"
+msgstr "Llargada màxima de ruta!"
 
 msgid "Menu"
 msgstr "Menú"
 
 msgid "Menu artwork"
 msgstr "Artwork menú"
-
-msgid "Menu sound"
-msgstr "So del menú"
 
 msgid "MINUS"
 msgstr "MENYS"
@@ -413,13 +332,7 @@ msgid "NES Controllers (4)"
 msgstr "Comandaments NES (4)"
 
 msgid "NES Zapper"
-msgstr "NES Zapper"
-
-msgid "Network"
-msgstr "Xarxa"
-
-msgid "Network Share"
-msgstr "Xarxa compartida"
+msgstr "Nintendo Zapper"
 
 msgid "New"
 msgstr "Nou"
@@ -429,9 +342,6 @@ msgstr "Nova captura"
 
 msgid "New SRAM"
 msgstr "Nova SRAM"
-
-msgid "No"
-msgstr "No"
 
 msgid "No data to save!"
 msgstr "cap dada per desar!"
@@ -448,32 +358,11 @@ msgstr "No hi ha partides"
 msgid "None"
 msgstr "Cap"
 
-msgid "NTSC (480i)"
-msgstr "NTSC (480i)"
-
-msgid "Nunchuk"
-msgstr "Nunchuk"
-
-msgid "Off"
-msgstr "Off"
-
-msgid "Official Site: https://github.com/dborth/fceugx"
-msgstr "Lloc Oficial: https://github.com/dborth/fceugx"
-
-msgid "Official Site: https://github.com/dborth/snes9xgx"
-msgstr "Lloc Oficial: https://github.com/dborth/snes9xgx"
-
-msgid "Official Site: https://github.com/dborth/vbagx"
-msgstr "Lloc Oficial: https://github.com/dborth/vbagx"
-
 msgid "OK"
 msgstr "D'acord"
 
 msgid "On"
 msgstr "Encès"
-
-msgid "Original"
-msgstr "Original"
 
 msgid "Out of memory!"
 msgstr "Fora de memòria!"
@@ -492,21 +381,6 @@ msgstr "J3"
 
 msgid "P4"
 msgstr "J4"
-
-msgid "PAL (50Hz)"
-msgstr "PAL (50Hz)"
-
-msgid "PAL (60Hz)"
-msgstr "PAL (60Hz)"
-
-msgid "Palette saved"
-msgstr "Paleta desada"
-
-msgid "Partial Stretch"
-msgstr "Ajustament parcial"
-
-msgid "Pause"
-msgstr "Pausa"
 
 msgid "Please Wait"
 msgstr "Espereu sisplau"
@@ -559,9 +433,6 @@ msgstr "Reiniciar"
 msgid "Rendering"
 msgstr "Renderitzat"
 
-msgid "Reset"
-msgstr "Reset"
-
 msgid "Reset Game"
 msgstr "Reiniciar"
 
@@ -589,11 +460,8 @@ msgstr "Dreta"
 msgid "RIGHT"
 msgstr "DRETA"
 
-msgid "Right Button"
-msgstr "Botó dret"
-
-msgid "Rumble"
-msgstr "Vibració"
+msgid "Right Stick (Default)"
+msgstr "Joystick dret (Per defecte)"
 
 msgid "Save"
 msgstr "Desar"
@@ -646,20 +514,11 @@ msgstr "Posició pantalla"
 msgid "Screen Zoom"
 msgstr "Zoom"
 
-msgid "Select"
-msgstr "Select"
-
-msgid "Seek error!"
-msgstr "Error seek!"
-
 msgid "Settings"
 msgstr "Config."
 
 msgid "Settings - Menu"
 msgstr "Config. - Menú"
-
-msgid "Settings - Network"
-msgstr "Config. - Xarxa"
 
 msgid "Settings - Saving & Loading"
 msgstr "Config. - Desar & Carregar"
@@ -673,59 +532,17 @@ msgstr "No trobo targeta SD!"
 msgid "Shift"
 msgstr "Maj."
 
-msgid "Simp_chinese"
+msgid "Sound Quality"
+msgstr "Qualitat de so"
+
+msgid "Chinese (Simplified)"
 msgstr "Xinès simpl."
-
-msgid "SMB Share IP"
-msgstr "IP del SMB"
-
-msgid "SMB Share Name"
-msgstr "Nom del SMB"
-
-msgid "SMB Share Password"
-msgstr "Contrasenya del SMB"
-
-msgid "SMB Share Username"
-msgstr "Usuari del SMB"
 
 msgid "Snapshot"
 msgstr "Imatge"
 
 msgid "Snapshot (Auto)"
 msgstr "Imatge (Auto)"
-
-msgid "SNES Controller"
-msgstr "Comandament SNES"
-
-msgid "SNES Controllers (2)"
-msgstr "Comandaments SNES (2)"
-
-msgid "SNES Controllers (4)"
-msgstr "Comandaments SNES (4)"
-
-msgid "SNES Controller - Classic Controller"
-msgstr "Comandament SNES - Comandament Clàssic"
-
-msgid "SNES Controller - GameCube Controller"
-msgstr "Comandament SNES - Comandament GameCube"
-
-msgid "SNES Controller - Nunchuk + Wiimote"
-msgstr "Comandament SNES - Nunchuk + Wiimote"
-
-msgid "SNES Controller - Wiimote"
-msgstr "Comandament SNES - Wiimote"
-
-msgid "SNES Mouse"
-msgstr "Ratolí SNES"
-
-msgid "SNES Mouse - GameCube Controller"
-msgstr "Ratolí SNES - Comandament GameCube"
-
-msgid "SNES Mouse - Wiimote"
-msgstr "Ratolí SNES - Wiimote"
-
-msgid "Snes9x - Copyright (c) Snes9x Team 1996 - 2021"
-msgstr "Snes9x - Copyright (c) Snes9x Team 1996 - 2021"
 
 msgid "Sound Effects Volume"
 msgstr "Volum d'efectes sonors"
@@ -748,35 +565,20 @@ msgstr "Estat (Auto)"
 msgid "State file not found"
 msgstr "No trobo fitxer d'estat"
 
-msgid "Stretch to Fit"
-msgstr "Estirar a mida"
+msgid "Swap Duty Cycles"
+msgstr "Inversió de cicles"
 
-msgid "Superscope"
-msgstr "SuperScope"
+msgid "Turbo Mode"
+msgstr "Mode turbo"
 
-msgid "Superscope - GameCube Controller"
-msgstr "SuperScope - Comandament GameCube"
-
-msgid "Superscope - Wiimote"
-msgstr "SuperScope - Wiimote"
-
-msgid "This software is open source and may be copied,"
-msgstr "Aquest software és de codi obert i pot ser copiat,"
-
-msgid "Trad_chinese"
-msgstr "Xinès trad."
-
-msgid "Unable to initialize network!"
-msgstr "Impossible iniciar la xarxa!"
+msgid "Turbo Mode Button"
+msgstr "Botó de mode turbo"
 
 msgid "Unable to locate a load device!"
 msgstr "No trobo dispositiu de càrrega!"
 
 msgid "Unable to locate a save device!"
 msgstr "No trobo dispositiu per desar!"
-
-msgid "Unable to open snapshot!"
-msgstr "Impossible obrir imatge!"
 
 msgid "Unfiltered"
 msgstr "No filtrat"
@@ -799,47 +601,14 @@ msgstr "AMUNT"
 msgid "Up One Level"
 msgstr "Pujar nivell"
 
-msgid "Update Available"
-msgstr "Nova actualització"
-
-msgid "Update failed!"
-msgstr "No actualitzat"
-
-msgid "Update later"
-msgstr "Fer després"
-
-msgid "Update now"
-msgstr "Actualitzar"
-
-msgid "Update successful!"
-msgstr "Actualització feta!"
-
 msgid "USB drive not found!"
 msgstr "No trobo dispositiu USB!"
 
 msgid "USB Mass Storage"
 msgstr "Dispositiu USB"
 
-msgid "Vertical"
-msgstr "Vertical"
-
-msgid "Video"
-msgstr "Vídeo"
-
 msgid "Video Mode"
 msgstr "Mode vídeo"
-
-msgid "VM8: Unknown page type!"
-msgstr "VM8: Pàgina desconeguda!"
-
-msgid "VM16: Unknown page type!"
-msgstr "VM16: Pàgina desconeguda!"
-
-msgid "VM32: Unknown page type!"
-msgstr "VM32: Pàgina desconeguda!"
-
-msgid "Wiimote"
-msgstr "Wiimote"
 
 msgid "Wiimote Orientation"
 msgstr "Orientació Wiimote"
