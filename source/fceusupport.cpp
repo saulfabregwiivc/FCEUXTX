@@ -1,8 +1,8 @@
 /****************************************************************************
  * FCE Ultra
- * Nintendo Wii/GameCube Port
+ * Nintendo Wii/Gamecube Port
  *
- * Tantric 2008-2022
+ * Tantric 2008-2021
  *
  * fceusupport.cpp
  *
@@ -10,7 +10,7 @@
  ****************************************************************************/
 
 #include <gctypes.h>
-#include "fceuxtx.h"
+#include "fceugx.h"
 #include "fceusupport.h"
 #include "pad.h"
 #include "gcaudio.h"
@@ -22,6 +22,17 @@ bool paldeemphswap = 0;
 int dendy;
 bool swapDuty;
 int KillFCEUXonFrame = 0;
+
+// Enable or disable swap duty cycles
+void SetSwapDuty()
+{
+	if(GCSettings.swapDuty == 1) {
+		swapDuty = 1;
+	}
+	else {
+		swapDuty = 0;
+	}
+}
 
 /**
  * Closes a game.  Frees memory, and deinitializes the drivers.
@@ -165,7 +176,6 @@ DUMMY(FCEUD_ToggleStatusIcon)
 DUMMY(FCEUD_DebugBreakpoint)
 DUMMY(FCEUD_SoundToggle)
 DUMMY(FCEUD_AviRecordTo)
-DUMMY(FCEUD_FlushTrace)
 DUMMY(FCEUD_AviStop)
 void FCEUI_AviVideoUpdate(const unsigned char* buffer) { }
 int FCEUD_ShowStatusIcon(void) { return 0; }

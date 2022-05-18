@@ -1,8 +1,8 @@
 /****************************************************************************
  * FCE Ultra
- * Nintendo Wii/GameCube Port
+ * Nintendo Wii/Gamecube Port
  *
- * Tantric 2008-2022
+ * Tantric 2008-2021
  *
  * fileop.cpp
  *
@@ -26,7 +26,7 @@
 #include <iso9660.h>
 #include <fat.h>
 
-#include "fceuxtx.h"
+#include "fceugx.h"
 #include "fceusupport.h"
 #include "fileop.h"
 #include "gcunzip.h"
@@ -218,6 +218,7 @@ void UnmountAllFAT()
  * Attempts to mount the device specified
  * Sets libfat to use the device by default
  ***************************************************************************/
+
 static bool MountFAT(int device, int silent)
 {
 	bool mounted = false;
@@ -453,7 +454,7 @@ void CreateAppPath(char * origpath)
 	int pos = 0;
 
 	// replace fat:/ with sd:/
-	if(strncmp(path, "fat:/", 5) == 0 || strncmp(path, "sd1:/", 5) == 0)
+	if(strncmp(path, "fat:/", 5) == 0)
 	{
 		pos++;
 		path[1] = 's';

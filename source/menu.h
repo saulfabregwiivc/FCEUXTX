@@ -1,16 +1,16 @@
 /****************************************************************************
  * FCE Ultra
- * Nintendo Wii/GameCube Port
+ * Nintendo Wii/Gamecube Port
  *
- * Tantric 2008-2022
+ * Tantric 2008-2021
  *
  * menu.h
  *
  * Main menu flow control
  ****************************************************************************/
 
-#ifndef _MENU_H_
-#define _MENU_H_
+#ifndef _MENU_H
+#define _MENU_H
 
 bool GuiLoaded();
 void InitGUIThreads();
@@ -41,7 +41,6 @@ enum
 	MENU_GAMESETTINGS,
 	MENU_GAMESETTINGS_MAPPINGS,
 	MENU_GAMESETTINGS_MAPPINGS_CTRL,
-	MENU_GAMESETTINGS_MAPPINGS_TURBOMODE,
 	MENU_GAMESETTINGS_MAPPINGS_MAP,
 	MENU_GAMESETTINGS_VIDEO,
 	MENU_GAMESETTINGS_AUDIO,

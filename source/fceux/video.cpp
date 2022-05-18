@@ -72,8 +72,6 @@ static u8 *xbsave=NULL;
 GUIMESSAGE guiMessage;
 GUIMESSAGE subtitleMessage;
 
-bool vidGuiMsgEna = true;
-
 //for input display
 extern int input_display;
 extern uint32 cur_input_display;
@@ -408,10 +406,7 @@ void FCEU_DispMessageOnMovie(const char *format, ...)
 	vsnprintf(guiMessage.errmsg,sizeof(guiMessage.errmsg),format,ap);
 	va_end(ap);
 
-	if ( vidGuiMsgEna )
-	{
-		guiMessage.howlong = 180;
-	}
+	guiMessage.howlong = 180;
 	guiMessage.isMovieMessage = true;
 	guiMessage.linesFromBottom = 0;
 
@@ -434,10 +429,7 @@ void FCEU_DispMessage(const char *format, int disppos=0, ...)
 	strcat(temp, "\n");
 	FCEU_printf(temp);
 
-	if ( vidGuiMsgEna )
-	{
-		guiMessage.howlong = 180;
-	}
+	guiMessage.howlong = 180;
 	guiMessage.isMovieMessage = false;
 
 	guiMessage.linesFromBottom = disppos;
@@ -736,54 +728,29 @@ bool FCEUI_ShowFPS()
 }
 void FCEUI_SetShowFPS(bool showFPS)
 {
-	if ( Show_FPS != showFPS )
-	{
-		ResetFPS();
-	}
 	Show_FPS = showFPS;
 }
 void FCEUI_ToggleShowFPS()
 {
 	Show_FPS ^= 1;
-
-	ResetFPS();
 }
 
-static uint64 boop_ts = 0;
-static unsigned int boopcount = 0;
-
-void ResetFPS(void)
-{
-	boop_ts = 0;
-	boopcount = 0;
-}
+static uint64 boop[60];
+static int boopcount = 0;
 
 void ShowFPS(void)
 {
 #ifndef GEKKO
-	if (Show_FPS == false)
-	{
+	if(Show_FPS == false)
 		return;
-	}
-	static char fpsmsg[16] = { 0 };
-	uint64 ts = FCEUD_GetTime();
-	uint64 da;
+	uint64 da = FCEUD_GetTime() - boop[boopcount];
+	char fpsmsg[16];
+	int booplimit = PAL?50:60;
+	boop[boopcount] = FCEUD_GetTime();
 
-	if ( boop_ts == 0 )
-	{
-		boop_ts = ts;
-	}
-	da = ts - boop_ts;
-
-	if ( da > FCEUD_GetTimeFreq() )
-	{
-		sprintf(fpsmsg, "%.1f", (double)boopcount / ((double)da / FCEUD_GetTimeFreq()));
-
-		boopcount = 0;
-		boop_ts = ts;
-	}
-	boopcount++;
-
+	sprintf(fpsmsg, "%.1f", (double)booplimit / ((double)da / FCEUD_GetTimeFreq()));
 	DrawTextTrans(XBuf + ((256 - ClipSidesOffset) - 40) + (FSettings.FirstSLine + 4) * 256, 256, (uint8*)fpsmsg, 0xA0);
+	// It's not averaging FPS over exactly 1 second, but it's close enough.
+	boopcount = (boopcount + 1) % booplimit;
 #endif
 }

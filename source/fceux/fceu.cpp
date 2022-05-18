@@ -464,7 +464,7 @@ FCEUGI *FCEUI_LoadGameVirtual(const char *name, int OverwriteVidMode, bool silen
 
 	FCEU_CloseGame();
 	GameInfo = new FCEUGI();
-	memset( (void*)GameInfo, 0, sizeof(FCEUGI));
+	memset(GameInfo, 0, sizeof(FCEUGI));
 
 	GameInfo->filename = strdup(fp->filename.c_str());
 	if (fp->archiveFilename != "")
@@ -535,16 +535,16 @@ FCEUGI *FCEUI_LoadGameVirtual(const char *name, int OverwriteVidMode, bool silen
 
 		if (!lastpal && PAL) {
 			FCEU_DispMessage("PAL mode set", 0);
-			FCEUI_printf("PAL mode set\n");
+			FCEUI_printf("PAL mode set");
 		}
 		else if (!lastdendy && dendy) {
 			// this won't happen, since we don't autodetect dendy, but maybe someday we will?
 			FCEU_DispMessage("Dendy mode set", 0);
-			FCEUI_printf("Dendy mode set\n");
+			FCEUI_printf("Dendy mode set");
 		}
 		else if ((lastpal || lastdendy) && !(PAL || dendy)) {
 			FCEU_DispMessage("NTSC mode set", 0);
-			FCEUI_printf("NTSC mode set\n");
+			FCEUI_printf("NTSC mode set");
 		}
 
 		if (GameInfo->type != GIT_NSF && !disableAutoLSCheats)
@@ -715,10 +715,6 @@ void AutoFire(void)
 
 void UpdateAutosave(void);
 
-#ifdef __QT_DRIVER__
-extern unsigned int frameAdvHoldTimer;
-#endif
-
 ///Emulates a single frame.
 
 ///Skip may be passed in, if FRAMESKIP is #defined, to cause this to emulate more than one frame
@@ -730,27 +726,10 @@ void FCEUI_Emulate(uint8 **pXBuf, int32 **SoundBuf, int32 *SoundBufSize, int ski
 
 	if (frameAdvanceRequested)
 	{
-#ifdef __QT_DRIVER__
-		uint32_t frameAdvanceDelayScaled = frameAdvance_Delay * (PAL ? 20 : 16);
-
-		if ( frameAdvanceDelayScaled < 1 )
-		{
-			frameAdvanceDelayScaled = 1;
-		}
-		if ( (frameAdvance_Delay_count == 0) || (frameAdvHoldTimer >= frameAdvanceDelayScaled) )
-		{
-			EmulationPaused = EMULATIONPAUSED_FA;
-		}
-		if (frameAdvance_Delay_count < frameAdvanceDelayScaled)
-		{
-			frameAdvance_Delay_count++;
-		}
-#else
 		if (frameAdvance_Delay_count == 0 || frameAdvance_Delay_count >= frameAdvance_Delay)
 			EmulationPaused = EMULATIONPAUSED_FA;
 		if (frameAdvance_Delay_count < frameAdvance_Delay)
 			frameAdvance_Delay_count++;
-#endif
 	}
 
 	if (EmulationPaused & EMULATIONPAUSED_FA)
@@ -806,9 +785,6 @@ void FCEUI_Emulate(uint8 **pXBuf, int32 **SoundBuf, int32 *SoundBufSize, int ski
 	r = FCEUPPU_Loop(skip);
 
 	if (skip != 2) ssize = FlushEmulateSound();  //If skip = 2 we are skipping sound processing
-
-	//flush tracer once a frame, since we're likely to end up back at a user interaction loop after this with emulation paused
-	FCEUD_FlushTrace();
 
 #ifdef _S9XLUA_H
 	CallRegisteredLuaFunctions(LUACALL_AFTEREMULATION);
@@ -1162,7 +1138,7 @@ void FCEUI_SetRegion(int region, int notify)
 			if (notify)
 			{
 				FCEU_DispMessage("NTSC mode set", 0);
-				FCEUI_printf("NTSC mode set\n");
+				FCEUI_printf("NTSC mode set");
 			}
 			break;
 		case 1: // PAL
@@ -1173,7 +1149,7 @@ void FCEUI_SetRegion(int region, int notify)
 			if (notify)
 			{
 				FCEU_DispMessage("PAL mode set", 0);
-				FCEUI_printf("PAL mode set\n");
+				FCEUI_printf("PAL mode set");
 			}
 			break;
 		case 2: // Dendy
@@ -1184,7 +1160,7 @@ void FCEUI_SetRegion(int region, int notify)
 			if (notify)
 			{
 				FCEU_DispMessage("Dendy mode set", 0);
-				FCEUI_printf("Dendy mode set\n");
+				FCEUI_printf("Dendy mode set");
 			}
 			break;
 	}
@@ -1236,16 +1212,12 @@ void FCEUI_ClearEmulationFrameStepped()
 //ideally maybe we shouldnt be using this, but i need it for quick merging
 void FCEUI_SetEmulationPaused(int val) {
 	EmulationPaused = val;
-	if(EmulationPaused)
-		FCEUD_FlushTrace();
 }
 
 void FCEUI_ToggleEmulationPause(void)
 {
 	EmulationPaused = (EmulationPaused & EMULATIONPAUSED_PAUSED) ^ EMULATIONPAUSED_PAUSED;
 	DebuggerWasUpdated = false;
-	if(EmulationPaused)
-		FCEUD_FlushTrace();
 }
 
 void FCEUI_FrameAdvanceEnd(void) {
@@ -1357,10 +1329,6 @@ bool FCEU_IsValidUI(EFCEUI ui) {
 	case FCEUI_INPUT_BARCODE:
 		if (!GameInfo) return false;
 		if (!FCEUMOV_Mode(MOVIEMODE_INACTIVE)) return false;
-		break;
-	default:
-		// Unhandled falls out to end of function
-		break;
 	}
 
 #endif
@@ -1423,16 +1391,10 @@ virtual void Power() {
 }
 };
 
-void FCEUXGameInterface(GI command)
-{
-	switch (command)
-	{
-		case GI_POWER:
-			cart->Power();
-		break;
-		default:
-			// Unhandled cases
-		break;
+void FCEUXGameInterface(GI command) {
+	switch (command) {
+	case GI_POWER:
+		cart->Power();
 	}
 }
 

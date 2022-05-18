@@ -52,23 +52,15 @@ static DECLFW(M225Write) {
 }
 
 static DECLFW(M225LoWrite) {
-	if (A & 0x800) {
-		prot[A & 0x03] = V;
-	}
 }
 
 static DECLFR(M225LoRead) {
-	if (A & 0x800) {
-		return prot[A & 3] & 0x0F;
-	}
-	return X.DB;
+	return 0;
 }
 
 static void M225Power(void) {
 	prg = 0;
-	chr = 0;
 	mode = 0;
-	mirr = 0;
 	Sync();
 	SetReadHandler(0x5000, 0x5FFF, M225LoRead);
 	SetWriteHandler(0x5000, 0x5FFF, M225LoWrite);
@@ -78,9 +70,7 @@ static void M225Power(void) {
 
 static void M225Reset(void) {
 	prg = 0;
-	chr = 0;
 	mode = 0;
-	mirr = 0;
 	Sync();
 }
 

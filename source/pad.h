@@ -1,12 +1,12 @@
 /****************************************************************************
  * FCE Ultra
- * Nintendo Wii/GameCube Port
+ * Nintendo Wii/Gamecube Port
  *
- * Tantric 2008-2022
+ * Tantric 2008-2021
  *
  * pad.h
  *
- * Controller management
+ * Controller input
  ****************************************************************************/
 
 #ifndef _PAD_H_

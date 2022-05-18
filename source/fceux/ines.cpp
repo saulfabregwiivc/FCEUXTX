@@ -677,7 +677,7 @@ BMAPPINGLocal bmap[] = {
 	{"",					215, UNL8237_Init},
 	{"",					216, Mapper216_Init},
 	{"",					217, Mapper217_Init},	// Redefined to a new Discrete BMC mapper
-	{"Magic Floor",			218, Mapper218_Init},
+//	{"",					218, Mapper218_Init},
 	{"UNLA9746",			219, UNLA9746_Init},
 	{"Debug Mapper",		220, QTAi_Init},
 	{"UNLN625092",			221, UNLN625092_Init},
@@ -770,35 +770,15 @@ int iNESLoad(const char *name, FCEUFILE *fp, int OverwriteVidMode) {
 	} else
 		Mirroring = (head.ROM_type & 1);
 
-	int not_round_size;
-	if (!iNES2)	{
-		not_round_size = head.ROM_size;
-	}
-	else {
-		if ((head.Upper_ROM_VROM_size & 0x0F) != 0x0F)
-			// simple notation
-			not_round_size = head.ROM_size | ((head.Upper_ROM_VROM_size & 0x0F) << 8);
-		else
-			// exponent-multiplier notation
-			not_round_size = ((1 << (head.ROM_size >> 2)) * ((head.ROM_size & 0b11) * 2 + 1)) >> 14;
-	}
-
+	int not_round_size = head.ROM_size;
+	if(iNES2) not_round_size |= ((head.Upper_ROM_VROM_size & 0x0F) << 8);
+	
 	if (!head.ROM_size && !iNES2)
 		ROM_size = 256;
 	else
 		ROM_size = uppow2(not_round_size);
 
 	VROM_size = uppow2(head.VROM_size | (iNES2?((head.Upper_ROM_VROM_size & 0xF0)<<4):0));
-	if (!iNES2)	{
-		VROM_size = uppow2(head.VROM_size);
-	}
-	else {
-		if ((head.Upper_ROM_VROM_size & 0xF0) != 0xF0)
-			// simple notation
-			VROM_size = uppow2(head.VROM_size | ((head.Upper_ROM_VROM_size & 0xF0) << 4));
-		else
-			VROM_size = ((1 << (head.VROM_size >> 2)) * ((head.VROM_size & 0b11) * 2 + 1)) >> 13;
-	}
 
 	int round = true;
 	for (int i = 0; i != sizeof(not_power2) / sizeof(not_power2[0]); ++i) {
@@ -856,9 +836,9 @@ int iNESLoad(const char *name, FCEUFILE *fp, int OverwriteVidMode) {
 
 	iNESCart.CRC32 = iNESGameCRC32;
 
-	FCEU_printf(" PRG ROM: %d x 16KiB = %d KiB\n", round ? ROM_size : not_round_size, (round ? ROM_size : not_round_size) * 16);
-	FCEU_printf(" CHR ROM: %d x  8KiB = %d KiB\n", VROM_size, VROM_size * 8);
-	FCEU_printf(" ROM CRC32: 0x%08lx\n", iNESGameCRC32);
+	FCEU_printf(" PRG ROM:  %3d x 16KiB\n", (round) ? ROM_size: not_round_size);
+	FCEU_printf(" CHR ROM:  %3d x  8KiB\n", head.VROM_size);
+	FCEU_printf(" ROM CRC32:  0x%08lx\n", iNESGameCRC32);
 	{
 		int x;
 		FCEU_printf(" ROM MD5:  0x");
@@ -876,7 +856,7 @@ int iNESLoad(const char *name, FCEUFILE *fp, int OverwriteVidMode) {
 		}
 	}
 
-	FCEU_printf(" Mapper #: %d\n", MapperNo);
+	FCEU_printf(" Mapper #:  %d\n", MapperNo);
 	FCEU_printf(" Mapper name: %s\n", mappername);
 	FCEU_printf(" Mirroring: %s\n", Mirroring == 2 ? "None (Four-screen)" : Mirroring ? "Vertical" : "Horizontal");
 	FCEU_printf(" Battery-backed: %s\n", (head.ROM_type & 2) ? "Yes" : "No");
@@ -885,12 +865,12 @@ int iNESLoad(const char *name, FCEUFILE *fp, int OverwriteVidMode) {
 	{
 		FCEU_printf(" NES2.0 Extensions\n");
 		FCEU_printf(" Sub Mapper #: %d\n", iNESCart.submapper);
-		FCEU_printf(" Total WRAM size: %d KiB\n", (iNESCart.wram_size + iNESCart.battery_wram_size) / 1024);
-		FCEU_printf(" Total VRAM size: %d KiB\n", (iNESCart.vram_size + iNESCart.battery_vram_size) / 1024);
+		FCEU_printf(" Total WRAM size: %d\n", iNESCart.wram_size + iNESCart.battery_wram_size);
+		FCEU_printf(" Total VRAM size: %d\n", iNESCart.vram_size + iNESCart.battery_vram_size);
 		if(head.ROM_type & 2)
 		{
-			FCEU_printf(" WRAM backed by battery: %d KiB\n", iNESCart.battery_wram_size / 1024);
-			FCEU_printf(" VRAM backed by battery: %d KiB\n", iNESCart.battery_vram_size / 1024);
+			FCEU_printf(" WRAM backed by battery: %d\n", iNESCart.battery_wram_size);
+			FCEU_printf(" VRAM backed by battery: %d\n", iNESCart.battery_vram_size);
 		}
 	}
 
@@ -975,11 +955,11 @@ init_ok:
 			|| strstr(name, "(G)") || strstr(name, "(g)")
 			|| strstr(name, "(I)") || strstr(name, "(i)")
 			|| strstr(name, "(S)") || strstr(name, "(s)")
-			|| strstr(name, "(France)") || strstr(name, "(Germany)")
-			|| strstr(name, "(Italy)") || strstr(name, "(Spain)")
-			|| strstr(name, "(Sweden)") || strstr(name, "(Sw)")
-			|| strstr(name, "(Australia)") || strstr(name, "(A)")
-			|| strstr(name, "(a)"))	
+		    || strstr(name, "(France)") || strstr(name, "(Germany)")
+		    || strstr(name, "(Italy)") || strstr(name, "(Spain)")
+		    || strstr(name, "(Sweden)") || strstr(name, "(Sw)")
+		    || strstr(name, "(Australia)") || strstr(name, "(A)")
+		    || strstr(name, "(a)"))	
 			FCEUI_SetVidSystem(1);
 		else
 			FCEUI_SetVidSystem(0);

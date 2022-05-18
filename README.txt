@@ -1,29 +1,11 @@
 FCEUX TX
 ===================
 
-FCEUX TX is a fork of FCE Ultra GX: https://github.com/dborth/fceugx
+FCEUX TX is based on original FCE Ultra GX: https://github.com/dborth/fceugx
 (Under GPL License)
 
 Update History
 --------------
-
----FCEUX TX 1.1.3---
----May 17 2022---
-
-- Updated to the latest FCEUX 2.6.4 (git def5768)
-- Updated to the latest FCE Ultra GX (git 10b4ff8)
-- Added mapper 218 support for Magic Floor
-- Restored turbo mode and added button remapping feature and submenu (thanks InfiniteBlueGX)
-- Added option to choose sound quality (Low/High/Highest) in audio settings
-- Added option to turn it on/off low pass filtering in audio settings to simulate NES RF sound
-- Added SMB Game & Watch color palette
-- Restored PAL 60Hz video mode
-- Updated video code
-- Reorganized video rendering mode to Original/Unfiltered/Filtered (Unfiltered by default)
-- Reorganized menu video settings
-- Updated and cleaned up all language files
-- Updated UI PNG images
-- Compiled with latest devkitPPC
 
 ---FCEUX TX 1.1.2---
 ---September 1 2021---
@@ -32,11 +14,11 @@ Update History
 - Updated to the latest FCE Ultra GX (git d07dc9e)
 - Removed Soft and Sharp video filtering (no difference with filtered and unfiltered)
 - Reorganized color palettes order
-- Removed Wavebeam color palette (Smooth V2 is very similar)
-- Added Digital Prime color palette by FBX and rename Smootz to Smooth V2
+- Removed Wavebeam color palette (Smooth V2 is similar)
+- Added Digital Prime color palette by FBX and renamed Smootz to Smooth V2
 - Replaced old PAL color palette by that of r57Shell (more accurate)
 - Removed rumble function from menu (your batteries will last longer)
-- Updated Korean translation (thanks DDinghoya)
+- Updated Korean translation (by DDinghoya)
 - Updated UI PNG images
 - Compiled with latest devkitPPC/libogc
 - Updated Forwarder Channel (1.5)
@@ -70,7 +52,7 @@ Update History
 - Updated to the latest FCEUX 2.3.0 (git c544c13)
 - Updated to the latest FCE Ultra GX 3.5.0 (git 373e12b)
 - Removed SMB support (SMB 1.0 has a major security issue due to flaws in the protocol)
-- Added Mayflash 2-port Snes USB adapter support (thanks EthanArmbrust)
+- Added Mayflash 2-port Snes USB adapter support (by EthanArmbrust)
 - Removed Retrode 2 and Hornet USB controller support (not really useful for Wii)
 - Removed PocketNES interoperability
 - Removed Dendy support (priority to PAL 576i/288p video mode which does not suit Dendy mode)
@@ -78,10 +60,10 @@ Update History
 - Changed max game image dimensions to 640x512 to fix screenshots
 - Changed UI stripes size
 - Reorganized credits
-- Reverted moved app version in credits box info
+- Reverted the app version in menu
 - Reworked UI PNG images (improved colors, shadow effects and logo)
-- Added option to turn it on/off swap duty cycles to simulate sound of some NES clones
-- Added audio settings in game menu (thanks Bladeoner)
+- Added setting to enable/disable swap duty cycles to simulate sound of Famiclones
+- Added audio settings in game menu (by Bladeoner)
 - Removed menu music (use a bg_music.ogg file in root fceuxtx folder)
 - Updated French translation
 - Changed root folder name to fceuxtx
@@ -105,7 +87,7 @@ Update History
 - Added new Forwarder Channel (based on qwertymodo's channel)
 - Updated to the latest FCE Ultra GX (git 917dae0)
 - Added experimental Game Boy DMG color palette
-- Moved app version in main menu to credits box info
+- Moved the app version in menu to credits box info
 - Changed fceugx root folder name to fceux
 - Changed 1UP name to FCEUX TX and add new logo
 - Removed RGBSource's RetronHD color palette
@@ -148,7 +130,7 @@ Update History
 ---December 28 2019---
 
 - Updated to the latest FCE Ultra GX (git a8caf23)
-- Added Restored Wii VC color palette (thanks SuperrSonic)
+- Added Restored Wii VC color palette (by SuperrSonic)
   restored version adjusts brightness levels significantly
 - Updated to the latest FCEUX (git 0b4be4b)
 - Updated UI color and added Wii/vWii Forwarder Channel (1.1)
@@ -170,14 +152,14 @@ Update History
 
 - Added separate PAL audio sample rate
 - Increased sound volume in games
-- Added Retrode support (thanks revvv)
+- Added Retrode support (by revvv)
 - Changed default mapping of buttons A and B
-- Added button mapping for NES Zapper (thanks niuus)
+- Added button mapping for NES Zapper (by niuus)
 - Corrected the PAL noise frequency table
 - Added all PAL regions detection
 - Removed PAL 60Hz video mode
 - Corrected the PAL 50Hz video mode resolution to 576i/288p
-- Enabled low quality sound
+- Enabled normal quality sound
 - Updated to the latest FCEUX (git 0fc18be)
 - Updated color palettes
 - Changed UI and Forwarder Channel colors

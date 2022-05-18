@@ -106,15 +106,9 @@ static uint8  mapperFDS_diskaccess;	// disk needs to be accessed at least once b
 #define DC_INC    1
 
 void FDSGI(GI h) {
-	switch (h)
-	{
-		case GI_CLOSE: FDSClose(); break;
-		case GI_POWER: FDSInit(); break;
-
-		// Unhandled Cases
-		case GI_RESETM2:
-		case GI_RESETSAVE:
-			break;
+	switch (h) {
+	case GI_CLOSE: FDSClose(); break;
+	case GI_POWER: FDSInit(); break;
 	}
 }
 
@@ -227,18 +221,16 @@ void FCEU_FDSSelect(void)
 	FCEU_DispMessage("", 0); //FCEU_DispMessage("Disk %d Side %c Selected", 0, SelectDisk >> 1, (SelectDisk & 1) ? 'B' : 'A');
 }
 
-#define IRQ_Repeat  (IRQa & 0x01)
-#define IRQ_Enabled (IRQa & 0x02)
-
 static void FDSFix(int a) {
-	if ((IRQa & IRQ_Enabled) && IRQCount) {
+	if ((IRQa & 2) && IRQCount) {
 		IRQCount -= a;
 		if (IRQCount <= 0) {
-			IRQCount = IRQLatch;
+			if (!(IRQa & 1)) {
+				IRQa &= ~2;
+				IRQCount = IRQLatch = 0;
+			} else
+				IRQCount = IRQLatch;
 			X6502_IRQBegin(FCEU_IQEXT);
-			if (!(IRQa & IRQ_Repeat)) {
-				IRQa &= ~IRQ_Enabled;
-			}
 		}
 	}
 	if (DiskSeekIRQ > 0) {

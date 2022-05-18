@@ -17,10 +17,10 @@ include $(DEVKITPPC)/wii_rules
 #---------------------------------------------------------------------------------
 TARGET		:=	fceuxtx-wii
 TARGETDIR	:=  executables
-BUILD		:=	build_wii
-SOURCES		:=	source source/gui source/utils source/utils/unzip \
-				source/utils/sz source/fceux source/fceux/boards \
-				source/fceux/input source/fceux/utils
+BUILD			:=	build_wii
+SOURCES		:=	source source/gui source/utils source/utils/sz source/utils/unzip \
+				source/fceux source/fceux/boards source/fceux/input \
+				source/fceux/utils source/fceux/mbshare
 DATA		:=	source/images source/sounds source/fonts source/lang
 INCLUDES	:=	source
 

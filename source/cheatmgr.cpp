@@ -1,8 +1,8 @@
 /****************************************************************************
  * FCE Ultra
- * Nintendo Wii/GameCube Port
+ * Nintendo Wii/Gamecube Port
  *
- * Tantric 2008-2022
+ * Tantric 2008-2021
  *
  * cheatmgr.cpp
  *
@@ -12,7 +12,7 @@
 #include <malloc.h>
 #include <gctypes.h>
 
-#include "fceuxtx.h"
+#include "fceugx.h"
 #include "fceusupport.h"
 #include "fileop.h"
 #include "filebrowser.h"
@@ -28,6 +28,7 @@ int numcheats = 0;
  * Loads cheat file from save buffer
  * Custom version of FCEU_LoadGameCheats()
  ***************************************************************************/
+
 static int LoadCheats (int length)
 {
 	unsigned int addr;

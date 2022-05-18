@@ -991,10 +991,7 @@ void FCEUMOV_CreateCleanMovie()
 	currMovieData = MovieData();
 	currMovieData.palFlag = FCEUI_GetCurrentVidSystem(0,0)!=0;
 	currMovieData.romFilename = FileBase;
-	if ( GameInfo )
-	{
-		currMovieData.romChecksum = GameInfo->MD5;
-	}
+	currMovieData.romChecksum = GameInfo->MD5;
 	currMovieData.guid.newGuid();
 	currMovieData.fourscore = FCEUI_GetInputFourscore();
 	currMovieData.microphone = FCEUI_GetInputMicrophone();
