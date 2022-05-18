@@ -1,9 +1,9 @@
 /****************************************************************************
  * FCE Ultra
- * Nintendo Wii/Gamecube Port
+ * Nintendo Wii/GameCube Port
  *
  * michniewski August 2008
- * Tantric 2008-2021
+ * Tantric 2008-2022
  *
  * button_mapping.c
  *
@@ -29,7 +29,7 @@
 ***/
 
 CtrlrMap ctrlr_def[6] = {
-// Gamecube controller btn def
+// GameCube controller btn def
 {
 	CTRLR_GCPAD,
 	13,
@@ -95,7 +95,7 @@ CtrlrMap ctrlr_def[6] = {
 		{0, ""}
 	}
 },
-// Classic btn def
+// Classic controller btn def
 {
 	CTRLR_CLASSIC,
 	15,
@@ -117,7 +117,7 @@ CtrlrMap ctrlr_def[6] = {
 		{WPAD_CLASSIC_BUTTON_ZR, "ZR"}
 	}
 },
-// Wii U Pro controller
+// Wii U Pro controller btn def
 {
 	CTRLR_WUPC,
 	15,

@@ -1,12 +1,12 @@
 /****************************************************************************
  * FCE Ultra
- * Nintendo Wii/Gamecube Port
+ * Nintendo Wii/GameCube Port
  *
- * Tantric 2008-2021
+ * Tantric 2008-2022
  *
  * gcvideo.cpp
  *
- * Video rendering
+ * Video routines
  ****************************************************************************/
 
 #include <gccore.h>
@@ -20,7 +20,7 @@
 #include <ogc/lwp_watchdog.h>
 #include <ogc/machine/processor.h>
 
-#include "fceugx.h"
+#include "fceuxtx.h"
 #include "fceusupport.h"
 #include "gcvideo.h"
 #include "gcaudio.h"
@@ -32,47 +32,46 @@ int FDSTimer = 0;
 u32 FrameTimer = 0;
 int FDSSwitchRequested;
 
-/*** External 2D Video ***/
-/*** 2D Video Globals ***/
-GXRModeObj *vmode  = NULL; // Graphics Mode Object
-static u32 *xfb[2] = { NULL, NULL }; // Framebuffers
-static int whichfb = 0; // Frame buffer toggle
+/*** 2D Video ***/
+static u32 *xfb[2] = { NULL, NULL }; // Double buffered
+static int whichfb = 0; // Switch
+GXRModeObj *vmode = NULL; // Current video mode
 int screenheight = 480;
 int screenwidth = 640;
-bool progressive = false;
 static int oldRenderMode = -1; // set to GCSettings.render when changing (temporarily) to another mode
 
-/*** 3D GX ***/
+/*** GX ***/
 #define TEX_WIDTH 256
 #define TEX_HEIGHT 240
-#define DEFAULT_FIFO_SIZE ( 256 * 1024 )
-static u8 gp_fifo[DEFAULT_FIFO_SIZE] ATTRIBUTE_ALIGN(32);
+#define TEXTUREMEM_SIZE 	TEX_WIDTH*TEX_HEIGHT*2
+static unsigned char texturemem[TEXTUREMEM_SIZE] ATTRIBUTE_ALIGN (32);
+
+#define DEFAULT_FIFO_SIZE 256 * 1024
 static u32 copynow = GX_FALSE;
+static u8 gp_fifo[DEFAULT_FIFO_SIZE] ATTRIBUTE_ALIGN(32);
 static GXTexObj texobj;
 static Mtx view;
 static Mtx GXmodelView2D;
 
-/*** Texture memory ***/
-static unsigned char texturemem[TEX_WIDTH * TEX_HEIGHT * 4] ATTRIBUTE_ALIGN (32);
-
-static int UpdateVideo = 1;
-static bool vmode_60hz = true;
-
 u8 * gameScreenPng = NULL;
 int gameScreenPngSize = 0;
+
+bool vmode_60hz = true;
+int UpdateVideo = 1;
+bool progressive = false;
 
 #define HASPECT 320
 #define VASPECT 240
 
 // Need something to hold the PC palette
 struct pcpal {
-    unsigned char r;
-    unsigned char g;
-    unsigned char b;
+	unsigned char r;
+	unsigned char g;
+	unsigned char b;
 } pcpalette[256];
 
-static unsigned int gcpalette[256];	// Much simpler GC palette
-static unsigned short rgb565[256];	// Texture map palette
+static unsigned int gcpalette[256]; // Much simpler GC palette
+static unsigned short rgb565[256];  // Texture map palette
 bool shutter_3d_mode, anaglyph_3d_mode, eye_3d;
 bool AnaglyphPaletteValid = false; //CAK: Has the anaglyph palette below been generated yet?
 static unsigned short anaglyph565[64][64]; //CAK: Texture map left right combination anaglyph palette
@@ -84,9 +83,9 @@ static long long now;
 /* New texture based scaler */
 typedef struct tagcamera
 {
-  guVector pos;
-  guVector up;
-  guVector view;
+	guVector pos;
+	guVector up;
+	guVector view;
 }
 camera;
 
@@ -100,16 +99,16 @@ static s16 square[] ATTRIBUTE_ALIGN (32) =
    * X,   Y,  Z
    * Values set are for roughly 4:3 aspect
    */
-   -HASPECT,  VASPECT, 0,	// 0
-    HASPECT,  VASPECT, 0,	// 1
-    HASPECT, -VASPECT, 0,	// 2
-   -HASPECT, -VASPECT, 0	// 3
+	-HASPECT,  VASPECT, 0,		// 0
+	 HASPECT,  VASPECT, 0,	// 1
+	 HASPECT, -VASPECT, 0,	// 2
+	-HASPECT, -VASPECT, 0	// 3
 };
 
-
-static camera cam = { {0.0F, 0.0F, 0.0F},
-{0.0F, 0.5F, 0.0F},
-{0.0F, 0.0F, -0.5F}
+static camera cam = { 
+	{0.0F, 0.0F, 0.0F},
+	{0.0F, 0.5F, 0.0F},
+	{0.0F, 0.0F, -0.5F}
 };
 
 /***
@@ -119,7 +118,7 @@ static camera cam = { {0.0F, 0.0F, 0.0F},
 /** Original NES PAL Resolutions: **/
 
 /* 288 lines progressive (PAL 50Hz) */
-static GXRModeObj PAL_288p =
+static GXRModeObj TV50hz_288p =
 {
 	VI_TVMODE_PAL_DS,       // viDisplayMode
 	512,             // fbWidth
@@ -133,73 +132,73 @@ static GXRModeObj PAL_288p =
 	GX_FALSE,        // field_rendering
 	GX_FALSE,        // aa
 
-  // sample points arranged in increasing Y order
-        {
-                {6,6},{6,6},{6,6},  // pix 0, 3 sample points, 1/12 units, 4 bits each
-                {6,6},{6,6},{6,6},  // pix 1
-                {6,6},{6,6},{6,6},  // pix 2
-                {6,6},{6,6},{6,6}   // pix 3
-        },
+	// sample points arranged in increasing Y order
+	{
+		{6,6},{6,6},{6,6},  // pix 0, 3 sample points, 1/12 units, 4 bits each
+		{6,6},{6,6},{6,6},  // pix 1
+		{6,6},{6,6},{6,6},  // pix 2
+		{6,6},{6,6},{6,6}   // pix 3
+	},
 
-  // vertical filter[7], 1/64 units, 6 bits each
-        {
-                 0,         // line n-1
-                 0,         // line n-1
-                21,         // line n
-                22,         // line n
-                21,         // line n
-                 0,         // line n+1
-                 0          // line n+1
-        }
+	// vertical filter[7], 1/64 units, 6 bits each
+	{
+		0,         // line n-1
+		0,         // line n-1
+		21,         // line n
+		22,         // line n
+		21,         // line n
+		0,         // line n+1
+		0          // line n+1
+	}
 };
 
 /** Original NES NTSC Resolutions: **/
 
-/* 240 lines progressive (NTSC) */
-static GXRModeObj NTSC_240p =
+/* 240 lines progressive (NTSC or PAL 60Hz) */
+static GXRModeObj TV60hz_240p =
 {
 	VI_TVMODE_EURGB60_DS,      // viDisplayMode
 	512,             // fbWidth
 	240,             // efbHeight
 	240,             // xfbHeight
-	(VI_MAX_WIDTH_NTSC - 644)/2,	// viXOrigin
-	(VI_MAX_HEIGHT_NTSC - 480)/2,	// viYOrigin
+	(VI_MAX_WIDTH_NTSC - 644)/2,        // viXOrigin
+	(VI_MAX_HEIGHT_NTSC - 480)/2,       // viYOrigin
 	644,             // viWidth
 	480,             // viHeight
 	VI_XFBMODE_SF,   // xFBmode
 	GX_FALSE,        // field_rendering
 	GX_FALSE,        // aa
 
-  // sample points arranged in increasing Y order
-        {
-                {6,6},{6,6},{6,6},  // pix 0, 3 sample points, 1/12 units, 4 bits each
-                {6,6},{6,6},{6,6},  // pix 1
-                {6,6},{6,6},{6,6},  // pix 2
-                {6,6},{6,6},{6,6}   // pix 3
-        },
+	// sample points arranged in increasing Y order
+	{
+		{6,6},{6,6},{6,6},  // pix 0, 3 sample points, 1/12 units, 4 bits each
+		{6,6},{6,6},{6,6},  // pix 1
+		{6,6},{6,6},{6,6},  // pix 2
+		{6,6},{6,6},{6,6}   // pix 3
+	},
 
-  // vertical filter[7], 1/64 units, 6 bits each
-        {
-                  0,         // line n-1
-                  0,         // line n-1
-                 21,         // line n
-                 22,         // line n
-                 21,         // line n
-                  0,         // line n+1
-                  0          // line n+1
-        }
+	// vertical filter[7], 1/64 units, 6 bits each
+	{
+		0,         // line n-1
+		0,         // line n-1
+		21,         // line n
+		22,         // line n
+		21,         // line n
+		0,         // line n+1
+		0          // line n+1
+	}
 };
 
 /* TV Modes table */
 static GXRModeObj *tvmodes[2] = {
-	&NTSC_240p, &PAL_288p
+	&TV60hz_240p, &TV50hz_288p
 };
 
 /****************************************************************************
  * setFrameTimer()
- * change frame timings depending on whether ROM is NTSC or PAL
+ *
+ * Change frame timings depending on whether ROM is NTSC or PAL
  ***************************************************************************/
-
 static u32 normaldiff;
 
 void setFrameTimer()
@@ -405,7 +404,7 @@ UpdateScaling()
 	// update scaling
 	if (GCSettings.render == 0)	// original render mode
 	{
-		xscale = 512 / 2; // use GX scaler instead VI
+		xscale = 256;
 		yscale = TEX_HEIGHT / 2;
 	}
 	else // unfiltered and filtered mode
@@ -454,13 +453,13 @@ static GXRModeObj * FindVideoMode()
 			mode = &TVNtsc480Prog;
 			break;
 		case 3: // PAL (50Hz)
-			mode = &TVPal528IntDf;
+			mode = &TVPal576IntDfScale;
+			break;
+		case 4: // PAL (60Hz)
+			mode = &TVEurgb60Hz480IntDf;
 			break;
 		default:
 			mode = VIDEO_GetPreferredMode(NULL);
-            
-			if(mode == &TVPal576IntDfScale)
-				mode = &TVPal528IntDf;
 
 			#ifdef HW_DOL
 			/* we have component cables, but the preferred mode is interlaced
@@ -482,19 +481,25 @@ static GXRModeObj * FindVideoMode()
 
 			// Original Video modes (forced to PAL 50Hz)
 			// set video signal mode
-			NTSC_240p.viTVMode = VI_TVMODE_PAL_DS;
-			NTSC_240p.viYOrigin = (VI_MAX_HEIGHT_PAL - 480)/2;	
+			TV60hz_240p.viTVMode = VI_TVMODE_PAL_DS;
 			break;
 
 		case VI_NTSC:
 			// 480 lines (NTSC 60Hz)
 			vmode_60hz = true;
 
-			// Original Video modes (forced to NTSC 60Hz)
+			// Original Video modes (forced to NTSC 60hz)
 			// set video signal mode
-			PAL_288p.viTVMode = VI_TVMODE_NTSC_DS;
-			PAL_288p.viYOrigin = (VI_MAX_HEIGHT_NTSC - 576)/2;
-			NTSC_240p.viTVMode = VI_TVMODE_NTSC_DS;
+			TV60hz_240p.viTVMode = VI_TVMODE_NTSC_DS;
+			break;
+
+		default:
+			// 480 lines (PAL 60Hz)
+			vmode_60hz = true;
+
+			// Original Video modes (forced to PAL 60hz)
+			// set video signal mode
+			TV60hz_240p.viTVMode = VI_TVMODE(mode->viTVMode >> 2, VI_NON_INTERLACE);
 			break;
 	}
 
@@ -510,7 +515,7 @@ static GXRModeObj * FindVideoMode()
 	else
 		mode->viWidth = 672;
 
-	if(vmode_60hz)
+	if (vmode_60hz)
 	{
 		mode->viXOrigin = (VI_MAX_WIDTH_NTSC - mode->viWidth) / 2;
 		mode->viYOrigin = (VI_MAX_HEIGHT_NTSC - mode->viHeight) / 2;
@@ -521,7 +526,6 @@ static GXRModeObj * FindVideoMode()
 		mode->viYOrigin = (VI_MAX_HEIGHT_PAL - mode->viHeight) / 2;
 	}
 	#endif
-
 	return mode;
 }
 
@@ -656,7 +660,6 @@ ResetVideo_Emu ()
 	GXColor background = {0, 0, 0, 255};
 	GX_SetCopyClear (background, 0x00ffffff);
 
-	// reconfigure GX
 	GX_SetViewport (0, 0, rmode->fbWidth, rmode->efbHeight, 0, 1);
 	GX_SetDispCopyYScale ((f32) rmode->xfbHeight / (f32) rmode->efbHeight);
 	GX_SetScissor (0, 0, rmode->fbWidth, rmode->efbHeight);
@@ -685,10 +688,12 @@ ResetVideo_Emu ()
 	// reinitialize texture
 	GX_InvalidateTexAll ();
 	GX_InitTexObj (&texobj, texturemem, TEX_WIDTH, TEX_HEIGHT, GX_TF_RGB565, GX_CLAMP, GX_CLAMP, GX_FALSE);	// initialize the texture obj we are going to use
-	if (!(GCSettings.render&1))
-		GX_InitTexObjLOD(&texobj,GX_NEAR,GX_NEAR_MIP_NEAR,2.5,9.0,0.0,GX_FALSE,GX_FALSE,GX_ANISO_1); // original/unfiltered video mode: force texture filtering OFF
+	
+	if (GCSettings.render == 0 || GCSettings.render == 1)
+	GX_InitTexObjLOD(&texobj,GX_NEAR,GX_NEAR_MIP_NEAR,2.5,9.0,0.0,GX_FALSE,GX_FALSE,GX_ANISO_1); // original/unfiltered video mode: force texture filtering OFF
+	
 	GX_LoadTexObj (&texobj, GX_TEXMAP0);
-	memset(texturemem, 0, TEX_WIDTH * TEX_HEIGHT * 2); // clear texture memory
+	memset(texturemem, 0, TEXTUREMEM_SIZE); // clear texture memory
 }
 
 /****************************************************************************
@@ -696,7 +701,6 @@ ResetVideo_Emu ()
  *
  * Render a single frame
  ****************************************************************************/
-
 void RenderFrame(unsigned char *XBuf)
 {
 	// Ensure previous vb has complete
@@ -768,7 +772,7 @@ void RenderFrame(unsigned char *XBuf)
 	}
 
 	// load texture into GX
-	DCFlushRange(texturemem, TEX_WIDTH * TEX_HEIGHT * 4);
+	DCFlushRange(texturemem, TEXTUREMEM_SIZE);
 
 	// clear texture objects
 	GX_InvalidateTexAll();
@@ -782,7 +786,7 @@ void RenderFrame(unsigned char *XBuf)
 		if(GCSettings.render == 0) // we can't take a screenshot in Original mode
 		{
 			oldRenderMode = 0;
-			GCSettings.render = 2; // switch to unfiltered mode
+			GCSettings.render = 1; // switch to unfiltered mode
 			UpdateVideo = 1; // request the switch
 		}
 		else
@@ -813,7 +817,6 @@ void RenderFrame(unsigned char *XBuf)
  *
  * Render a single frame
  ****************************************************************************/
-
 void RenderStereoFrames(unsigned char *XBufLeft, unsigned char *XBufRight)
 {
 	// Ensure previous vb has complete
@@ -894,7 +897,7 @@ void RenderStereoFrames(unsigned char *XBufLeft, unsigned char *XBufRight)
 	}
 
 	// load texture into GX
-	DCFlushRange(texturemem, TEX_WIDTH * TEX_HEIGHT * 4);
+	DCFlushRange(texturemem, TEXTUREMEM_SIZE);
 
 	// clear texture objects
 	GX_InvalidateTexAll();
@@ -908,7 +911,7 @@ void RenderStereoFrames(unsigned char *XBufLeft, unsigned char *XBufRight)
 		if(GCSettings.render == 0) // we can't take a screenshot in Original mode
 		{
 			oldRenderMode = 0;
-			GCSettings.render = 2; // switch to unfiltered mode
+			GCSettings.render = 1; // switch to unfiltered mode
 			UpdateVideo = 1; // request the switch
 		}
 		else
@@ -1227,7 +1230,6 @@ static void GenerateAnaglyphPalette()
  *
  * Support routine for gcpalette
  ****************************************************************************/
-
 static unsigned int rgbcolor(u8 r1, u8 g1, u8 b1, u8 r2, u8 g2, u8 b2)
 {
     int y1,cb1,cr1,y2,cb2,cr2,cb,cr;
@@ -1307,62 +1309,62 @@ void SetPalette()
 }
 
 struct st_palettes palettes[] = {
-    { "digital-prime-fbx", "Digital Prime (FBX)",
-        { 0x696969, 0x00148F, 0x1E029B, 0x3F008A,
-            0x600060, 0x660017, 0x570D00, 0x451B00,
-            0x243400, 0x004200, 0x004500, 0x003C1F,
-            0x00315C, 0x000000, 0x000000, 0x000000,
-            0xAFAFAF, 0x0F51DD, 0x442FF3, 0x7220E2,
-            0xA319B3, 0xAE1C51, 0xA43400, 0x884D00,
-            0x676D00, 0x208000, 0x008B00, 0x007F42,
-            0x006C97, 0x010101, 0x000000, 0x000000,
-            0xFFFFFF, 0x65AAFF, 0x8C96FF, 0xB983FF,
-            0xDD6FFF, 0xEA6FBD, 0xEB8466, 0xDCA21F,
-            0xBAB403, 0x7ECB07, 0x54D33E, 0x3CD284,
-            0x3EC7CC, 0x4B4B4B, 0x000000, 0x000000,
-            0xFFFFFF, 0xBDE2FF, 0xCECFFF, 0xE6C2FF,
-            0xF6BCFF, 0xF9C2ED, 0xFACFC6, 0xF8DEAC,
-            0xEEE9A1, 0xD0F59F, 0xBBF5AF, 0xB3F5CD,
-            0xB9EDF0, 0xB9B9B9, 0x000000, 0x000000 }
-    },
-    { "magnum-fbx", "Magnum (FBX)",
-        { 0x606060, 0x00148F, 0x1E029B, 0x3F008A,
-            0x600060, 0x660017, 0x570D00, 0x3C1F00,
-            0x1B3300, 0x004200, 0x004500, 0x003C1F,
-            0x00315C, 0x000000, 0x000000, 0x000000,
-            0xA6A6A6, 0x0F4BD4, 0x412DEB, 0x6C1DD9,
-            0x9C17AB, 0xA71A4D, 0x993200, 0x7C4A00,
-            0x546400, 0x1A7800, 0x007F00, 0x00763E,
-            0x00678F, 0x010101, 0x000000, 0x000000,
-            0xFFFFFF, 0x4C9CFF, 0x7278FF, 0x9B64FF,
-            0xD964FF, 0xF064B6, 0xF37B50, 0xD5930F,
-            0xB3AF0C, 0x78C403, 0x41D232, 0x34CA76,
-            0x37BCC6, 0x4A4A4A, 0x000000, 0x000000,
-            0xFFFFFF, 0xAED6FF, 0xBFC0FF, 0xCAB9FF,
-            0xE6BEFD, 0xF5BEE1, 0xF5C8B9, 0xF0D7A0,
-            0xE3E095, 0xC6EC95, 0xB5EBA8, 0xAAE6C3,
-            0xABE5E7, 0xB1B1B1, 0x000000, 0x000000 }
-    },
-    { "smooth-v2-fbx", "Smooth V2 (FBX)",
-        { 0x6A6A6A, 0x00148F, 0x1E029B, 0x3F008A,
-            0x600060, 0x660017, 0x570D00, 0x3C1F00,
-            0x1B3300, 0x004200, 0x004500, 0x003C1F,
-            0x00315C, 0x000000, 0x000000, 0x000000,
-            0xB9B9B9, 0x0F4BD4, 0x412DEB, 0x6C1DD9,
-            0x9C17AB, 0xA71A4D, 0x993200, 0x7C4A00,
-            0x546400, 0x1A7800, 0x007F00, 0x00763E,
-            0x00678F, 0x010101, 0x000000, 0x000000,
-            0xFFFFFF, 0x68A6FF, 0x8C9CFF, 0xB586FF,
-            0xD975FD, 0xE377B9, 0xE58D68, 0xD49D29,
-            0xB3AF0C, 0x7BC211, 0x55CA47, 0x46CB81,
-            0x47C1C5, 0x4A4A4A, 0x000000, 0x000000,
-            0xFFFFFF, 0xCCEAFF, 0xDDDEFF, 0xECDAFF,
-            0xF8D7FE, 0xFCD6F5, 0xFDDBCF, 0xF9E7B5,
-            0xF1F0AA, 0xDAFAA9, 0xC9FFBC, 0xC3FBD7,
-            0xC4F6F6, 0xBEBEBE, 0x000000, 0x000000 }
-    },
+	{ "digital-prime-fbx", "FBX's Digital Prime",
+		{ 0x696969, 0x00148F, 0x1E029B, 0x3F008A,
+		    0x600060, 0x660017, 0x570D00, 0x451B00,
+		    0x243400, 0x004200, 0x004500, 0x003C1F,
+		    0x00315C, 0x000000, 0x000000, 0x000000,
+		    0xAFAFAF, 0x0F51DD, 0x442FF3, 0x7220E2,
+		    0xA319B3, 0xAE1C51, 0xA43400, 0x884D00,
+		    0x676D00, 0x208000, 0x008B00, 0x007F42,
+		    0x006C97, 0x010101, 0x000000, 0x000000,
+		    0xFFFFFF, 0x65AAFF, 0x8C96FF, 0xB983FF,
+		    0xDD6FFF, 0xEA6FBD, 0xEB8466, 0xDCA21F,
+		    0xBAB403, 0x7ECB07, 0x54D33E, 0x3CD284,
+		    0x3EC7CC, 0x4B4B4B, 0x000000, 0x000000,
+		    0xFFFFFF, 0xBDE2FF, 0xCECFFF, 0xE6C2FF,
+		    0xF6BCFF, 0xF9C2ED, 0xFACFC6, 0xF8DEAC,
+		    0xEEE9A1, 0xD0F59F, 0xBBF5AF, 0xB3F5CD,
+		    0xB9EDF0, 0xB9B9B9, 0x000000, 0x000000 }
+	},
+	{ "magnum-fbx", "FBX's Magnum",
+		{ 0x606060, 0x00148F, 0x1E029B, 0x3F008A,
+		    0x600060, 0x660017, 0x570D00, 0x3C1F00,
+		    0x1B3300, 0x004200, 0x004500, 0x003C1F,
+		    0x00315C, 0x000000, 0x000000, 0x000000,
+		    0xA6A6A6, 0x0F4BD4, 0x412DEB, 0x6C1DD9,
+		    0x9C17AB, 0xA71A4D, 0x993200, 0x7C4A00,
+		    0x546400, 0x1A7800, 0x007F00, 0x00763E,
+		    0x00678F, 0x010101, 0x000000, 0x000000,
+		    0xFFFFFF, 0x4C9CFF, 0x7278FF, 0x9B64FF,
+		    0xD964FF, 0xF064B6, 0xF37B50, 0xD5930F,
+		    0xB3AF0C, 0x78C403, 0x41D232, 0x34CA76,
+		    0x37BCC6, 0x4A4A4A, 0x000000, 0x000000,
+		    0xFFFFFF, 0xAED6FF, 0xBFC0FF, 0xCAB9FF,
+		    0xE6BEFD, 0xF5BEE1, 0xF5C8B9, 0xF0D7A0,
+		    0xE3E095, 0xC6EC95, 0xB5EBA8, 0xAAE6C3,
+		    0xABE5E7, 0xB1B1B1, 0x000000, 0x000000 }
+	},
+	{ "smooth-v2-fbx", "FBX's Smooth-V2",
+		{ 0x6A6A6A, 0x00148F, 0x1E029B, 0x3F008A,
+		    0x600060, 0x660017, 0x570D00, 0x3C1F00,
+		    0x1B3300, 0x004200, 0x004500, 0x003C1F,
+		    0x00315C, 0x000000, 0x000000, 0x000000,
+		    0xB9B9B9, 0x0F4BD4, 0x412DEB, 0x6C1DD9,
+		    0x9C17AB, 0xA71A4D, 0x993200, 0x7C4A00,
+		    0x546400, 0x1A7800, 0x007F00, 0x00763E,
+		    0x00678F, 0x010101, 0x000000, 0x000000,
+		    0xFFFFFF, 0x68A6FF, 0x8C9CFF, 0xB586FF,
+		    0xD975FD, 0xE377B9, 0xE58D68, 0xD49D29,
+		    0xB3AF0C, 0x7BC211, 0x55CA47, 0x46CB81,
+		    0x47C1C5, 0x4A4A4A, 0x000000, 0x000000,
+		    0xFFFFFF, 0xCCEAFF, 0xDDDEFF, 0xECDAFF,
+		    0xF8D7FE, 0xFCD6F5, 0xFDDBCF, 0xF9E7B5,
+		    0xF1F0AA, 0xDAFAA9, 0xC9FFBC, 0xC3FBD7,
+		    0xC4F6F6, 0xBEBEBE, 0x000000, 0x000000 }
+	},
 	{ "sony-cxa2025as-us", "Sony CXA2025AS US",
-	    { 0x585858, 0x00238C, 0x00139B, 0x2D0585,
+		{ 0x585858, 0x00238C, 0x00139B, 0x2D0585,
 		    0x5D0052, 0x7A0017, 0x7A0800, 0x5F1800,
 		    0x352A00, 0x093900, 0x003F00, 0x003C22,
 		    0x00325D, 0x000000, 0x000000, 0x000000,
@@ -1378,27 +1380,9 @@ struct st_palettes palettes[] = {
 		    0xFEBCFB, 0xFEBDD0, 0xFEC5A9, 0xFED18E,
 		    0xE9DE86, 0xC7E992, 0xA8EEB0, 0x95ECD9,
 		    0x91E4FE, 0xACACAC, 0x000000, 0x000000 }
-    },
-    { "pc-10", "PlayChoice-10",
-	    { 0x6D6D6D, 0x002492, 0x0000DB, 0x6D49DB,
-		    0x92006D, 0xB6006D, 0xB62400, 0x924900,
-		    0x6D4900, 0x244900, 0x006D24, 0x009200,
-		    0x004949, 0x000000, 0x000000, 0x000000,
-		    0xB6B6B6, 0x006DDB, 0x0049FF, 0x9200FF,
-		    0xB600FF, 0xFF0092, 0xFF0000, 0xDB6D00,
-		    0x926D00, 0x249200, 0x009200, 0x00B66D,
-		    0x009292, 0x242424, 0x000000, 0x000000,
-		    0xFFFFFF, 0x6DB6FF, 0x9292FF, 0xDB6DFF,
-		    0xFF00FF, 0xFF6DFF, 0xFF9200, 0xFFB600,
-		    0xDBDB00, 0x6DDB00, 0x00FF00, 0x49FFDB,
-		    0x00FFFF, 0x494949, 0x000000, 0x000000,
-		    0xFFFFFF, 0xB6DBFF, 0xDBB6FF, 0xFFB6FF,
-		    0xFF92FF, 0xFFB6B6, 0xFFDB92, 0xFFFF49,
-		    0xFFFF6D, 0xB6FF49, 0x92FF6D, 0x49FFDB,
-		    0x92DBFF, 0x929292, 0x000000, 0x000000 }
-    },
-    { "pal-r57shell", "PAL composite",
-	    { 0x585858, 0x002094, 0x0104C4, 0x3000C4,
+	},
+	{ "pal-r57shell", "r57shell's PAL",
+		{ 0x585858, 0x002094, 0x0104C4, 0x3000C4,
 		    0x5D0095, 0x790042, 0x790000, 0x5E0A00,
 		    0x2F2901, 0x004402, 0x005103, 0x004F03,
 		    0x003D42, 0x000000, 0x000000, 0x000000,
@@ -1414,9 +1398,27 @@ struct st_palettes palettes[] = {
 		    0xEDC6EF, 0xF5C6E1, 0xF5CBCA, 0xEDD4B3,
 		    0xDFDDA6, 0xCEE5A6, 0xC1E9B3, 0xB9E8CA,
 		    0xB9E3E2, 0xACACAC, 0x000000, 0x000000 }
-    },
-    { "nes-classic", "NES Classic",
-	    { 0x60615F, 0x000083, 0x1D0195, 0x340875,
+	},
+	{ "rgb", "Nintendo RGB PPU",
+		{ 0x6D6D6D, 0x002492, 0x0000DB, 0x6D49DB,
+		    0x92006D, 0xB6006D, 0xB62400, 0x924900,
+		    0x6D4900, 0x244900, 0x006D24, 0x009200,
+		    0x004949, 0x000000, 0x000000, 0x000000,
+		    0xB6B6B6, 0x006DDB, 0x0049FF, 0x9200FF,
+		    0xB600FF, 0xFF0092, 0xFF0000, 0xDB6D00,
+		    0x926D00, 0x249200, 0x009200, 0x00B66D,
+		    0x009292, 0x242424, 0x000000, 0x000000,
+		    0xFFFFFF, 0x6DB6FF, 0x9292FF, 0xDB6DFF,
+		    0xFF00FF, 0xFF6DFF, 0xFF9200, 0xFFB600,
+		    0xDBDB00, 0x6DDB00, 0x00FF00, 0x49FFDB,
+		    0x00FFFF, 0x494949, 0x000000, 0x000000,
+		    0xFFFFFF, 0xB6DBFF, 0xDBB6FF, 0xFFB6FF,
+		    0xFF92FF, 0xFFB6B6, 0xFFDB92, 0xFFFF49,
+		    0xFFFF6D, 0xB6FF49, 0x92FF6D, 0x49FFDB,
+		    0x92DBFF, 0x929292, 0x000000, 0x000000 }
+	},
+	{ "nes-classic", "NES Classic",
+		{ 0x60615F, 0x000083, 0x1D0195, 0x340875,
 		    0x51055E, 0x56000F, 0x4C0700, 0x372308,
 		    0x203A0B, 0x0F4B0E, 0x194C16, 0x02421E,
 		    0x023154, 0x000000, 0x000000, 0x000000,
@@ -1432,27 +1434,27 @@ struct st_palettes palettes[] = {
 		    0xE8B8F9, 0xF5BAE5, 0xF3CAC2, 0xDFCDA7,
 		    0xD9E09C, 0xC9EB9E, 0xC0EDB8, 0xB5F4C7,
 		    0xB9EAE9, 0xABABAB, 0x000000, 0x000000 }
-    },
-    { "restored-wii-vc", "Restored Wii VC",
-	    { 0x666666, 0x000095, 0x10008B, 0x39007D,
-            0x5C0068, 0x660000, 0x5C0000, 0x391800,
-		    0x223700, 0x004316, 0x004300, 0x003916,
-   		    0x022D5E, 0x000000, 0x000000, 0x000000,
-		    0xA39EA3, 0x0043B9, 0x4502F1, 0x6902CF,
-		    0x8C00AC, 0x960050, 0x962E02, 0x7E4200,
-		    0x5C6600, 0x227D02, 0x167D02, 0x027D46,
-		    0x02667E, 0x161616, 0x000000, 0x000000,
-		    0xF2F2F2, 0x689EFF, 0x8C7BFF, 0xB970FF,
-		    0xE671F2, 0xF266B9, 0xFE8968, 0xCF9E46,
-		    0xACA03B, 0x7EBC02, 0x4EC745, 0x45C77E,
-		    0x50C7C6, 0x4E4E4E, 0x000000, 0x000000,
-		    0xFFFFFF, 0xC4DCFE, 0xC6C7F4, 0xDBC7FF,
-		    0xE9BDFF, 0xF2C6DC, 0xF4D2C4, 0xDBC8AE,
-		    0xDBDDA0, 0xCFE9AE, 0xB9EAAC, 0xAEDCB9,
-		    0xA1D2C6, 0xDEDEDE, 0x000000, 0x000000 }
-    },
-    { "wii-vc", "Wii Virtual Console",
-	    { 0x494949, 0x00006a, 0x090063, 0x290059,
+	},
+	{ "smb-game-and-watch", "SMB Game & Watch",
+		{ 0x808080, 0x0000BB, 0x3700BF, 0x8400A6,
+		    0xBB006A, 0xB7001E, 0xB30000, 0x912600,
+		    0x7B2B00, 0x003E00, 0x00480D, 0x003C22,
+		    0x002F66, 0x000000, 0x000000, 0x000000,
+		    0xC8C8C8, 0x0059FF, 0x443CFF, 0xB733CC,
+		    0xFF33AA, 0xFF375E, 0xFF371A, 0xD54B00,
+		    0xC46200, 0x3C7B00, 0x1E8415, 0x009566,
+		    0x0084C4, 0x111111, 0x000000, 0x000000,
+		    0xFFFFFF, 0x0095FF, 0x6F84FF, 0xD56FFF,
+		    0xFF77CC, 0xFF6F99, 0xFF7B59, 0xFF915F,
+		    0xFFA233, 0xA6BF00, 0x51D96A, 0x4DD5AE,
+		    0x00D9FF, 0x666666, 0x000000, 0x000000,
+		    0xFFFFFF, 0x84BFFF, 0xBBBBFF, 0xD0BBFF,
+		    0xFFBFEA, 0xFFBFCC, 0xFFC4B7, 0xFFCCAE,
+		    0xFFD9A2, 0xCCE199, 0xAEEEB7, 0xAAF7EE,
+		    0xB3EEFF, 0xDDDDDD, 0x000000, 0x000000 }
+	},
+	{ "nintendo-vc", "Nintendo Virtual Console",
+		{ 0x494949, 0x00006a, 0x090063, 0x290059,
 		    0x42004a, 0x490000, 0x420000, 0x291100,
 		    0x182700, 0x003010, 0x003000, 0x002910,
 		    0x012043, 0x000000, 0x000000, 0x000000,
@@ -1468,7 +1470,25 @@ struct st_palettes palettes[] = {
 		    0xa687bc, 0xad8d9d, 0xae968c, 0x9c8f7c,
 		    0x9c9e72, 0x94a67c, 0x84a77b, 0x7c9d84,
 		    0x73968d, 0xdedede, 0x000000, 0x000000 }
-    }
+	},
+	{ "restored-vc", "Restored Virtual Console",
+		{ 0x666666, 0x000095, 0x10008B, 0x39007D,
+		    0x5C0068, 0x660000, 0x5C0000, 0x391800,
+		    0x223700, 0x004316, 0x004300, 0x003916,
+		    0x022D5E, 0x000000, 0x000000, 0x000000,
+		    0xA39EA3, 0x0043B9, 0x4502F1, 0x6902CF,
+		    0x8C00AC, 0x960050, 0x962E02, 0x7E4200,
+		    0x5C6600, 0x227D02, 0x167D02, 0x027D46,
+		    0x02667E, 0x161616, 0x000000, 0x000000,
+		    0xF2F2F2, 0x689EFF, 0x8C7BFF, 0xB970FF,
+		    0xE671F2, 0xF266B9, 0xFE8968, 0xCF9E46,
+		    0xACA03B, 0x7EBC02, 0x4EC745, 0x45C77E,
+		    0x50C7C6, 0x4E4E4E, 0x000000, 0x000000,
+		    0xFFFFFF, 0xC4DCFE, 0xC6C7F4, 0xDBC7FF,
+		    0xE9BDFF, 0xF2C6DC, 0xF4D2C4, 0xDBC8AE,
+		    0xDBDDA0, 0xCFE9AE, 0xB9EAAC, 0xAEDCB9,
+		    0xA1D2C6, 0xDEDEDE, 0x000000, 0x000000 }
+	}
 };
 
 //CAK: We need to know the OUT1 pin of the expansion port for Famicom 3D System glasses
@@ -1579,9 +1599,9 @@ void Check3D()
 	else
 	{
 		//CAK: Only check anaglyph when it's not a Famicom 3D System game
-		//Games are detected as anaglyph, only when they alternate between a very limited red palette
-		//and a very limited blue/green palette. It's very unlikely other games will do that, but
-		//not impossible.
+		// Games are detected as anaglyph, only when they alternate between a very limited red palette
+		// and a very limited blue/green palette. It's very unlikely other games will do that, but
+		// not impossible.
 		anaglyph_3d_mode = CheckForAnaglyphPalette() && pal_3d != prev_pal_3d && pal_3d == prev_prev_pal_3d && prev_pal_3d != 0;
 		prev_prev_pal_3d = prev_pal_3d;
 		prev_pal_3d = pal_3d;
@@ -1597,9 +1617,9 @@ void Check3D()
 			frameskip = 0;
 		}
 		//CAK: TODO: make a backup of palette whenever not in anaglyph mode,
-		//and use it to override anaglyph's horible palette for full colour 3D
-		//note the difficulty will be that palette entries get rearranged to
-		//animate the road and will still need to be rearranged in our backup palette
+		// and use it to override anaglyph's horible palette for full colour 3D
+		// note the difficulty will be that palette entries get rearranged to
+		// animate the road and will still need to be rearranged in our backup palette
 	}
 	old_shutter_3d_mode = shutter_3d_mode;
 	old_anaglyph_3d_mode = anaglyph_3d_mode;

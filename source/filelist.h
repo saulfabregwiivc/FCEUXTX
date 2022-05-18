@@ -1,8 +1,8 @@
 /****************************************************************************
  * FCE Ultra
- * Nintendo Wii/Gamecube Port
+ * Nintendo Wii/GameCube Port
  *
- * Tantric 2009-2021
+ * Tantric 2009-2022
  *
  * filelist.h
  *
@@ -65,6 +65,7 @@
 #include "icon_settings_drc_png.h"
 #include "icon_settings_nescontroller_png.h"
 #include "icon_settings_zapper_png.h"
+#include "icon_settings_turbo_png.h"
 #include "icon_settings_file_png.h"
 #include "icon_settings_mappings_png.h"
 #include "icon_settings_menu_png.h"
@@ -131,9 +132,5 @@
 #include "player2_point_png.h"
 #include "player3_point_png.h"
 #include "player4_point_png.h"
-#include "player1_grab_png.h"
-#include "player2_grab_png.h"
-#include "player3_grab_png.h"
-#include "player4_grab_png.h"
 
 #endif

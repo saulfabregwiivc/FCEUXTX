@@ -42,7 +42,7 @@
 #include <asndlib.h>
 #include <wiiuse/wpad.h>
 
-#include "fceugx.h"
+#include "fceuxtx.h"
 #include "gcvideo.h"
 #include "filelist.h"
 #include "fileop.h"

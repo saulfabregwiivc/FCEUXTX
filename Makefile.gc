@@ -18,9 +18,9 @@ include $(DEVKITPPC)/gamecube_rules
 TARGET		:=	fceuxtx-gc
 TARGETDIR   :=  executables
 BUILD		:=	build_gc
-SOURCES		:=	source source/gui source/utils source/utils/unzip source/utils/sz \
-				source/fceux source/fceux/boards source/fceux/input \
-				source/fceux/utils source/fceux/mbshare source/utils/vm
+SOURCES		:=	source source/gui source/utils source/utils/unzip \
+				source/utils/sz source/fceux source/fceux/boards \
+				source/fceux/input source/fceux/utils source/utils/vm
 DATA		:=	source/images source/sounds source/fonts source/lang
 INCLUDES	:=	source
 

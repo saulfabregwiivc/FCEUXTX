@@ -28,9 +28,6 @@ msgstr "A (rapide)"
 msgid "Additional improvements"
 msgstr "Améliorations supplémentaires"
 
-msgid "Aim Offscreen"
-msgstr "Visée hors champ"
-
 msgid "Are you sure that you want to reset this game? Any unsaved progress will be lost."
 msgstr "Êtes-vous sûr de vouloir redémarrer ce jeu ? Toute progression non sauvegardée sera perdue."
 
@@ -46,9 +43,6 @@ msgstr "Illustrations"
 msgid "Artwork Folder"
 msgstr "Dossier des illustrations"
 
-msgid "Maintain Aspect Ratio"
-msgstr "Conserver les proportions"
-
 msgid "Attempting to determine load device..."
 msgstr "Tentative de détection du périphérique d'entrée..."
 
@@ -63,6 +57,9 @@ msgstr "Chargement auto"
 
 msgid "Auto Save"
 msgstr "Sauvegarde auto"
+
+msgid "Automatic"
+msgstr "Automatique"
 
 msgid "Automatic (Recommended)"
 msgstr "Automatique (recommandé)"
@@ -112,6 +109,9 @@ msgstr "Fermer"
 msgid "Coding & menu design"
 msgstr "Programmation & design du menu"
 
+msgid "Color Palette"
+msgstr "Palette de couleurs"
+
 msgid "Controller"
 msgstr "Contrôleur"
 
@@ -127,14 +127,8 @@ msgstr "Dossier des jaquettes"
 msgid "Credits"
 msgstr "Crédits"
 
-msgid "Cropping"
+msgid "Crop Overscan"
 msgstr "Recadrage"
-
-msgid "Crosshair"
-msgstr "Réticule de visée"
-
-msgid "Cursor"
-msgstr "Curseur"
 
 msgid "Data DVD"
 msgstr "Lecteur DVD"
@@ -157,9 +151,6 @@ msgstr "Effacer cette sauvegarde ? Les fichiers supprimés ne peuvent pas être 
 msgid "Directory name is too long!"
 msgstr "Le nom du répertoire est trop long !"
 
-msgid "Disabled"
-msgstr "Désactivé"
-
 msgid "DISABLED"
 msgstr "DÉSACTIVÉ"
 
@@ -180,12 +171,6 @@ msgstr "Néerlandais"
 
 msgid "Empty or invalid ZIP file!"
 msgstr "Fichier ZIP vide ou invalide !"
-
-msgid "Enabled"
-msgstr "Activé"
-
-msgid "ENABLED"
-msgstr "ACTIVÉ"
 
 msgid "English"
 msgstr "Anglais"
@@ -262,26 +247,20 @@ msgstr "Configuration - Triches"
 msgid "Game Settings - Video"
 msgstr "Configuration - Vidéo"
 
-msgid "Region"
-msgstr "Région"
-
-msgid "Game Genie DISABLED"
-msgstr "Game Genie désactivé"
-
-msgid "Game Genie ENABLED"
-msgstr "Game Genie activé"
-
 msgid "GameCube Controller"
 msgstr "Manette GameCube"
-
-msgid "Gaussian (Accurate)"
-msgstr "Gaussienne (précise)"
 
 msgid "German"
 msgstr "Allemand"
 
 msgid "Go Back"
 msgstr "Retour"
+
+msgid "High"
+msgstr "Haute"
+
+msgid "Highest"
+msgstr "Très haute"
 
 msgid "Insert Coin"
 msgstr "Insérer une pièce"
@@ -307,15 +286,6 @@ msgstr "Italien"
 msgid "Japanese"
 msgstr "Japonais"
 
-msgid "Justifier"
-msgstr "Konami Justifier"
-
-msgid "Justifier - GameCube Controller"
-msgstr "Konami Justifier - Manette GameCube"
-
-msgid "Justifier - Wiimote"
-msgstr "Konami Justifier - Wiimote"
-
 msgid "Korean"
 msgstr "Coréen"
 
@@ -333,12 +303,6 @@ msgstr "Gauche"
 
 msgid "LEFT"
 msgstr "GAUCHE"
-
-msgid "Left Button"
-msgstr "Clic gauche"
-
-msgid "Linear"
-msgstr "Linéaire"
 
 msgid "Load"
 msgstr "Charger"
@@ -364,8 +328,11 @@ msgstr "Chargement du patch en cours..."
 msgid "Loading..."
 msgstr "Chargement en cours..."
 
-msgid "Logo design"
-msgstr "Création du logo"
+msgid "Low (Recommended)"
+msgstr "Basse (recommandé)"
+
+msgid "Low Pass Filtering"
+msgstr "Filtrage passe-bas"
 
 msgid "Main Menu"
 msgstr "Menu principal"
@@ -499,6 +466,9 @@ msgstr "La sauvegarde RAM n'est pas disponible pour les jeux FDS (Famicom Disk S
 msgid "Reboot"
 msgstr "Redémarrer"
 
+msgid "Region"
+msgstr "Région"
+
 msgid "Rendering"
 msgstr "Rendu"
 
@@ -532,8 +502,8 @@ msgstr "Droite"
 msgid "RIGHT"
 msgstr "DROITE"
 
-msgid "Right Button"
-msgstr "Clic droit"
+msgid "Right Stick (Default)"
+msgstr "Joystick droit (par défaut)"
 
 msgid "Save"
 msgstr "Sauver"
@@ -583,9 +553,6 @@ msgstr "Sauvegarde en cours..."
 msgid "Scaling"
 msgstr "Format"
 
-msgid "Scanlines"
-msgstr "Ligne de balayage"
-
 msgid "Screen Position"
 msgstr "Position de l'écran"
 
@@ -600,9 +567,6 @@ msgstr "Captures d'écran"
 
 msgid "Screenshots Folder"
 msgstr "Dossier des captures"
-
-msgid "Seek error!"
-msgstr "Erreur de positionnement !"
 
 msgid "Settings"
 msgstr "Paramètres"
@@ -619,14 +583,11 @@ msgstr "Carte SD"
 msgid "SD card not found!"
 msgstr "Carte SD introuvable !"
 
+msgid "SD in SP2"
+msgstr "SD dans SP2"
+
 msgid "Shift"
 msgstr "Maj"
-
-msgid "Show Framerate"
-msgstr "Afficher les FPS"
-
-msgid "Show Local Time"
-msgstr "Afficher l'horloge"
 
 msgid "Chinese (Simplified)"
 msgstr "Chinois (simplifié)"
@@ -637,38 +598,11 @@ msgstr "Sauvegarde d'état"
 msgid "Snapshot (auto)"
 msgstr "Sauv. d'état (auto)"
 
-msgid "SNES Controller"
-msgstr "Manette SNES"
-
-msgid "SNES Controllers (2)"
-msgstr "Manettes SNES (2)"
-
-msgid "SNES Controllers (4)"
-msgstr "Manettes SNES (4)"
-
-msgid "SNES Controller - Classic Controller"
-msgstr "Manette SNES - Manette Classique"
-
-msgid "SNES Controller - GameCube Controller"
-msgstr "Manette SNES - Manette GameCube"
-
-msgid "SNES Controller - Nunchuk + Wiimote"
-msgstr "Manette SNES - Nunchuk + Wiimote"
-
-msgid "SNES Controller - Wiimote"
-msgstr "Manette SNES - Wiimote"
-
-msgid "SNES Mouse"
-msgstr "Souris SNES"
-
-msgid "SNES Mouse - GameCube Controller"
-msgstr "Souris SNES - Manette GameCube"
-
-msgid "SNES Mouse - Wiimote"
-msgstr "Souris SNES - Wiimote"
-
 msgid "Sound Effects Volume"
 msgstr "Volume des effets sonores"
+
+msgid "Sound Quality"
+msgstr "Qualité sonore"
 
 msgid "Spanish"
 msgstr "Espagnol"
@@ -688,17 +622,8 @@ msgstr "Sauv. d'état (auto)"
 msgid "State file not found"
 msgstr "Pas de sauvegarde d'état trouvée"
 
-msgid "Super Scope"
-msgstr "Nintendo Scope"
-
-msgid "Super Scope - GameCube Controller"
-msgstr "Nintendo Scope - Manette GameCube"
-
-msgid "Super Scope - Wiimote"
-msgstr "Nintendo Scope - Wiimote"
-
 msgid "Swap Duty Cycles"
-msgstr "Échanger les cycles"
+msgstr "Inversion des cycles"
 
 msgid "The current IOS has been altered (fake-signed). Functionality and/or stability may be adversely affected."
 msgstr "L'IOS utilisé est altéré (fausse signature). Les fonctionnalités et/ou la stabilité peuvent en être affectées."
@@ -709,6 +634,12 @@ msgstr "L'IOS utilisé n'est pas supporté. Les fonctionnalités et/ou la stabil
 msgid "This software is open source and may be copied, distributed, or modified"
 msgstr "Ce logiciel est open source et peut être copié, distribué ou modifié"
 
+msgid "Turbo Mode"
+msgstr "Mode turbo"
+
+msgid "Turbo Mode Button"
+msgstr "Bouton mode turbo"
+
 msgid "Turkish"
 msgstr "Turc"
 
@@ -717,9 +648,6 @@ msgstr "Périphérique d'entrée introuvable !"
 
 msgid "Unable to locate a save device!"
 msgstr "Périphérique de sauvegarde introuvable !"
-
-msgid "Unable to open snapshot!"
-msgstr "Impossible d'ouvrir la sauvegarde d'état !"
 
 msgid "Unfiltered"
 msgstr "Non-filtré"
@@ -759,6 +687,9 @@ msgstr "Mode vidéo"
 
 msgid "Wiimote Orientation"
 msgstr "Orientation de la Wiimote"
+
+msgid "Wii U Pro Controller"
+msgstr "Manette Wii U Pro"
 
 msgid "Yes"
 msgstr "Oui"

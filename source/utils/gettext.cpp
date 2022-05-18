@@ -6,7 +6,7 @@
 
 #include "gettext.h"
 #include "filelist.h"
-#include "fceugx.h"
+#include "fceuxtx.h"
 
 typedef struct _MSG
 {

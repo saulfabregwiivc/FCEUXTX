@@ -1,18 +1,18 @@
 /****************************************************************************
  * FCE Ultra
- * Nintendo Wii/Gamecube Port
+ * Nintendo Wii/GameCube Port
  *
- * Tantric 2008-2021
+ * Tantric 2008-2022
  *
  * pad.cpp
  *
- * Controller input
+ * Controller management
  ****************************************************************************/
 
 #include <gccore.h>
 #include <ogc/lwp_watchdog.h>
 
-#include "fceugx.h"
+#include "fceuxtx.h"
 #include "fceusupport.h"
 #include "pad.h"
 #include "gcaudio.h"
@@ -24,8 +24,8 @@
 #include "gui/gui.h"
 
 #ifdef HW_RVL
-#include "utils/xbox360.h"
 #include "utils/mayflash.h"
+#include "utils/xbox360.h"
 #endif
 
 #define ANALOG_SENSITIVITY 30
@@ -62,7 +62,7 @@ void ResetControls(int consoleCtrl, int wiiCtrl)
 	nespadmap[i++] = JOY_RIGHT;
 	nespadmap[i++] = 0; // insert coin for VS games, insert/eject/select disk for FDS
 
-	/*** Gamecube controller Padmap ***/
+	/*** GameCube Controller Padmap ***/
 	if(consoleCtrl == -1 || (consoleCtrl == CTRL_PAD && wiiCtrl == CTRLR_GCPAD))
 	{
 		i=0;
@@ -113,7 +113,7 @@ void ResetControls(int consoleCtrl, int wiiCtrl)
 		btnmap[CTRL_PAD][CTRLR_CLASSIC][i++] = WPAD_CLASSIC_BUTTON_FULL_L;
 	}
 
-	/*** Wii U Pro Padmap ***/
+	/*** Wii U Pro Controller Padmap ***/
 	if(consoleCtrl == -1 || (consoleCtrl == CTRL_PAD && wiiCtrl == CTRLR_WUPC))
 	{
 		i=0;
@@ -148,7 +148,7 @@ void ResetControls(int consoleCtrl, int wiiCtrl)
 		btnmap[CTRL_PAD][CTRLR_WIIDRC][i++] = WIIDRC_BUTTON_RIGHT;
 	}
 
-	/*** Nunchuk + wiimote Padmap ***/
+	/*** Nunchuk + Wiimote Padmap ***/
 	if(consoleCtrl == -1 || (consoleCtrl == CTRL_PAD && wiiCtrl == CTRLR_NUNCHUK))
 	{
 		i=0;
@@ -165,7 +165,7 @@ void ResetControls(int consoleCtrl, int wiiCtrl)
 		btnmap[CTRL_PAD][CTRLR_NUNCHUK][i++] = WPAD_BUTTON_A;
 	}
 
-	/*** Zapper : GC controller button mapping ***/
+	/*** NES Zapper : GameCube Controller button mapping ***/
 	if(consoleCtrl == -1 || (consoleCtrl == CTRL_ZAPPER && wiiCtrl == CTRLR_GCPAD))
 	{
 		i=0;
@@ -173,7 +173,7 @@ void ResetControls(int consoleCtrl, int wiiCtrl)
 		btnmap[CTRL_ZAPPER][CTRLR_GCPAD][i++] = PAD_TRIGGER_L; // insert coin
 	}
 
-	/*** Zapper : Classic Controller button mapping ***/
+	/*** NES Zapper : Classic Controller button mapping ***/
 	if(consoleCtrl == -1 || (consoleCtrl == CTRL_ZAPPER && wiiCtrl == CTRLR_CLASSIC))
 	{
 		i=0;
@@ -181,7 +181,7 @@ void ResetControls(int consoleCtrl, int wiiCtrl)
 		btnmap[CTRL_ZAPPER][CTRLR_CLASSIC][i++] = WPAD_CLASSIC_BUTTON_LEFT; // insert coin
 	}
 
-	/*** Zapper : Wii U Gamepad button mapping ***/
+	/*** NES Zapper : Wii U Gamepad button mapping ***/
 	if(consoleCtrl == -1 || (consoleCtrl == CTRL_ZAPPER && wiiCtrl == CTRLR_WIIDRC))
 	{
 		i=0;
@@ -189,7 +189,7 @@ void ResetControls(int consoleCtrl, int wiiCtrl)
 		btnmap[CTRL_ZAPPER][CTRLR_WIIDRC][i++] = WIIDRC_BUTTON_LEFT; // insert coin
 	}
 
-	/*** Zapper : Wii U Pro Controller button mapping ***/
+	/*** NES Zapper : Wii U Pro Controller button mapping ***/
 	if(consoleCtrl == -1 || (consoleCtrl == CTRL_ZAPPER && wiiCtrl == CTRLR_WUPC))
 	{
 		i=0;
@@ -197,7 +197,7 @@ void ResetControls(int consoleCtrl, int wiiCtrl)
 		btnmap[CTRL_ZAPPER][CTRLR_WUPC][i++] = WPAD_CLASSIC_BUTTON_LEFT; // insert coin
 	}
 
-	/*** Zapper : wiimote button mapping ***/
+	/*** NES Zapper : Wiimote button mapping ***/
 	if(consoleCtrl == -1 || (consoleCtrl == CTRL_ZAPPER && wiiCtrl == CTRLR_WIIMOTE))
 	{
 		i=0;
@@ -247,14 +247,13 @@ void SetControllers()
  *
  * Scans pad and wpad
  ***************************************************************************/
-
 void
 UpdatePads()
 {
 	#ifdef HW_RVL
 	WiiDRC_ScanPads();
-	XBOX360_ScanPads();
 	Mayflash_ScanPads();
+	XBOX360_ScanPads();
 	WPAD_ScanPads();
 	#endif
 	
@@ -406,7 +405,6 @@ static void UpdateCursorPosition (int chan)
 /****************************************************************************
  * Convert GC Joystick Readings to JOY
  ****************************************************************************/
-
 extern int rapidAlternator;
 
 static unsigned char DecodeJoy(unsigned short chan)
@@ -430,12 +428,12 @@ static unsigned char DecodeJoy(unsigned short chan)
 	s16 wiidrc_ay = userInput[chan].wiidrcdata.stickY;
 	u32 wiidrcp = userInput[chan].wiidrcdata.btns_h;
 
-    jp |= XBOX360_ButtonsHeld(chan);
 	jp |= Mayflash_ButtonsHeld(chan);
+    jp |= XBOX360_ButtonsHeld(chan);
 	#endif
 
 	/***
-	Gamecube Joystick input
+	GameCube Joystick input
 	***/
 	if (pad_y > ANALOG_SENSITIVITY)
 		J |= JOY_UP;
@@ -488,7 +486,7 @@ static unsigned char DecodeJoy(unsigned short chan)
 		|| ( (exp_type == WPAD_EXP_NONE) && (wp & btnmap[CTRL_ZAPPER][CTRLR_WIIMOTE][0]) )	// wiimote
 		|| (wp & btnmap[CTRL_ZAPPER][CTRLR_CLASSIC][0]) // classic controller
 		|| (wp & btnmap[CTRL_ZAPPER][CTRLR_WUPC][0]) // wii u pro controller
-		|| (wiidrcp & btnmap[CTRL_ZAPPER][CTRLR_WIIDRC][0]) // Wii U Gamepad
+		|| (wiidrcp & btnmap[CTRL_ZAPPER][CTRLR_WIIDRC][0]) // wii u gamepad
 		#endif
 		)
 		{
@@ -503,7 +501,7 @@ static unsigned char DecodeJoy(unsigned short chan)
 		|| ( (exp_type == WPAD_EXP_NONE) && (wp & btnmap[CTRL_ZAPPER][CTRLR_WIIMOTE][1]) )	// wiimote
 		|| (wp & btnmap[CTRL_ZAPPER][CTRLR_CLASSIC][1]) // classic controller
 		|| (wp & btnmap[CTRL_ZAPPER][CTRLR_WUPC][1]) // wii u pro controller
-		|| (wiidrcp & btnmap[CTRL_ZAPPER][CTRLR_WIIDRC][1]) // Wii U Gamepad
+		|| (wiidrcp & btnmap[CTRL_ZAPPER][CTRLR_WIIDRC][1]) // wii u gamepad
 		#endif
 		)
 		{
@@ -537,7 +535,7 @@ static unsigned char DecodeJoy(unsigned short chan)
 		|| ( (exp_type == WPAD_EXP_CLASSIC && !isWUPC) && (wp & btnmap[CTRL_PAD][CTRLR_CLASSIC][i]) )	// classic controller
 		|| ( (exp_type == WPAD_EXP_CLASSIC && isWUPC) && (wp & btnmap[CTRL_PAD][CTRLR_WUPC][i]) )		// wii u pro controller
 		|| ( (exp_type == WPAD_EXP_NUNCHUK) && (wp & btnmap[CTRL_PAD][CTRLR_NUNCHUK][i]) )	// nunchuk + wiimote
-		|| ( (wiidrcp & btnmap[CTRL_PAD][CTRLR_WIIDRC][i]) ) // Wii U Gamepad
+		|| ( (wiidrcp & btnmap[CTRL_PAD][CTRLR_WIIDRC][i]) ) // wii u gamepad
 		#endif
 		)
 		{
@@ -604,6 +602,85 @@ bool MenuRequested()
 	return false;
 }
 
+bool IsTurboModeInputPressed()
+{
+	switch(GCSettings.TurboModeButton)
+	{
+		case TURBO_BUTTON_RSTICK:
+			return (
+				userInput[0].pad.substickX > 70 ||
+				userInput[0].WPAD_StickX(1) > 70 ||
+				userInput[0].wiidrcdata.substickX > 45);
+		case TURBO_BUTTON_A:
+			return (
+				userInput[0].wpad->btns_h & WPAD_CLASSIC_BUTTON_A ||
+				userInput[0].wpad->btns_h & WPAD_BUTTON_A ||
+				userInput[0].pad.btns_h & PAD_BUTTON_A ||
+				userInput[0].wiidrcdata.btns_h & WIIDRC_BUTTON_A);
+		case TURBO_BUTTON_B:
+			return (
+				userInput[0].wpad->btns_h & WPAD_CLASSIC_BUTTON_B ||
+				userInput[0].wpad->btns_h & WPAD_BUTTON_B ||
+				userInput[0].pad.btns_h & PAD_BUTTON_B ||
+				userInput[0].wiidrcdata.btns_h & WIIDRC_BUTTON_B);
+		case TURBO_BUTTON_X:
+			return (
+				userInput[0].wpad->btns_h & WPAD_CLASSIC_BUTTON_X ||
+				userInput[0].pad.btns_h & PAD_BUTTON_X ||
+				userInput[0].wiidrcdata.btns_h & WIIDRC_BUTTON_X);
+		case TURBO_BUTTON_Y:
+			return (
+				userInput[0].wpad->btns_h & WPAD_CLASSIC_BUTTON_Y ||
+				userInput[0].pad.btns_h & PAD_BUTTON_Y ||
+				userInput[0].wiidrcdata.btns_h & WIIDRC_BUTTON_Y);
+		case TURBO_BUTTON_L:
+			return (
+				userInput[0].wpad->btns_h & WPAD_CLASSIC_BUTTON_FULL_L ||
+				userInput[0].pad.btns_h & PAD_TRIGGER_L ||
+				userInput[0].wiidrcdata.btns_h & WIIDRC_BUTTON_L);
+		case TURBO_BUTTON_R:
+			return (
+				userInput[0].wpad->btns_h & WPAD_CLASSIC_BUTTON_FULL_R ||
+				userInput[0].pad.btns_h & PAD_TRIGGER_R ||
+				userInput[0].wiidrcdata.btns_h & WIIDRC_BUTTON_R);
+		case TURBO_BUTTON_ZL:
+			return (
+				userInput[0].wpad->btns_h & WPAD_CLASSIC_BUTTON_ZL ||
+				userInput[0].wiidrcdata.btns_h & WIIDRC_BUTTON_ZL);
+		case TURBO_BUTTON_ZR:
+			return (
+				userInput[0].wpad->btns_h & WPAD_CLASSIC_BUTTON_ZR ||
+				userInput[0].wiidrcdata.btns_h & WIIDRC_BUTTON_ZR);
+		case TURBO_BUTTON_Z:
+			return (
+				userInput[0].pad.btns_h & PAD_TRIGGER_Z ||
+				(userInput[0].wpad->exp.type == WPAD_EXP_NUNCHUK &&
+				userInput[0].wpad->btns_h & WPAD_NUNCHUK_BUTTON_Z));
+		case TURBO_BUTTON_C:
+			return (
+				userInput[0].wpad->exp.type == WPAD_EXP_NUNCHUK &&
+				userInput[0].wpad->btns_h & WPAD_NUNCHUK_BUTTON_C);
+		case TURBO_BUTTON_1:
+			return (
+				userInput[0].wpad->btns_h & WPAD_BUTTON_1);
+		case TURBO_BUTTON_2:
+			return (
+				userInput[0].wpad->btns_h & WPAD_BUTTON_2);
+		case TURBO_BUTTON_PLUS:
+			return (
+				userInput[0].wpad->btns_h & WPAD_CLASSIC_BUTTON_PLUS ||
+				userInput[0].wpad->btns_h & WPAD_BUTTON_PLUS ||
+				userInput[0].wiidrcdata.btns_h & WIIDRC_BUTTON_PLUS);
+		case TURBO_BUTTON_MINUS:
+			return (
+				userInput[0].wpad->btns_h & WPAD_CLASSIC_BUTTON_MINUS ||
+				userInput[0].wpad->btns_h & WPAD_BUTTON_MINUS ||
+				userInput[0].wiidrcdata.btns_h & WIIDRC_BUTTON_MINUS);
+		default:
+			return false;
+	}
+}
+
 void GetJoy()
 {
 	JSReturn = 0; // reset buttons pressed
@@ -611,14 +688,12 @@ void GetJoy()
 	short i;
 
 	UpdatePads();
-/*
-	// Turbo mode
-	// RIGHT on c-stick and on classic ctrlr right joystick
-	if(userInput[0].pad.substickX > 70 || userInput[0].WPAD_StickX(1) > 70 || userInput[0].wiidrcdata.substickX > 45)
-		turbomode = 1;
-	else
-		turbomode = 0;
-*/
+
+	if (GCSettings.TurboMode == 1)
+	{
+		turbomode = IsTurboModeInputPressed();
+	}
+
 	// request to go back to menu
 	if(MenuRequested())
 		ScreenshotRequested = 1; // go to the menu
@@ -632,8 +707,8 @@ void GetJoy()
 #ifdef HW_RVL
 char* GetUSBControllerInfo()
 {
-    static char info[50];
-    snprintf(info, 50, "XBOX360: %s, Mayflash: %s", XBOX360_Status(), Mayflash_Status());
-    return info;
+	static char info[50];
+	snprintf(info, 50, "Mayflash: %s, XBOX360: %s", Mayflash_Status(), XBOX360_Status());
+	return info;
 }
 #endif
