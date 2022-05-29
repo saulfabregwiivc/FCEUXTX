@@ -18,32 +18,27 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include "types.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include "fceu-types.h"
 #include "x6502.h"
 #include "fceu.h"
 #include "fds.h"
 #include "sound.h"
-#include "file.h"
-#include "utils/md5.h"
-#include "utils/memory.h"
+#include "general.h"
 #include "state.h"
 #include "file.h"
+#include "fceu-memory.h"
 #include "cart.h"
-#include "netplay.h"
-#include "driver.h"
-#include "movie.h"
+#include "md5.h"
 
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-
-//	TODO:  Add code to put a delay in between the time a disk is inserted
-//	and the when it can be successfully read/written to.  This should
-//	prevent writes to wrong places OR add code to prevent disk ejects
-//	when the virtual motor is on (mmm...virtual motor).
-extern int disableBatteryLoading;
-
-bool isFDS = false; //flag for determining if a FDS game is loaded, movie.cpp needs this
+/*	TODO:  Add code to put a delay in between the time a disk is inserted
+ *	and the when it can be successfully read/written to.  This should
+ *	prevent writes to wrong places OR add code to prevent disk ejects
+ *	when the virtual motor is on(mmm...virtual motor).
+ */
 
 static DECLFR(FDSRead4030);
 static DECLFR(FDSRead4031);
@@ -61,7 +56,7 @@ static DECLFW(FDSSWrite);
 static void FDSInit(void);
 static void FDSClose(void);
 
-static void FDSFix(int a);
+static void FP_FASTAPASS(1) FDSFix(int a);
 
 static uint8 FDSRegs[6];
 static int32 IRQLatch, IRQCount;
@@ -69,11 +64,7 @@ static uint8 IRQa;
 
 static uint8 *FDSRAM = NULL;
 static uint32 FDSRAMSize;
-#ifdef GEKKO
-uint8 *FDSBIOS = NULL;
-#else
 static uint8 *FDSBIOS = NULL;
-#endif
 static uint32 FDSBIOSsize;
 static uint8 *CHRRAM = NULL;
 static uint32 CHRRAMSize;
@@ -83,38 +74,21 @@ static uint8 *diskdatao[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 
 static uint8 *diskdata[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 
-static int TotalSides; //mbg merge 7/17/06 - unsignedectomy
-static uint8 DiskWritten = 0;    /* Set to 1 if disk was written to. */
+static uint32 TotalSides;
+static uint8 DiskWritten = 0;	/* Set to 1 if disk was written to. */
 static uint8 writeskip;
 static int32 DiskPtr;
 static int32 DiskSeekIRQ;
 static uint8 SelectDisk, InDisk;
 
-/* 4024(w), 4025(w), 4031(r) by dink(fbneo) */
-enum FDS_DiskBlockIDs { DSK_INIT = 0, DSK_VOLUME, DSK_FILECNT, DSK_FILEHDR, DSK_FILEDATA };
-static uint8  mapperFDS_control;    // 4025(w) control register
-static uint16 mapperFDS_filesize;	// size of file being read/written
-static uint8  mapperFDS_block;		// block-id of current block
-static uint16 mapperFDS_blockstart;	// start-address of current block
-static uint16 mapperFDS_blocklen;	// length of current block
-static uint16 mapperFDS_diskaddr;   // current address relative to blockstart
-static uint8  mapperFDS_diskaccess;	// disk needs to be accessed at least once before writing
-#define fds_disk() (diskdata[InDisk][mapperFDS_blockstart + mapperFDS_diskaddr])
-#define mapperFDS_diskinsert (InDisk != 255)
-
+uint32 lastDiskPtrRead, lastDiskPtrWrite;
 
 #define DC_INC    1
 
-void FDSGI(GI h) {
-	switch (h)
-	{
-		case GI_CLOSE: FDSClose(); break;
-		case GI_POWER: FDSInit(); break;
-
-		// Unhandled Cases
-		case GI_RESETM2:
-		case GI_RESETSAVE:
-			break;
+void FDSGI(int h) {
+	switch (h) {
+	case GI_CLOSE: FDSClose(); break;
+	case GI_POWER: FDSInit(); break;
 	}
 }
 
@@ -131,7 +105,7 @@ static void FDSStateRestore(int version) {
 		}
 }
 
-void FDSSound();
+void FDSSound(int a);
 void FDSSoundReset(void);
 void FDSSoundStateAdd(void);
 static void RenderSound(void);
@@ -139,12 +113,12 @@ static void RenderSoundHQ(void);
 
 static void FDSInit(void) {
 	memset(FDSRegs, 0, sizeof(FDSRegs));
-	writeskip = DiskPtr = DiskSeekIRQ = 0;
+	lastDiskPtrRead = lastDiskPtrWrite = writeskip = DiskPtr = DiskSeekIRQ = 0;
 
 	setmirror(1);
-	setprg8(0xE000, 0);			// BIOS
-	setprg32r(1, 0x6000, 0);	// 32KB RAM
-	setchr8(0);					// 8KB CHR RAM
+	setprg8(0xE000, 0);			/* BIOS */
+	setprg32r(1, 0x6000, 0);	/* 32KB RAM */
+	setchr8(0);					/* 8KB CHR RAM */
 
 	MapIRQHook = FDSFix;
 	GameStateRestore = FDSStateRestore;
@@ -164,81 +138,41 @@ static void FDSInit(void) {
 	FDSSoundReset();
 	InDisk = 0;
 	SelectDisk = 0;
-
-	mapperFDS_control = 0;
-	mapperFDS_filesize = 0;
-	mapperFDS_block = 0;
-	mapperFDS_blockstart = 0;
-	mapperFDS_blocklen = 0;
-	mapperFDS_diskaddr = 0;
-	mapperFDS_diskaccess = 0;
 }
 
-void FCEU_FDSInsert(void)
-{
-	if (TotalSides == 0)
-	{
-		FCEU_DispMessage("", 0);//FCEU_DispMessage("Not FDS; can't eject disk.", 0);
-		return;
-	}
-
-	if (FCEUI_EmulationPaused())
-		EmulationPaused |= EMULATIONPAUSED_FA;
-
-	if (FCEUMOV_Mode(MOVIEMODE_RECORD))
-		FCEUMOV_AddCommand(FCEUNPCMD_FDSINSERT);
-
-	if (InDisk == 255)
-	{
-		//FCEU_DispMessage("Disk %d Side %s Inserted", 0, SelectDisk >> 1, (SelectDisk & 1) ? "B" : "A");
+void FCEU_FDSInsert(int oride) {
+	if (InDisk == 255) {
+		FCEU_DispMessage("Disk %d Side %s Inserted", SelectDisk >> 1, (SelectDisk & 1) ? "B" : "A");
 		InDisk = SelectDisk;
-	} else
-	{
-		//FCEU_DispMessage("Disk %d Side %s Ejected", 0, SelectDisk >> 1, (SelectDisk & 1) ? "B" : "A");
+	} else {
+		FCEU_DispMessage("Disk %d Side %s Ejected", SelectDisk >> 1, (SelectDisk & 1) ? "B" : "A");
 		InDisk = 255;
 	}
 }
-/*
-void FCEU_FDSEject(void)
-{
-InDisk=255;
+
+void FCEU_FDSEject(void) {
+	InDisk = 255;
 }
-*/
-void FCEU_FDSSelect(void)
-{
-	if (TotalSides == 0)
-	{
-		FCEU_DispMessage("", 0); //FCEU_DispMessage("Not FDS; can't select disk.", 0);
+
+void FCEU_FDSSelect(void) {
+	if (InDisk != 255) {
+		FCEU_DispMessage("Eject disk before selecting.");
 		return;
 	}
-	if (InDisk != 255)
-	{
-		FCEU_DispMessage("", 0); //FCEU_DispMessage("Eject disk before selecting.", 0);
-		return;
-	}
-
-	if (FCEUI_EmulationPaused())
-		EmulationPaused |= EMULATIONPAUSED_FA;
-
-	if (FCEUMOV_Mode(MOVIEMODE_RECORD))
-		FCEUMOV_AddCommand(FCEUNPCMD_FDSSELECT);
-
 	SelectDisk = ((SelectDisk + 1) % TotalSides) & 3;
-	FCEU_DispMessage("", 0); //FCEU_DispMessage("Disk %d Side %c Selected", 0, SelectDisk >> 1, (SelectDisk & 1) ? 'B' : 'A');
+	FCEU_DispMessage("Disk %d Side %s Selected", SelectDisk >> 1, (SelectDisk & 1) ? "B" : "A");
 }
 
-#define IRQ_Repeat  (IRQa & 0x01)
-#define IRQ_Enabled (IRQa & 0x02)
-
-static void FDSFix(int a) {
-	if ((IRQa & IRQ_Enabled) && IRQCount) {
+static void FP_FASTAPASS(1) FDSFix(int a) {
+	if ((IRQa & 2) && IRQCount) {
 		IRQCount -= a;
 		if (IRQCount <= 0) {
-			IRQCount = IRQLatch;
+			if (!(IRQa & 1)) {
+				IRQa &= ~2;
+				IRQCount = IRQLatch = 0;
+			} else
+				IRQCount = IRQLatch;
 			X6502_IRQBegin(FCEU_IQEXT);
-			if (!(IRQa & IRQ_Repeat)) {
-				IRQa &= ~IRQ_Enabled;
-			}
 		}
 	}
 	if (DiskSeekIRQ > 0) {
@@ -258,7 +192,10 @@ static DECLFR(FDSRead4030) {
 	if (X.IRQlow & FCEU_IQEXT) ret |= 1;
 	if (X.IRQlow & FCEU_IQEXT2) ret |= 2;
 
-	if (!fceuindbg) {
+	#ifdef FCEUDEF_DEBUGGER
+	if (!fceuindbg)
+	#endif
+	{
 		X6502_IRQEnd(FCEU_IQEXT);
 		X6502_IRQEnd(FCEU_IQEXT2);
 	}
@@ -266,45 +203,21 @@ static DECLFR(FDSRead4030) {
 }
 
 static DECLFR(FDSRead4031) {
-	static uint8 ret = 0;
-
-	ret = 0xff;
-	if (mapperFDS_diskinsert && mapperFDS_control & 0x04) {
-		mapperFDS_diskaccess = 1;
-
-		ret = 0;
-
-		switch (mapperFDS_block) {
-			case DSK_FILEHDR:
-				if (mapperFDS_diskaddr < mapperFDS_blocklen) {
-					ret = fds_disk();
-					switch (mapperFDS_diskaddr) {
-						case 13: mapperFDS_filesize = ret; break;
-						case 14:
-							mapperFDS_filesize |= ret << 8;
-							//char fdsfile[10];
-							//strncpy(fdsfile, (char*)&diskdata[InDisk][mapperFDS_blockstart + 3], 8);
-							//printf("Read file: %s (size: %d)\n"), fdsfile, mapperFDS_filesize);
-							break;
-					}
-					mapperFDS_diskaddr++;
-				}
-				break;
-			default:
-				if (mapperFDS_diskaddr < mapperFDS_blocklen) {
-					ret = fds_disk();
-					mapperFDS_diskaddr++;
-				}
-				break;
+	static uint8 z = 0;
+	if (InDisk != 255) {
+		z = diskdata[InDisk][DiskPtr];
+		lastDiskPtrRead = DiskPtr;
+		#ifdef FCEUDEF_DEBUGGER
+		if (!fceuindbg)
+		#endif
+		{
+			if (DiskPtr < 64999) DiskPtr++;
+			DiskSeekIRQ = 150;
+			X6502_IRQEnd(FCEU_IQEXT2);
 		}
-
-		DiskSeekIRQ = 150;
-		X6502_IRQEnd(FCEU_IQEXT2);
 	}
-
-	return ret;
+	return z;
 }
-
 static DECLFR(FDSRead4032) {
 	uint8 ret;
 
@@ -318,7 +231,7 @@ static DECLFR(FDSRead4032) {
 }
 
 static DECLFR(FDSRead4033) {
-	return 0x80; // battery
+	return 0x80;		/* battery */
 }
 
 /* Begin FDS sound */
@@ -326,21 +239,21 @@ static DECLFR(FDSRead4033) {
 #define FDSClock (1789772.7272727272727272 / 2)
 
 typedef struct {
-	int64 cycles;     // Cycles per PCM sample
-	int64 count;    // Cycle counter
-	int64 envcount;    // Envelope cycle counter
+	int64 cycles;		/* Cycles per PCM sample */
+	int64 count;		/* Cycle counter */
+	int64 envcount;		/* Envelope cycle counter */
 	uint32 b19shiftreg60;
 	uint32 b24adder66;
 	uint32 b24latch68;
 	uint32 b17latch76;
-	int32 clockcount;  // Counter to divide frequency by 8.
-	uint8 b8shiftreg88;  // Modulation register.
-	uint8 amplitude[2];  // Current amplitudes.
+	int32 clockcount;	/* Counter to divide frequency by 8. */
+	uint8 b8shiftreg88;	/* Modulation register. */
+	uint8 amplitude[2];	/* Current amplitudes. */
 	uint8 speedo[2];
 	uint8 mwcount;
 	uint8 mwstart;
-	uint8 mwave[0x20];      // Modulation waveform
-	uint8 cwave[0x40];      // Game-defined waveform(carrier)
+	uint8 mwave[0x20];	/* Modulation waveform */
+	uint8 cwave[0x40];	/* Game-defined waveform(carrier) */
 	uint8 SPSG[0xB];
 } FDSSOUND;
 
@@ -406,13 +319,14 @@ static DECLFW(FDSSWrite) {
 	SPSG[A] = V;
 }
 
-// $4080 - Fundamental wave amplitude data register 92
-// $4082 - Fundamental wave frequency data register 58
-// $4083 - Same as $4082($4083 is the upper 4 bits).
-
-// $4084 - Modulation amplitude data register 78
-// $4086 - Modulation frequency data register 72
-// $4087 - Same as $4086($4087 is the upper 4 bits)
+/* $4080 - Fundamental wave amplitude data register 92
+ * $4082 - Fundamental wave frequency data register 58
+ * $4083 - Same as $4082($4083 is the upper 4 bits).
+ *
+ * $4084 - Modulation amplitude data register 78
+ * $4086 - Modulation frequency data register 72
+ * $4087 - Same as $4086($4087 is the upper 4 bits)
+ */
 
 
 static void DoEnv() {
@@ -501,7 +415,7 @@ static INLINE int32 FDSDoSound(void) {
 	}
 	if (fdso.count >= 32768) goto dogk;
 
-	// Might need to emulate applying the amplitude to the waveform a bit better...
+	/* Might need to emulate applying the amplitude to the waveform a bit better... */
 	{
 		int k = amplitude[0];
 		if (k > 0x20) k = 0x20;
@@ -526,18 +440,18 @@ static void RenderSound(void) {
 			uint32 t = FDSDoSound();
 			t += t >> 1;
 			t >>= 4;
-			Wave[x >> 4] += t; //(t>>2)-(t>>3); //>>3;
+			Wave[x >> 4] += t;	/* (t>>2)-(t>>3); */ /* >>3; */
 		}
 }
 
 static void RenderSoundHQ(void) {
-	uint32 x; //mbg merge 7/17/06 - made this unsigned
+	uint32 x;
 
 	if (!(SPSG[0x9] & 0x80))
 		for (x = FBC; x < SOUNDTS; x++) {
 			uint32 t = FDSDoSound();
 			t += t >> 1;
-			WaveHi[x] += t; //(t<<2)-(t<<1);
+			WaveHi[x] += t;	/* (t<<2)-(t<<1); */
 		}
 	FBC = SOUNDTS;
 }
@@ -592,89 +506,35 @@ static DECLFW(FDSWrite) {
 		IRQCount = IRQLatch;
 		IRQa = V & 3;
 		break;
-	case 0x4023: break;
 	case 0x4024:
-		if (mapperFDS_diskinsert && ~mapperFDS_control & 0x04) {
-
-			if (mapperFDS_diskaccess == 0) {
-				mapperFDS_diskaccess = 1;
-				break;
-			}
-
-			switch (mapperFDS_block) {
-				case DSK_FILEHDR:
-					if (mapperFDS_diskaddr < mapperFDS_blocklen) {
-						fds_disk() = V;
-						DiskWritten = 1;
-						switch (mapperFDS_diskaddr) {
-							case 13: mapperFDS_filesize = V; break;
-							case 14:
-								mapperFDS_filesize |= V << 8;
-								//char fdsfile[10];
-								//strncpy(fdsfile, (char*)&diskdata[InDisk][mapperFDS_blockstart + 3], 8);
-								//printf("Write file: %s (size: %d)\n"), fdsfile, mapperFDS_filesize);
-								break;
-						}
-						mapperFDS_diskaddr++;
-					}
-					break;
-				default:
-					if (mapperFDS_diskaddr < mapperFDS_blocklen) {
-						fds_disk() = V;
+		if ((InDisk != 255) && !(FDSRegs[5] & 0x4) && (FDSRegs[3] & 0x1)) {
+			if (DiskPtr >= 0 && DiskPtr < 65500) {
+				if (writeskip)
+					writeskip--;
+				else if (DiskPtr >= 2) {
 					DiskWritten = 1;
-						mapperFDS_diskaddr++;
-					}
-					break;
+					diskdata[InDisk][DiskPtr - 2] = V;
+					lastDiskPtrWrite = DiskPtr - 2;
+				}
 			}
-
 		}
 		break;
 	case 0x4025:
 		X6502_IRQEnd(FCEU_IQEXT2);
-		if (mapperFDS_diskinsert) {
-			if (V & 0x40 && ~mapperFDS_control & 0x40) {
-				mapperFDS_diskaccess = 0;
-
-				DiskSeekIRQ = 150;
-
-				// blockstart  - address of block on disk
-				// diskaddr    - address relative to blockstart
-				// _block -> _blockID ?
-				mapperFDS_blockstart += mapperFDS_diskaddr;
-				mapperFDS_diskaddr = 0;
-
-				mapperFDS_block++;
-				if (mapperFDS_block > DSK_FILEDATA)
-					mapperFDS_block = DSK_FILEHDR;
-
-				switch (mapperFDS_block) {
-					case DSK_VOLUME:
-						mapperFDS_blocklen = 0x38;
-						break;
-					case DSK_FILECNT:
-						mapperFDS_blocklen = 0x02;
-						break;
-					case DSK_FILEHDR:
-						mapperFDS_blocklen = 0x10;
-						break;
-					case DSK_FILEDATA:		 // <blockid><filedata>
-						mapperFDS_blocklen = 0x01 + mapperFDS_filesize;
-						break;
+		if (InDisk != 255) {
+			if (!(V & 0x40)) {
+				if ((FDSRegs[5] & 0x40) && !(V & 0x10)) {
+					DiskSeekIRQ = 200;
+					DiskPtr -= 2;
 				}
+				if (DiskPtr < 0) DiskPtr = 0;
 			}
-
-			if (V & 0x02) { // transfer reset
-				mapperFDS_block = DSK_INIT;
-				mapperFDS_blockstart = 0;
-				mapperFDS_blocklen = 0;
-				mapperFDS_diskaddr = 0;
-				DiskSeekIRQ = 150;
+			if (!(V & 0x4)) writeskip = 2;
+			if (V & 2) {
+				DiskPtr = 0; DiskSeekIRQ = 200;
 			}
-			if (V & 0x40) { // turn on motor
-				DiskSeekIRQ = 150;
-			}
+			if (V & 0x40) DiskSeekIRQ = 200;
 		}
-		mapperFDS_control = V;
 		setmirror(((V >> 3) & 1) ^ 1);
 		break;
 	}
@@ -696,7 +556,6 @@ static int SubLoad(FCEUFILE *fp) {
 	uint8 header[16];
 	int x;
 
-	FCEU_fseek(fp, 0, SEEK_SET);
 	FCEU_fread(header, 16, 1, fp);
 
 	if (memcmp(header, "FDS\x1a", 4)) {
@@ -708,7 +567,7 @@ static int SubLoad(FCEUFILE *fp) {
 			TotalSides = t / 65500;
 			FCEU_fseek(fp, 0, SEEK_SET);
 		} else
-			return 1;
+			return(0);
 	} else
 		TotalSides = header[4];
 
@@ -718,12 +577,18 @@ static int SubLoad(FCEUFILE *fp) {
 	if (TotalSides < 1) TotalSides = 1;
 
 	for (x = 0; x < TotalSides; x++) {
-		if ((diskdata[x] = (uint8*)FCEU_malloc(65500)) == NULL) return 2;
+		diskdata[x] = (uint8*)FCEU_malloc(65500);
+		if (!diskdata[x]) {
+			int zol;
+			for (zol = 0; zol < x; zol++)
+				free(diskdata[zol]);
+			return 0;
+		}
 		FCEU_fread(diskdata[x], 1, 65500, fp);
 		md5_update(&md5, diskdata[x], 65500);
 	}
-	md5_finish(&md5, GameInfo->MD5.data);
-	return 0;
+	md5_finish(&md5, GameInfo->MD5);
+	return(1);
 }
 
 static void PreSave(void) {
@@ -745,112 +610,85 @@ static void PostSave(void) {
 }
 
 int FDSLoad(const char *name, FCEUFILE *fp) {
-#ifndef GEKKO
-	FILE *zp;
-#endif
+	FCEUFILE *zp;
 	int x;
-	
-	// try to load FDS image first
-	FreeFDSMemory();
-	int load_result = SubLoad(fp);
-	switch (load_result)
-	{
-	case 1:
-		FreeFDSMemory();
-		return LOADER_INVALID_FORMAT;
-	case 2:
-		FreeFDSMemory();
-		FCEU_PrintError("Unable to allocate memory.");
-		return LOADER_HANDLED_ERROR;
-	}
 
-	// load FDS BIOS next
-#ifndef GEKKO
-	char *fn = strdup(FCEU_MakeFName(FCEUMKF_FDSROM, 0, 0).c_str());
+	char *fn = FCEU_MakeFName(FCEUMKF_FDSROM, 0, 0);
 
-	if (!(zp = FCEUD_UTF8fopen(fn, "rb"))) {
-		FCEU_PrintError("FDS BIOS ROM image missing: %s", FCEU_MakeFName(FCEUMKF_FDSROM, 0, 0).c_str());
+	if (!(zp = FCEU_fopen(fn, 0, "rb", 0, NULL, 0))) {
+		FCEU_PrintError("FDS BIOS ROM image missing!\n");
 		free(fn);
-		FreeFDSMemory();
-		return LOADER_HANDLED_ERROR;
+		return 0;
 	}
+
 	free(fn);
 
-	fseek(zp, 0L, SEEK_END);
-	if (ftell(zp) != 8192) {
-		fclose(zp);
-		FCEU_PrintError("FDS BIOS ROM image incompatible: %s", FCEU_MakeFName(FCEUMKF_FDSROM, 0, 0).c_str());
-		return LOADER_HANDLED_ERROR;
-	}
-	fseek(zp, 0L, SEEK_SET);
-#endif
 	ResetCartMapping();
-#ifndef GEKKO
-	if(FDSBIOS)
+
+	if (FDSBIOS)
 		free(FDSBIOS);
 	FDSBIOS = NULL;
-#endif
-	if(FDSRAM)
+	if (FDSRAM)
 		free(FDSRAM);
 	FDSRAM = NULL;
-	if(CHRRAM)
+	if (CHRRAM)
 		free(CHRRAM);
 	CHRRAM = NULL;
 
 	FDSBIOSsize = 8192;
-#ifndef GEKKO
 	FDSBIOS = (uint8*)FCEU_gmalloc(FDSBIOSsize);
-#endif
 	SetupCartPRGMapping(0, FDSBIOS, FDSBIOSsize, 0);
-#ifndef GEKKO
-	if (fread(FDSBIOS, 1, FDSBIOSsize, zp) != FDSBIOSsize) {
-		if(FDSBIOS)
+
+	if (FCEU_fread(FDSBIOS, 1, FDSBIOSsize, zp) != FDSBIOSsize) {
+		if (FDSBIOS)
 			free(FDSBIOS);
 		FDSBIOS = NULL;
-		fclose(zp);
-		FreeFDSMemory();
-		FCEU_PrintError("Error reading FDS BIOS ROM image.");
-		return LOADER_HANDLED_ERROR;
+		FCEU_fclose(zp);
+		FCEU_PrintError("Error reading FDS BIOS ROM image.\n");
+		return 0;
 	}
 
-	fclose(zp);
-#endif
+	FCEU_fclose(zp);
 
-	if (!disableBatteryLoading) {
+	FCEU_fseek(fp, 0, SEEK_SET);
+
+	FreeFDSMemory();
+	if (!SubLoad(fp)) {
+		if (FDSBIOS)
+			free(FDSBIOS);
+		FDSBIOS = NULL;
+		return(0);
+	}
+
+	{
 		FCEUFILE *tp;
-		char *fn = strdup(FCEU_MakeFName(FCEUMKF_FDS, 0, 0).c_str());
+		char *fn = FCEU_MakeFName(FCEUMKF_FDS, 0, 0);
 
 		int x;
 		for (x = 0; x < TotalSides; x++) {
 			diskdatao[x] = (uint8*)FCEU_malloc(65500);
 			memcpy(diskdatao[x], diskdata[x], 65500);
 		}
-#ifndef GEKKO
-		if ((tp = FCEU_fopen(fn, 0, "rb", 0))) {
-			FCEU_printf("Disk was written. Auxiliary FDS file open \"%s\".\n",fn);
+
+		if ((tp = FCEU_fopen(fn, 0, "rb", 0, NULL, 0))) {
+			FCEU_printf("Disk was written. Auxillary FDS file open \"%s\".\n", fn);
 			FreeFDSMemory();
-			if (SubLoad(tp)) {
-				FCEU_PrintError("Error reading auxiliary FDS file.");
-				if(FDSBIOS)
+			if (!SubLoad(tp)) {
+				FCEU_PrintError("Error reading auxillary FDS file.\n");
+				if (FDSBIOS)
 					free(FDSBIOS);
 				FDSBIOS = NULL;
 				free(fn);
-				FreeFDSMemory();
-				return LOADER_HANDLED_ERROR;
+				return(0);
 			}
 			FCEU_fclose(tp);
-			DiskWritten = 1;  /* For save state handling. */
+			DiskWritten = 1;	/* For save state handling. */
 		}
 		free(fn);
-#endif
 	}
-#ifndef GEKKO
-	extern char LoadedRomFName[2048];
-	strcpy(LoadedRomFName, name); //For the debugger list
-#endif
+
 	GameInfo->type = GIT_FDS;
 	GameInterface = FDSGI;
-	isFDS = true;
 
 	SelectDisk = 0;
 	InDisk = 255;
@@ -874,21 +712,16 @@ int FDSLoad(const char *name, FCEUFILE *fp) {
 	AddExState(&SelectDisk, 1, 0, "SELD");
 	AddExState(&InDisk, 1, 0, "INDI");
 	AddExState(&DiskWritten, 1, 0, "DSKW");
-	AddExState(&mapperFDS_control, 1, 0, "CTRG");
-	AddExState(&mapperFDS_filesize, 2, 1, "FLSZ");
-	AddExState(&mapperFDS_block, 1, 0, "BLCK");
-	AddExState(&mapperFDS_blockstart, 2, 1, "BLKS");
-	AddExState(&mapperFDS_blocklen, 2, 1, "BLKL");
-	AddExState(&mapperFDS_diskaddr, 2, 1, "DADR");
-	AddExState(&mapperFDS_diskaccess, 1, 0, "DACC");
 
 	CHRRAMSize = 8192;
 	CHRRAM = (uint8*)FCEU_gmalloc(CHRRAMSize);
+	memset(CHRRAM, 0, CHRRAMSize);
 	SetupCartCHRMapping(0, CHRRAM, CHRRAMSize, 1);
 	AddExState(CHRRAM, CHRRAMSize, 0, "CHRR");
 
 	FDSRAMSize = 32768;
 	FDSRAM = (uint8*)FCEU_gmalloc(FDSRAMSize);
+	memset(FDSRAM, 0, FDSRAMSize);
 	SetupCartPRGMapping(1, FDSRAM, FDSRAMSize, 1);
 	AddExState(FDSRAM, FDSRAMSize, 0, "FDSR");
 
@@ -898,25 +731,26 @@ int FDSLoad(const char *name, FCEUFILE *fp) {
 
 	FCEUI_SetVidSystem(0);
 
-	return LOADER_OK;
+	return 1;
 }
 
 void FDSClose(void) {
-#ifndef GEKKO
 	FILE *fp;
 	int x;
-	isFDS = false;
+	char *fn = FCEU_MakeFName(FCEUMKF_FDS, 0, 0);
 
 	if (!DiskWritten) return;
 
-	const std::string &fn = FCEU_MakeFName(FCEUMKF_FDS, 0, 0);
-	if (!(fp = FCEUD_UTF8fopen(fn.c_str(), "wb"))) {
+	if (!(fp = fopen(fn, "wb"))) {
+		free(fn);
 		return;
 	}
+	FCEU_printf("FDS Save \"%s\"\n", fn);
+	free(fn);
 
 	for (x = 0; x < TotalSides; x++) {
 		if (fwrite(diskdata[x], 1, 65500, fp) != 65500) {
-			FCEU_PrintError("Error saving FDS image!");
+			FCEU_PrintError("Error saving FDS image!\n");
 			fclose(fp);
 			return;
 		}
@@ -927,21 +761,16 @@ void FDSClose(void) {
 			free(diskdatao[x]);
 			diskdatao[x] = 0;
 		}
-#endif
+
 	FreeFDSMemory();
-#ifndef GEKKO
-	if(FDSBIOS)
+	if (FDSBIOS)
 		free(FDSBIOS);
 	FDSBIOS = NULL;
-#endif
-	if(FDSRAM)
+	if (FDSRAM)
 		free(FDSRAM);
 	FDSRAM = NULL;
-	if(CHRRAM)
+	if (CHRRAM)
 		free(CHRRAM);
 	CHRRAM = NULL;
-#ifndef GEKKO
 	fclose(fp);
-#endif
-
 }

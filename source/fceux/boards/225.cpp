@@ -16,6 +16,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * PCB-018 board, discrete multigame cart 110-in-1
+ *
  */
 
 #include "mapinc.h"
@@ -52,35 +55,25 @@ static DECLFW(M225Write) {
 }
 
 static DECLFW(M225LoWrite) {
-	if (A & 0x800) {
-		prot[A & 0x03] = V;
-	}
 }
 
 static DECLFR(M225LoRead) {
-	if (A & 0x800) {
-		return prot[A & 3] & 0x0F;
-	}
-	return X.DB;
+	return 0;
 }
 
 static void M225Power(void) {
 	prg = 0;
-	chr = 0;
 	mode = 0;
-	mirr = 0;
 	Sync();
-	SetReadHandler(0x5000, 0x5FFF, M225LoRead);
-	SetWriteHandler(0x5000, 0x5FFF, M225LoWrite);
+	SetReadHandler(0x5000, 0x5fff, M225LoRead);
+	SetWriteHandler(0x5000, 0x5fff, M225LoWrite);
 	SetReadHandler(0x8000, 0xFFFF, CartBR);
 	SetWriteHandler(0x8000, 0xFFFF, M225Write);
 }
 
 static void M225Reset(void) {
 	prg = 0;
-	chr = 0;
 	mode = 0;
-	mirr = 0;
 	Sync();
 }
 

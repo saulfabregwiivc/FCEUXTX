@@ -42,7 +42,7 @@ static DECLFW(S74LS374NWrite) {
 	A &= 0x4101;
 	if (A == 0x4100)
 		cmd = V & 7;
-	else{
+	else {
 		switch (cmd) {
 		case 2: latch[0] = V & 1; latch[3] = (V & 1) << 3; break;
 		case 4: latch[4] = (V & 1) << 2; break;
@@ -57,7 +57,7 @@ static DECLFW(S74LS374NWrite) {
 static DECLFR(S74LS374NRead) {
 	uint8 ret;
 	if ((A & 0x4100) == 0x4100)
-//		ret=(X.DB&0xC0)|((~cmd)&0x3F);
+/*		ret=(X.DB&0xC0)|((~cmd)&0x3F); */
 		ret = ((~cmd) & 0x3F) ^ dip;
 	else
 		ret = X.DB;
@@ -102,7 +102,7 @@ static DECLFW(S74LS374NAWrite) {
 	A &= 0x4101;
 	if (A == 0x4100)
 		cmd = V & 7;
-	else{
+	else {
 		switch (cmd) {
 		case 0: latch[0] = 0; latch[1] = 3; break;
 		case 2: latch[3] = (V & 1) << 3; break;
@@ -135,7 +135,7 @@ static void S8259Synco(void) {
 	int x;
 	setprg32(0x8000, latch[5] & 7);
 
-	if (!UNIFchrrama) {      // No CHR RAM?  Then BS'ing is ok.
+	if (!UNIFchrrama) {		/* No CHR RAM?  Then BS'ing is ok. */
 		for (x = 0; x < 4; x++) {
 			int bank;
 			if (latch[7] & 1)
@@ -169,7 +169,7 @@ static DECLFW(S8259Write) {
 	A &= 0x4101;
 	if (A == 0x4100)
 		cmd = V;
-	else{
+	else {
 		latch[cmd & 7] = V;
 		S8259Synco();
 	}
@@ -191,7 +191,7 @@ static void S8259Restore(int version) {
 	S8259Synco();
 }
 
-void S8259A_Init(CartInfo *info) { // Kevin's Horton 141 mapper
+void S8259A_Init(CartInfo *info) {	/* Kevin's Horton 141 mapper */
 	info->Power = S8259Reset;
 	GameStateRestore = S8259Restore;
 	AddExState(latch, 8, 0, "LATC");
@@ -199,7 +199,7 @@ void S8259A_Init(CartInfo *info) { // Kevin's Horton 141 mapper
 	type = 0;
 }
 
-void S8259B_Init(CartInfo *info) { // Kevin's Horton 138 mapper
+void S8259B_Init(CartInfo *info) {	/* Kevin's Horton 138 mapper */
 	info->Power = S8259Reset;
 	GameStateRestore = S8259Restore;
 	AddExState(latch, 8, 0, "LATC");
@@ -207,7 +207,7 @@ void S8259B_Init(CartInfo *info) { // Kevin's Horton 138 mapper
 	type = 1;
 }
 
-void S8259C_Init(CartInfo *info) { // Kevin's Horton 139 mapper
+void S8259C_Init(CartInfo *info) {	/* Kevin's Horton 139 mapper */
 	info->Power = S8259Reset;
 	GameStateRestore = S8259Restore;
 	AddExState(latch, 8, 0, "LATC");
@@ -215,7 +215,7 @@ void S8259C_Init(CartInfo *info) { // Kevin's Horton 139 mapper
 	type = 2;
 }
 
-void S8259D_Init(CartInfo *info) { // Kevin's Horton 137 mapper
+void S8259D_Init(CartInfo *info) {	/* Kevin's Horton 137 mapper */
 	info->Power = S8259Reset;
 	GameStateRestore = S8259Restore;
 	AddExState(latch, 8, 0, "LATC");
@@ -255,22 +255,22 @@ static void SADPower(void) {
 	SetWriteHandler(0x8000, 0xFFFF, SADWrite);
 }
 
-static void SA0161MSynco() {
+static void SA0161MSynco(void) {
 	setprg32(0x8000, (latch[0] >> 3) & 1);
 	setchr8(latch[0] & 7);
 }
 
-static void SA72007Synco() {
+static void SA72007Synco(void) {
 	setprg32(0x8000, 0);
 	setchr8(latch[0] >> 7);
 }
 
-static void SA009Synco() {
+static void SA009Synco(void) {
 	setprg32(0x8000, 0);
 	setchr8(latch[0] & 1);
 }
 
-static void SA72008Synco() {
+static void SA72008Synco(void) {
 	setprg32(0x8000, (latch[0] >> 2) & 1);
 	setchr8(latch[0] & 3);
 }
@@ -317,7 +317,7 @@ void SA0037_Init(CartInfo *info) {
 	AddExState(&latch[0], 1, 0, "LATC");
 }
 
-// -----------------------------------------------
+/* ----------------------------------------------- */
 
 static void TCU01Synco() {
 	setprg32(0x8000, ((latch[0] & 0x80) >> 6) | ((latch[0] >> 2) & 1));
@@ -348,7 +348,7 @@ void TCU01_Init(CartInfo *info) {
 	AddExState(&latch[0], 1, 0, "LATC");
 }
 
-//-----------------------------------------------
+/* ----------------------------------------------- */
 
 static void TCU02Synco() {
 	setprg32(0x8000, 0);
@@ -384,7 +384,7 @@ void TCU02_Init(CartInfo *info) {
 	AddExState(&latch[0], 1, 0, "LATC");
 }
 
-// ---------------------------------------------
+/* --------------------------------------------- */
 
 static DECLFR(TCA01Read) {
 	uint8 ret;

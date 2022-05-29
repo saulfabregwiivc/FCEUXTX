@@ -8,7 +8,7 @@ extern uint8 DRegBuf[8];
 #undef IRQCount
 #undef IRQLatch
 #undef IRQa
-extern uint8 IRQCount,IRQLatch,IRQa;
+extern uint8 IRQCount, IRQLatch, IRQa;
 extern uint8 IRQReload;
 
 extern void (*pwrap)(uint32 A, uint8 V);

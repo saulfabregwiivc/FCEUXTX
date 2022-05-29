@@ -41,7 +41,7 @@ static void Sync(void) {
 		bank = (latche[0] & 0x1f) | ((latche[0] & 0x80) >> 2) | ((latche[1] & 1) << 6);
 	if (!(latche[0] & 0x20))
 		setprg32(0x8000, bank >> 1);
-	else{
+	else {
 		setprg16(0x8000, bank);
 		setprg16(0xC000, bank);
 	}

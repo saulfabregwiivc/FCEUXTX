@@ -18,62 +18,30 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-enum ENUM_SSLOADPARAMS
-{
-	SSLOADPARAM_NOBACKUP,
-	SSLOADPARAM_BACKUP,
-};
+#ifndef _FCEU_STATE_H_
+#define _FCEU_STATE_H_
 
-void FCEUSS_Save(const char *, bool display_message=true);
-bool FCEUSS_Load(const char *, bool display_message=true);
+#include "fceu-memory.h"
 
- //zlib values: 0 (none) through 9 (max) or -1 (default)
-bool FCEUSS_SaveMS(EMUFILE* outstream, int compressionLevel);
+void FCEUSS_Save(char *);
+int FCEUSS_Load(char *);
+int FCEUSS_SaveFP(MEM_TYPE *);
+int FCEUSS_LoadFP(MEM_TYPE *);
 
-bool FCEUSS_LoadFP(EMUFILE* is, ENUM_SSLOADPARAMS params);
+void FCEUSS_Load_Mem(void);
+void FCEUSS_Save_Mem(void);
 
-extern int CurrentState;
-void FCEUSS_CheckStates(void);
-
-struct SFORMAT
-{
-	//a void* to the data or a void** to the data
+typedef struct {
 	void *v;
-
-	//size, plus flags
 	uint32 s;
+	char desc[5];
+} SFORMAT;
 
-	//a string description of the element
-	const char *desc;
-};
+void ResetExState(void (*PreSave)(void), void (*PostSave)(void));
+void AddExState(void *v, uint32 s, int type, char *desc);
 
-void ResetExState(void (*PreSave)(void),void (*PostSave)(void));
-void AddExState(void *v, uint32 s, int type, const char *desc);
-
-//indicates that the value is a multibyte integer that needs to be put in the correct byte order
-#define FCEUSTATE_RLSB            0x80000000
-
-//void*v is actually a void** which will be indirected before reading
-#define FCEUSTATE_INDIRECT            0x40000000
-
-//all FCEUSTATE flags together so that we can mask them out and get the size
-#define FCEUSTATE_FLAGS (FCEUSTATE_RLSB|FCEUSTATE_INDIRECT)
+#define FCEUSTATE_RLSB      0x80000000
 
 void FCEU_DrawSaveStates(uint8 *XBuf);
 
-void CreateBackupSaveState(const char *fname); //backsup a savestate before overwriting it with a new one
-void BackupLoadState();				 //Makes a backup savestate before any loadstate
-void LoadBackup();					 //Loads the backupsavestate
-void RedoLoadState();				 //reloads a loadstate if backupsavestate was run
-void SwapSaveState();				 //Swaps a savestate with its backup state
-
-extern char lastSavestateMade[2048]; //Filename of last savestate used
-extern bool undoSS;					 //undo savestate flag
-extern bool redoSS;					 //redo savestate flag
-extern char lastLoadstateMade[2048]; //Filename of last state loaded
-extern bool undoLS;					 //undo loadstate flag
-extern bool redoLS;					 //redo savestate flag
-extern bool backupSavestates;		 //Whether or not to make backups, true by default
-bool CheckBackupSaveStateExist();	 //Checks if backupsavestate exists
-
-extern bool compressSavestates;		//Whether or not to compress non-movie savestates (by default, yes)
+#endif

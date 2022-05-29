@@ -19,18 +19,15 @@
  */
 
 #include "mapinc.h"
+#include "emu2413.h"
 
+static int32 dwave = 0;
+static OPLL *VRC7Sound = NULL;
 static uint8 vrc7idx, preg[3], creg[8], mirr;
 static uint8 IRQLatch, IRQa, IRQd;
 static int32 IRQCount, CycleCount;
 static uint8 *WRAM = NULL;
 static uint32 WRAMSIZE;
-
-#include "emu2413.h"
-
-static int32 dwave = 0;
-static OPLL *VRC7Sound = NULL;
-static OPLL **VRC7Sound_saveptr = &VRC7Sound;
 
 static SFORMAT StateRegs[] =
 {
@@ -43,11 +40,10 @@ static SFORMAT StateRegs[] =
 	{ &IRQLatch, 1, "IRQL" },
 	{ &IRQCount, 4, "IRQC" },
 	{ &CycleCount, 4, "CYCC" },
-	{ (void**)VRC7Sound_saveptr, sizeof(*VRC7Sound) | FCEUSTATE_INDIRECT, "VRC7"  },
-	{0}
+	{ 0 }
 };
 
-// VRC7 Sound
+/* VRC7 Sound */
 
 void DoVRC7Sound(void) {
 	int32 z, a;
@@ -86,12 +82,12 @@ static void VRC7SKill(void) {
 static void VRC7_ESI(void) {
 	GameExpSound.RChange = VRC7SC;
 	GameExpSound.Kill = VRC7SKill;
-	VRC7Sound = OPLL_new(3579545, FSettings.SndRate ? FSettings.SndRate : 48000);
+	VRC7Sound = OPLL_new(3579545, FSettings.SndRate ? FSettings.SndRate : 44100);
 	OPLL_reset(VRC7Sound);
 	OPLL_reset(VRC7Sound);
 }
 
-// VRC7 Sound
+/* VRC7 Sound */
 
 static void Sync(void) {
 	uint8 i;
@@ -119,7 +115,7 @@ static DECLFW(VRC7SW) {
 }
 
 static DECLFW(VRC7Write) {
-	A |= (A & 8) << 1;  // another two-in-oooone
+	A |= (A & 8) << 1;	/* another two-in-oooone */
 	if (A >= 0xA000 && A <= 0xDFFF) {
 		A &= 0xF010;
 		creg[((A >> 4) & 1) | ((A - 0xA000) >> 11)] = V;
@@ -156,8 +152,7 @@ static void VRC7Power(void) {
 	FCEU_CheatAddRAM(WRAMSIZE >> 10, 0x6000, WRAM);
 }
 
-static void VRC7Close(void)
-{
+static void VRC7Close(void) {
 	if (WRAM)
 		FCEU_gfree(WRAM);
 	WRAM = NULL;
@@ -166,7 +161,7 @@ static void VRC7Close(void)
 static void VRC7IRQHook(int a) {
 	if (IRQa) {
 		CycleCount += a * 3;
-		while(CycleCount >= 341) {
+		while (CycleCount >= 341) {
 			CycleCount -= 341;
 			IRQCount++;
 			if (IRQCount == 0x100) {

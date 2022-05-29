@@ -18,6 +18,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#ifndef _FCEU_UNIF_H
+#define _FCEU_UNIF_H
+
 void AC08_Init(CartInfo *info);
 void ANROM_Init(CartInfo *info);
 void BMC11160_Init(CartInfo *info);
@@ -51,7 +54,7 @@ void EKROM_Init(CartInfo *info);
 void ELROM_Init(CartInfo *info);
 void ETROM_Init(CartInfo *info);
 void EWROM_Init(CartInfo *info);
-//void GNROM_Init(CartInfo *info);
+void GNROM_Init(CartInfo *info);
 void HKROM_Init(CartInfo *info);
 void LE05_Init(CartInfo *info);
 void LH10_Init(CartInfo *info);
@@ -59,7 +62,7 @@ void LH32_Init(CartInfo *info);
 void LH53_Init(CartInfo *info);
 void MALEE_Init(CartInfo *info);
 void MHROM_Init(CartInfo *info);
-void QTAi_Init(CartInfo *info);
+void Mapper190_Init(CartInfo *info);
 void NROM_Init(CartInfo *info);
 void Novel_Init(CartInfo *info);
 void S74LS374NA_Init(CartInfo *info);
@@ -86,7 +89,7 @@ void SLROM_Init(CartInfo *info);
 void SNROM_Init(CartInfo *info);
 void SOROM_Init(CartInfo *info);
 void SSSNROM_Init(CartInfo *info);
-void SUNSOFT_UNROM_Init(CartInfo *info);	// "Shanghi" original version mapper
+void SUNSOFT_UNROM_Init(CartInfo *info);	/* "Shanghi" original version mapper */
 void Super24_Init(CartInfo *info);
 void Supervision16_Init(CartInfo *info);
 void TBROM_Init(CartInfo *info);
@@ -145,8 +148,6 @@ void UNLVRC7_Init(CartInfo *info);
 void UNLYOKO_Init(CartInfo *info);
 void UNROM_Init(CartInfo *info);
 void UNROM512_Init(CartInfo *info);
-void UNLSB2000_Init(CartInfo *info);
-void UNLKS7010_Init(CartInfo *info);
 void COOLBOY_Init(CartInfo *info);
 void UNL158B_Init(CartInfo *info);
 void UNLBMW8544_Init(CartInfo *info);
@@ -156,13 +157,14 @@ void BMCF15_Init(CartInfo *info);
 void UNLRT01_Init(CartInfo *info);
 void BMC810131C_Init(CartInfo *info);
 void BMC8IN1_Init(CartInfo *info);
-void BMC80013B_Init(CartInfo *info);
-void BMCHPxx_Init(CartInfo *info);
-void MINDKIDS_Init(CartInfo *info);
-void FNS_Init(CartInfo *info);
-void BS400R_Init(CartInfo *info);
-void BS4040R_Init(CartInfo *info);
-void SMD132_SMD133_Init(CartInfo *info);
 
-extern uint8 *UNIFchrrama;	// Meh.  So I can stop CHR RAM
-							// bank switcherooing with certain boards...
+#ifdef COPYFAMI
+void MapperCopyFamiMMC3_Init(CartInfo *info);
+void MapperCopyFami_Init(CartInfo *info);
+#endif
+
+extern uint8 *UNIFchrrama;	/* Meh.  So I can stop CHR RAM
+							 * bank switcherooing with certain boards...
+							 */
+
+#endif

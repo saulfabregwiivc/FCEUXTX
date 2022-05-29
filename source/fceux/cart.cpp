@@ -18,42 +18,42 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/// \file
-/// \brief This file contains all code for coordinating the mapping in of the address space external to the NES.
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
 
-#include "types.h"
+#include "fceu-types.h"
 #include "fceu.h"
 #include "ppu.h"
-#include "driver.h"
 
 #include "cart.h"
+#include "fceu-memory.h"
 #include "x6502.h"
 
-#include "file.h"
-#include "utils/memory.h"
+#include "general.h"
 
-
-#include <cstring>
-#include <cstdlib>
-#include <cstdio>
-#include <climits>
-
-uint8 *Page[32], *VPage[8];
+/*
+		This file contains all code for coordinating the mapping in of the
+		address space external to the NES.
+		It's also (ab)used by the NSF code.
+*/
+int extra_bank_unrom = 0;
+uint8 *Page[32], *VPage[40];
 uint8 **VPageR = VPage;
-uint8 *VPageG[8];
-uint8 *MMC5SPRVPage[8];
-uint8 *MMC5BGVPage[8];
+uint8 *VPageG[40];
+uint8 *MMC5SPRVPage[32];
+uint8 *MMC5BGVPage[32];
 
-static uint8 PRGIsRAM[32];  /* This page is/is not PRG RAM. */
+static uint8 PRGIsRAM[32];	/* This page is/is not PRG RAM. */
 
 /* 16 are (sort of) reserved for UNIF/iNES and 16 to map other stuff. */
-uint8 CHRram[32];
-uint8 PRGram[32];
+static int CHRram[32];
+static int PRGram[32];
 
-uint8 *PRGptr[32];
-uint8 *CHRptr[32];
+uint8 *PRGptr[256];
+uint8 *CHRptr[128];
 
-uint32 PRGsize[32];
+uint32 PRGsize[256];
 uint32 CHRsize[32];
 
 uint32 PRGmask2[32];
@@ -76,8 +76,6 @@ uint8 geniech[3];
 
 uint32 genieaddr[3];
 
-CartInfo *currCartInfo;
-
 static INLINE void setpageptr(int s, uint32 A, uint8 *p, int ram) {
 	uint32 AB = A >> 11;
 	int x;
@@ -95,19 +93,30 @@ static INLINE void setpageptr(int s, uint32 A, uint8 *p, int ram) {
 }
 
 static uint8 nothing[8192];
+static uint8 nothing2[8192*5];
+static uint8 nothing3[8192*8];
 void ResetCartMapping(void) {
 	int x;
 
-	PPU_ResetHooks();
+
 
 	for (x = 0; x < 32; x++) {
+
+		CHRptr[x] = 0;
+		 CHRsize[x] = 0;
+	}
+	for (x = 0; x < 32; x++) {
 		Page[x] = nothing - x * 2048;
-		PRGptr[x] = CHRptr[x] = 0;
-		PRGsize[x] = CHRsize[x] = 0;
+		PRGptr[x] = 0;
+		PRGsize[x] = 0;
 	}
-	for (x = 0; x < 8; x++) {
-		MMC5SPRVPage[x] = MMC5BGVPage[x] = VPageR[x] = nothing - 0x400 * x;
+
+	for (x = 0; x <32; x++) {
+		MMC5SPRVPage[x] = MMC5BGVPage[x] = nothing2- 0x400 * x;
+
+		VPageR[x]= VPage[x] = nothing2 - 0x400 * x;
 	}
+
 }
 
 void SetupCartPRGMapping(int chip, uint8 *p, uint32 size, int ram) {
@@ -127,15 +136,13 @@ void SetupCartCHRMapping(int chip, uint8 *p, uint32 size, int ram) {
 	CHRptr[chip] = p;
 	CHRsize[chip] = size;
 
-	CHRmask1[chip] = (size >> 10) - 1;
-	CHRmask2[chip] = (size >> 11) - 1;
-	CHRmask4[chip] = (size >> 12) - 1;
-	CHRmask8[chip] = (size >> 13) - 1;
-
-	if (CHRmask1[chip] >= (unsigned int)(-1)) CHRmask1[chip] = 0;
-	if (CHRmask2[chip] >= (unsigned int)(-1)) CHRmask2[chip] = 0;
-	if (CHRmask4[chip] >= (unsigned int)(-1)) CHRmask4[chip] = 0;
-	if (CHRmask8[chip] >= (unsigned int)(-1)) CHRmask8[chip] = 0;
+	int i = 10;
+	if(vt03_mode) i = 11;	
+	
+	CHRmask1[chip] = (size >> i) - 1;
+	CHRmask2[chip] = (size >> (i+1)) - 1;
+	CHRmask4[chip] = (size >> (i+2)) - 1;
+	CHRmask8[chip] = (size >> (i+3)) - 1;
 
 	CHRram[chip] = ram;
 }
@@ -145,7 +152,7 @@ DECLFR(CartBR) {
 }
 
 DECLFW(CartBW) {
-	//printf("Ok: %04x:%02x, %d\n",A,V,PRGIsRAM[A>>11]);
+	/* printf("Ok: %04x:%02x, %d\n",A,V,PRGIsRAM[A>>11]); */
 	if (PRGIsRAM[A >> 11] && Page[A >> 11])
 		Page[A >> 11][A] = V;
 }
@@ -157,25 +164,25 @@ DECLFR(CartBROB) {
 		return Page[A >> 11][A];
 }
 
-void setprg2r(int r, uint32 A, uint32 V) {
+void FASTAPASS(3) setprg2r(int r, uint32 A, uint32 V) {
 	V &= PRGmask2[r];
 	setpageptr(2, A, PRGptr[r] ? (&PRGptr[r][V << 11]) : 0, PRGram[r]);
 }
 
-void setprg2(uint32 A, uint32 V) {
+void FASTAPASS(2) setprg2(uint32 A, uint32 V) {
 	setprg2r(0, A, V);
 }
 
-void setprg4r(int r, uint32 A, uint32 V) {
+void FASTAPASS(3) setprg4r(int r, uint32 A, uint32 V) {
 	V &= PRGmask4[r];
 	setpageptr(4, A, PRGptr[r] ? (&PRGptr[r][V << 12]) : 0, PRGram[r]);
 }
 
-void setprg4(uint32 A, uint32 V) {
+void FASTAPASS(2) setprg4(uint32 A, uint32 V) {
 	setprg4r(0, A, V);
 }
 
-void setprg8r(int r, uint32 A, uint32 V) {
+void FASTAPASS(3) setprg8r(int r, uint32 A, uint32 V) {
 	if (PRGsize[r] >= 8192) {
 		V &= PRGmask8[r];
 		setpageptr(8, A, PRGptr[r] ? (&PRGptr[r][V << 13]) : 0, PRGram[r]);
@@ -187,11 +194,11 @@ void setprg8r(int r, uint32 A, uint32 V) {
 	}
 }
 
-void setprg8(uint32 A, uint32 V) {
+void FASTAPASS(2) setprg8(uint32 A, uint32 V) {
 	setprg8r(0, A, V);
 }
 
-void setprg16r(int r, uint32 A, uint32 V) {
+void FASTAPASS(3) setprg16r(int r, uint32 A, uint32 V) {
 	if (PRGsize[r] >= 16384) {
 		V &= PRGmask16[r];
 		setpageptr(16, A, PRGptr[r] ? (&PRGptr[r][V << 14]) : 0, PRGram[r]);
@@ -204,11 +211,11 @@ void setprg16r(int r, uint32 A, uint32 V) {
 	}
 }
 
-void setprg16(uint32 A, uint32 V) {
+void FASTAPASS(2) setprg16(uint32 A, uint32 V) {
 	setprg16r(0, A, V);
 }
 
-void setprg32r(int r, uint32 A, uint32 V) {
+void FASTAPASS(3) setprg32r(int r, uint32 A, uint32 V) {
 	if (PRGsize[r] >= 32768) {
 		V &= PRGmask32[r];
 		setpageptr(32, A, PRGptr[r] ? (&PRGptr[r][V << 15]) : 0, PRGram[r]);
@@ -221,50 +228,69 @@ void setprg32r(int r, uint32 A, uint32 V) {
 	}
 }
 
-void setprg32(uint32 A, uint32 V) {
+void FASTAPASS(2) setprg32(uint32 A, uint32 V) {
 	setprg32r(0, A, V);
 }
 
-void setchr1r(int r, uint32 A, uint32 V) {
+void FASTAPASS(3) setchr1r(int r, uint32 A, uint32 V) {
 	if (!CHRptr[r]) return;
+	int i = 10;
+	if(vt03_mode)i = 11;
 	FCEUPPU_LineUpdate();
 	V &= CHRmask1[r];
 	if (CHRram[r])
 		PPUCHRRAM |= (1 << (A >> 10));
 	else
 		PPUCHRRAM &= ~(1 << (A >> 10));
-	VPageR[(A) >> 10] = &CHRptr[r][(V) << 10] - (A);
+	VPageR[(A) >> 10] = &CHRptr[r][(V) << i] - (A);
+	if(vt03_mode)VPageR[((A) >> 10)+1] = &CHRptr[r][(V) << i] - (A); //mod: wrap more vram
 }
 
-void setchr2r(int r, uint32 A, uint32 V) {
+void FASTAPASS(3) setchr2r(int r, uint32 A, uint32 V) {
 	if (!CHRptr[r]) return;
+			int i = 11;
+	if(vt03_mode)i = 12;
 	FCEUPPU_LineUpdate();
 	V &= CHRmask2[r];
-	VPageR[(A) >> 10] = VPageR[((A) >> 10) + 1] = &CHRptr[r][(V) << 11] - (A);
+	VPageR[(A) >> 10] = VPageR[((A) >> 10) + 1] = &CHRptr[r][(V) << i] - (A);
+	if(vt03_mode)VPageR[((A) >> 10)+2] = VPageR[((A) >> 10) + 3] = &CHRptr[r][(V) << i] - (A);
 	if (CHRram[r])
 		PPUCHRRAM |= (3 << (A >> 10));
 	else
 		PPUCHRRAM &= ~(3 << (A >> 10));
 }
 
-void setchr4r(int r, unsigned int A, unsigned int V) {
+void FASTAPASS(3) setchr4r(int r, uint32 A, uint32 V) {
 	if (!CHRptr[r]) return;
 	FCEUPPU_LineUpdate();
 	V &= CHRmask4[r];
+			int i = 12;
+	if(vt03_mode)i = 13;
 	VPageR[(A) >> 10] = VPageR[((A) >> 10) + 1] =
-							VPageR[((A) >> 10) + 2] = VPageR[((A) >> 10) + 3] = &CHRptr[r][(V) << 12] - (A);
+							VPageR[((A) >> 10) + 2] = VPageR[((A) >> 10) + 3] = &CHRptr[r][(V) << i] - (A);
+	if(vt03_mode)VPageR[((A) >> 10)+4] = VPageR[((A) >> 10) + 5] = VPageR[((A) >> 10) + 6] = VPageR[((A) >> 10) + 7] = &CHRptr[r][(V) << i] - (A);
+
 	if (CHRram[r])
 		PPUCHRRAM |= (15 << (A >> 10));
 	else
 		PPUCHRRAM &= ~(15 << (A >> 10));
 }
 
-void setchr8r(int r, uint32 V) {
+void FASTAPASS(2) setchr8r(int r, uint32 V) {
 	int x;
 
 	if (!CHRptr[r]) return;
 	FCEUPPU_LineUpdate();
 	V &= CHRmask8[r];
+	
+	if (vt03_mode)
+	{
+		for (x = 31; x >= 16; x--)
+	   {
+		VPageR[x] = &CHRptr[r][V << 13]-0x2000;
+		
+	   }       
+	} 
 	for (x = 7; x >= 0; x--)
 		VPageR[x] = &CHRptr[r][V << 13];
 	if (CHRram[r])
@@ -273,126 +299,239 @@ void setchr8r(int r, uint32 V) {
 		PPUCHRRAM = 0;
 }
 
-void setchr1(uint32 A, uint32 V) {
+void FASTAPASS(2) setchr1(uint32 A, uint32 V) {
 	setchr1r(0, A, V);
 }
 
-void setchr2(uint32 A, uint32 V) {
+void FASTAPASS(2) setchr2(uint32 A, uint32 V) {
 	setchr2r(0, A, V);
 }
 
-void setchr4(uint32 A, uint32 V) {
+void FASTAPASS(2) setchr4(uint32 A, uint32 V) {
 	setchr4r(0, A, V);
 }
 
-void setchr8(uint32 V) {
+void FASTAPASS(1) setchr8(uint32 V) {
 	setchr8r(0, V);
 }
 
 /* This function can be called without calling SetupCartMirroring(). */
 
-void setntamem(uint8 *p, int ram, uint32 b) {
+void FASTAPASS(3) setntamem(uint8 * p, int ram, uint32 b) {
 	FCEUPPU_LineUpdate();
 	vnapage[b] = p;
 	PPUNTARAM &= ~(1 << b);
 	if (ram)
 		PPUNTARAM |= 1 << b;
 }
-
+uint8 tmp_null[2];
 static int mirrorhard = 0;
 void setmirrorw(int a, int b, int c, int d) {
 	FCEUPPU_LineUpdate();
+		if(wscre)
+		{
+			vnapage[0] =  NTARAM; vnapage[1] = NTARAM + 0x400;
+			vnapage2[0] = NTARAM2; vnapage2[1] = NTARAM2 + 0x400;
+			vnapage3[0] = NTARAM3; vnapage3[1] = NTARAM3 + 0x400;
+			vnapage[2] = vnapage2[2] = vnapage[3] = vnapage2[3] = vnapage3[2] = vnapage3[3] = tmp_null;
+			if (wscre_32==0x3FF)
+			{
+				vnapage[0] = NTARAM + a * 0x400;
+				vnapage[1] = NTARAM + b * 0x400;
+				vnapage[2] = NTARAM + c * 0x400;
+				vnapage[3] = NTARAM + d * 0x400;
+
+			}
+			if (wscre_32_2_3 == 0x3FF)
+			{
+				vnapage2[1] = vnapage2[0];
+				vnapage3[1] = vnapage3[0];
+			}
+			return;
+	}
+	{
 	vnapage[0] = NTARAM + a * 0x400;
 	vnapage[1] = NTARAM + b * 0x400;
 	vnapage[2] = NTARAM + c * 0x400;
 	vnapage[3] = NTARAM + d * 0x400;
+	}
+	vnapage2[0] = NTARAM2 + a * 0x400;
+	vnapage2[1] = NTARAM2 + b * 0x400;
+	vnapage2[2] = NTARAM2 + c * 0x400;
+	vnapage2[3] = NTARAM2 + d * 0x400;
+	vnapage3[0] = NTARAM3 + a * 0x400;
+	vnapage3[1] = NTARAM3 + b * 0x400;
+	vnapage3[2] = NTARAM3 + c * 0x400;
+	vnapage3[3] = NTARAM3 + d * 0x400;
 }
 
 void setmirror(int t) {
 	FCEUPPU_LineUpdate();
+	if(wscre)
+		{
+			vnapage[0] =  NTARAM; vnapage[1] = NTARAM + 0x400;
+			vnapage2[0] = NTARAM2; vnapage2[1] = NTARAM2 + 0x400;
+			vnapage3[0] = NTARAM3; vnapage3[1] = NTARAM3 + 0x400;
+			vnapage[2] = vnapage2[2] = vnapage[3] = vnapage2[3] = vnapage3[2] = vnapage3[3] = tmp_null;
+			if (wscre_32 == 0x3FF)
+			{
+
+				switch (t) {
+				case MI_H:
+
+					vnapage[0] = vnapage[1] = NTARAM; vnapage[2] = vnapage[3] = NTARAM + 0x400;
+					vnapage3[0] = vnapage3[1] = NTARAM3; vnapage3[2] = vnapage3[3] = NTARAM3 + 0x400;
+					vnapage2[0] = vnapage2[1] = NTARAM2; vnapage2[2] = vnapage2[3] = NTARAM2 + 0x400;
+					break;
+				case MI_V:
+
+					vnapage[0] = vnapage[2] = NTARAM; vnapage[1] = vnapage[3] = NTARAM + 0x400;
+					vnapage2[0] = vnapage2[2] = NTARAM2; vnapage2[1] = vnapage2[3] = NTARAM2 + 0x400;
+					vnapage3[0] = vnapage3[2] = NTARAM3; vnapage3[1] = vnapage3[3] = NTARAM3 + 0x400;
+					break;
+				case MI_0:
+					vnapage[0] = vnapage[1] = vnapage[2] = vnapage[3] = NTARAM;
+					vnapage2[0] = vnapage2[1] = vnapage2[2] = vnapage2[3] = NTARAM2;
+					vnapage3[0] = vnapage3[1] = vnapage3[2] = vnapage3[3] = NTARAM3;
+					break;
+				case MI_1:
+					vnapage[0] = vnapage[1] = vnapage[2] = vnapage[3] = NTARAM + 0x400;
+					vnapage2[0] = vnapage2[1] = vnapage2[2] = vnapage2[3] = NTARAM2 + 0x400;
+					vnapage3[0] = vnapage3[1] = vnapage3[2] = vnapage3[3] = NTARAM3 + 0x400;
+					break;
+				}
+				
+
+			}
+			if (wscre_32_2_3 == 0x3FF)
+			{
+				vnapage2[1] = vnapage2[0];
+				vnapage3[1] = vnapage3[0];
+			}
+			return;
+	}
 	if (!mirrorhard) {
 		switch (t) {
 		case MI_H:
+
 			vnapage[0] = vnapage[1] = NTARAM; vnapage[2] = vnapage[3] = NTARAM + 0x400;
+			vnapage3[0] = vnapage3[1] = NTARAM3; vnapage3[2] = vnapage3[3] = NTARAM3 + 0x400;
+			vnapage2[0] = vnapage2[1] = NTARAM2; vnapage2[2] = vnapage2[3] = NTARAM2 + 0x400;
 			break;
 		case MI_V:
+	
 			vnapage[0] = vnapage[2] = NTARAM; vnapage[1] = vnapage[3] = NTARAM + 0x400;
+			vnapage2[0] = vnapage2[2] = NTARAM2; vnapage2[1] = vnapage2[3] = NTARAM2 + 0x400;
+			vnapage3[0] = vnapage3[2] = NTARAM3; vnapage3[1] = vnapage3[3] = NTARAM3 + 0x400;
 			break;
 		case MI_0:
 			vnapage[0] = vnapage[1] = vnapage[2] = vnapage[3] = NTARAM;
+			vnapage2[0] = vnapage2[1] = vnapage2[2] = vnapage2[3] = NTARAM2;
+			vnapage3[0] = vnapage3[1] = vnapage3[2] = vnapage3[3] = NTARAM3;
 			break;
 		case MI_1:
 			vnapage[0] = vnapage[1] = vnapage[2] = vnapage[3] = NTARAM + 0x400;
+			vnapage2[0] = vnapage2[1] = vnapage2[2] = vnapage2[3] = NTARAM2 + 0x400;
+			vnapage3[0] = vnapage3[1] = vnapage3[2] = vnapage3[3] = NTARAM3 + 0x400;
 			break;
 		}
 		PPUNTARAM = 0xF;
 	}
 }
 
-void SetupCartMirroring(int m, int hard, uint8 *extra) {
+
+void SetupCartMirroring(int m, int hard, uint8* extra) {
 	if (m < 4) {
 		mirrorhard = 0;
 		setmirror(m);
-	} else {
+	}
+	else {
 		vnapage[0] = NTARAM;
 		vnapage[1] = NTARAM + 0x400;
+		vnapage3[0] = NTARAM3;
+		vnapage3[1] = NTARAM3 + 0x400;
 		vnapage[2] = extra;
 		vnapage[3] = extra + 0x400;
 		PPUNTARAM = 0xF;
+		if (wscre_32 == 0x3FF)
+		{
+			switch (m) {
+			case MI_H:
+
+				vnapage[0] = vnapage[1] = NTARAM; vnapage[2] = vnapage[3] = NTARAM + 0x400;
+				vnapage3[0] = vnapage3[1] = NTARAM3; vnapage3[2] = vnapage3[3] = NTARAM3 + 0x400;
+				vnapage2[0] = vnapage2[1] = NTARAM2; vnapage2[2] = vnapage2[3] = NTARAM2 + 0x400;
+				break;
+			case MI_V:
+
+				vnapage[0] = vnapage[2] = NTARAM; vnapage[1] = vnapage[3] = NTARAM + 0x400;
+				vnapage2[0] = vnapage2[2] = NTARAM2; vnapage2[1] = vnapage2[3] = NTARAM2 + 0x400;
+				vnapage3[0] = vnapage3[2] = NTARAM3; vnapage3[1] = vnapage3[3] = NTARAM3 + 0x400;
+				break;
+			case MI_0:
+				vnapage[0] = vnapage[1] = vnapage[2] = vnapage[3] = NTARAM;
+				vnapage2[0] = vnapage2[1] = vnapage2[2] = vnapage2[3] = NTARAM2;
+				vnapage3[0] = vnapage3[1] = vnapage3[2] = vnapage3[3] = NTARAM3;
+				break;
+			case MI_1:
+				vnapage[0] = vnapage[1] = vnapage[2] = vnapage[3] = NTARAM + 0x400;
+				vnapage2[0] = vnapage2[1] = vnapage2[2] = vnapage2[3] = NTARAM2 + 0x400;
+				vnapage3[0] = vnapage3[1] = vnapage3[2] = vnapage3[3] = NTARAM3 + 0x400;
+				break;
+			}
+
+
+		}
+		if (wscre_32_2_3 == 0x3FF)
+		{
+			vnapage2[1] = vnapage2[0];
+			vnapage3[1] = vnapage3[0];
+		}
+
+
+
 	}
 	mirrorhard = hard;
 }
 
-#ifdef GEKKO
-uint8 *GENIEROM=0;
-#else
-static uint8 *GENIEROM=0;
-#endif
+static uint8 *GENIEROM = 0;
 
 void FixGenieMap(void);
 
-// Called when a game(file) is opened successfully. Returns TRUE on error.
-bool FCEU_OpenGenie(void)
-{
+/* Called when a game(file) is opened successfully. */
+void FCEU_OpenGenie(void) {
 	FILE *fp;
 	int x;
 
-	if (!GENIEROM)
-	{
+	if (!GENIEROM) {
 		char *fn;
 
-		if (!(GENIEROM = (uint8*)FCEU_malloc(4096 + 1024)))
-			return true;
+		if (!(GENIEROM = (uint8*)FCEU_malloc(4096 + 1024))) return;
 
-		fn = strdup(FCEU_MakeFName(FCEUMKF_GGROM, 0, 0).c_str());
+		fn = FCEU_MakeFName(FCEUMKF_GGROM, 0, 0);
 		fp = FCEUD_UTF8fopen(fn, "rb");
-		if (!fp)
-		{
-			FCEU_PrintError("Error opening Game Genie ROM image!\nIt should be named \"gg.rom\"!");
+		if (!fp) {
+			FCEU_PrintError("Error opening Game Genie ROM image!");
 			free(GENIEROM);
 			GENIEROM = 0;
-			return true;
+			return;
 		}
-		if (fread(GENIEROM, 1, 16, fp) != 16)
-		{
+		if (fread(GENIEROM, 1, 16, fp) != 16) {
  grerr:
 			FCEU_PrintError("Error reading from Game Genie ROM image!");
 			free(GENIEROM);
 			GENIEROM = 0;
 			fclose(fp);
-			return true;
+			return;
 		}
-		if (GENIEROM[0] == 0x4E)
-		{
-			/* iNES ROM image */
+		if (GENIEROM[0] == 0x4E) {	/* iNES ROM image */
 			if (fread(GENIEROM, 1, 4096, fp) != 4096)
 				goto grerr;
 			if (fseek(fp, 16384 - 4096, SEEK_CUR))
 				goto grerr;
 			if (fread(GENIEROM + 4096, 1, 256, fp) != 256)
 				goto grerr;
-		} else
-		{
+		} else {
 			if (fread(GENIEROM + 16, 1, 4352 - 16, fp) != (4352 - 16))
 				goto grerr;
 		}
@@ -400,13 +539,10 @@ bool FCEU_OpenGenie(void)
 
 		/* Workaround for the FCE Ultra CHR page size only being 1KB */
 		for (x = 0; x < 4; x++)
-		{
 			memcpy(GENIEROM + 4096 + (x << 8), GENIEROM + 4096, 256);
-		}
 	}
 
 	geniestage = 1;
-	return false;
 }
 
 /* Called when a game is closed. */
@@ -463,7 +599,7 @@ static readfunc GenieBackup[3];
 static DECLFR(GenieFix1) {
 	uint8 r = GenieBackup[0](A);
 
-	if ((modcon >> 1) & 1) // No check
+	if ((modcon >> 1) & 1)	/* No check */
 		return genieval[0];
 	else if (r == geniech[0])
 		return genieval[0];
@@ -474,7 +610,7 @@ static DECLFR(GenieFix1) {
 static DECLFR(GenieFix2) {
 	uint8 r = GenieBackup[1](A);
 
-	if ((modcon >> 2) & 1) // No check
+	if ((modcon >> 2) & 1)	/* No check */
 		return genieval[1];
 	else if (r == geniech[1])
 		return genieval[1];
@@ -485,7 +621,7 @@ static DECLFR(GenieFix2) {
 static DECLFR(GenieFix3) {
 	uint8 r = GenieBackup[2](A);
 
-	if ((modcon >> 3) & 1) // No check
+	if ((modcon >> 3) & 1)	/* No check */
 		return genieval[2];
 	else if (r == geniech[2])
 		return genieval[2];
@@ -504,7 +640,7 @@ void FixGenieMap(void) {
 
 	VPageR = VPage;
 	FlushGenieRW();
-	//printf("Rightyo\n");
+	/* printf("Rightyo\n"); */
 	for (x = 0; x < 3; x++)
 		if ((modcon >> (4 + x)) & 1) {
 			readfunc tmp[3] = { GenieFix1, GenieFix2, GenieFix3 };
@@ -537,48 +673,4 @@ void FCEU_GeniePower(void) {
 		VPageR = VPageG;
 	else
 		geniestage = 2;
-}
-
-
-void FCEU_SaveGameSave(CartInfo *LocalHWInfo) {
-	if (LocalHWInfo->battery && LocalHWInfo->SaveGame[0]) {
-		FILE *sp;
-
-		std::string soot = FCEU_MakeFName(FCEUMKF_SAV, 0, "sav");
-		if ((sp = FCEUD_UTF8fopen(soot, "wb")) == NULL) {
-			FCEU_PrintError("WRAM file \"%s\" cannot be written to.\n", soot.c_str());
-		} else {
-			for (int x = 0; x < 4; x++)
-				if (LocalHWInfo->SaveGame[x]) {
-					fwrite(LocalHWInfo->SaveGame[x], 1,
-						   LocalHWInfo->SaveGameLen[x], sp);
-				}
-		}
-	}
-}
-
-// hack, movie.cpp has to communicate with this function somehow
-int disableBatteryLoading = 0;
-
-void FCEU_LoadGameSave(CartInfo *LocalHWInfo) {
-	if (LocalHWInfo->battery && LocalHWInfo->SaveGame[0] && !disableBatteryLoading) {
-		FILE *sp;
-
-		std::string soot = FCEU_MakeFName(FCEUMKF_SAV, 0, "sav");
-		sp = FCEUD_UTF8fopen(soot, "rb");
-		if (sp != NULL) {
-			for (int x = 0; x < 4; x++)
-				if (LocalHWInfo->SaveGame[x])
-					fread(LocalHWInfo->SaveGame[x], 1, LocalHWInfo->SaveGameLen[x], sp);
-		}
-	}
-}
-
-//clears all save memory. call this if you want to pretend the saveram has been reset (it doesnt touch what is on disk though)
-void FCEU_ClearGameSave(CartInfo *LocalHWInfo) {
-	if (LocalHWInfo->battery && LocalHWInfo->SaveGame[0]) {
-		for (int x = 0; x < 4; x++)
-			if (LocalHWInfo->SaveGame[x])
-				memset(LocalHWInfo->SaveGame[x], 0, LocalHWInfo->SaveGameLen[x]);
-	}
 }

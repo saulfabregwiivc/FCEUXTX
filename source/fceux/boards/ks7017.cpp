@@ -45,7 +45,7 @@ static void Sync(void) {
 }
 
 static DECLFW(UNLKS7017Write) {
-//	FCEU_printf("bs %04x %02x\n",A,V);
+/*	FCEU_printf("bs %04x %02x\n",A,V); */
 	if ((A & 0xFF00) == 0x4A00) {
 		reg = ((A >> 2) & 3) | ((A >> 4) & 4);
 	} else if ((A & 0xFF00) == 0x5100) {
@@ -68,7 +68,7 @@ static DECLFR(FDSRead4030) {
 	return X.IRQlow & FCEU_IQEXT ? 1 : 0;
 }
 
-static void UNL7017IRQ(int a) {
+static void FP_FASTAPASS(1) UNL7017IRQ(int a) {
 	if (IRQa) {
 		IRQCount -= a;
 		if (IRQCount <= 0) {

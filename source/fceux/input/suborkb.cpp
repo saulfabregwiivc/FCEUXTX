@@ -38,13 +38,13 @@ static uint16 matrix[13][2][4] =
 	{ { AK(7), AK(Y), AK(K), AK(M) }, { AK(F4), AK(U), AK(8), AK(J) } },
 	{ { AK(MINUS), AK(SEMICOLON), AK(APOSTROPHE), AK(SLASH) }, { AK(F6), AK(P), AK(EQUALS), AK(LSHIFT) } },
 	{ { AK(T), AK(H), AK(N), AK(SPACE) }, { AK(F3), AK(R), AK(6), AK(B) } },
-	{ { AK(NUMPAD6), AK(GRETURN), AK(NUMPAD4), AK(NUMPAD8) }, { AK(NUMPAD2), 0, 0, 0 } },   // baibaidino actually uses diferent layot
+	{ { AK(NUMPAD6), AK(GRETURN), AK(NUMPAD4), AK(NUMPAD8) }, { AK(NUMPAD2), 0, 0, 0 } },   /* baibaidino actually uses diferent layout */
 	{ { AK(LMENU), AK(NUMPAD4), AK(NUMPAD7), AK(F11) }, { AK(F12), AK(NUMPAD1), AK(NUMPAD2), AK(NUMPAD8) } },
 	{ { AK(SUBTRACT), AK(ADD), AK(MULTIPLY), AK(NUMPAD9) }, { AK(F10), AK(NUMPAD5), AK(DIVIDE), AK(NUMLOCK) } },
 	{ { AK(GRAVE), AK(NUMPAD6), AK(PAUSE), AK(SPACE) },	 { AK(F9), AK(NUMPAD3), AK(DECIMAL), AK(NUMPAD0) } },
 };
 
-static void SuborKB_Write(uint8 v) {
+static void FP_FASTAPASS(1) SuborKB_Write(uint8 v) {
 	v >>= 1;
 	if (v & 2) {
 		if ((ksmode & 1) && !(v & 1))
@@ -53,7 +53,7 @@ static void SuborKB_Write(uint8 v) {
 	ksmode = v;
 }
 
-static uint8 SuborKB_Read(int w, uint8 ret) {
+static uint8 FP_FASTAPASS(2) SuborKB_Read(int w, uint8 ret) {
 	if (w) {
 		int x;
 
@@ -71,7 +71,7 @@ static void SuborKB_Strobe(void) {
 	ksindex = 0;
 }
 
-static void SuborKB_Update(void *data, int arg) {
+static void FP_FASTAPASS(2) SuborKB_Update(void *data, int arg) {
 	memcpy(bufit + 1, data, sizeof(bufit) - 1);
 }
 

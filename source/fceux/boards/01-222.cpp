@@ -19,7 +19,6 @@
  *
  * TXC mappers, originally much complex banksitching
  *
- * P/N           PRG            MAP, UNIF     Name
  * 01-22111-000 (05-00002-010) (132, 22211) - MGC-001 Qi Wang
  * 01-22110-000 (52S         )              - MGC-002 2-in-1 Gun
  * 01-22111-100 (02-00002-010) (173       ) - MGC-008 Mahjong Block
@@ -28,7 +27,6 @@
  * 01-22000-400 (05-00002-010) (036       ) - MGC-015 Policeman
  * 01-22017-000 (05-PT017-080) (189       ) - MGC-017 Thunder Warrior
  * 01-11160-000 (04-02310-000) (   , 11160) - MGC-023 6-in-1
- * 01-22026-000 (05-04010-090) (          ) - MGC-026 4-in-1
  * 01-22270-000 (05-00002-010) (132, 22211) - MGC-xxx Creatom
  * 01-22200-400 (------------) (079       ) - ET.03   F-15 City War
  *                             (172       ) -         1991 Du Ma Racing
@@ -48,29 +46,31 @@ static SFORMAT StateRegs[] =
 static void Sync(void) {
 	setprg32(0x8000, (reg[2] >> 2) & 1);
 	if (is172)
-		setchr8((((cmd ^ reg[2]) >> 3) & 2) | (((cmd ^ reg[2]) >> 5) & 1));	// 1991 DU MA Racing probably CHR bank sequence is WRONG, so it is possible to
-																			// rearrange CHR banks for normal UNIF board and mapper 172 is unneccessary
+		setchr8((((cmd ^ reg[2]) >> 3) & 2) | (((cmd ^ reg[2]) >> 5) & 1));	/* 1991 DU MA Racing probably CHR bank sequence is WRONG, so it is possible to
+																			 * rearrange CHR banks for normal UNIF board and mapper 172 is unneccessary */
 	else
 		setchr8(reg[2] & 3);
 }
 
 static DECLFW(UNL22211WriteLo) {
-//	FCEU_printf("bs %04x %02x\n",A,V);
+/*	FCEU_printf("bs %04x %02x\n",A,V); */
 	reg[A & 3] = V;
 }
 
 static DECLFW(UNL22211WriteHi) {
-//	FCEU_printf("bs %04x %02x\n",A,V);
+/*	FCEU_printf("bs %04x %02x\n",A,V); */
 	cmd = V;
 	Sync();
 }
 
 static DECLFR(UNL22211ReadLo) {
 	return (reg[1] ^ reg[2]) | (is173 ? 0x01 : 0x40);
-//	if(reg[3])
-//		return reg[2];
-//	else
-//		return X.DB;
+#if 0
+	if(reg[3])
+		return reg[2];
+	else
+		return X.DB;
+#endif
 }
 
 static void UNL22211Power(void) {

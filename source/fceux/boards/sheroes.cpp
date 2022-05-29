@@ -27,7 +27,7 @@ static uint8 tekker;
 static void MSHCW(uint32 A, uint8 V) {
 	if (EXPREGS[0] & 0x40)
 		setchr8r(0x10, 0);
-	else{
+	else {
 		if (A < 0x800)
 			setchr1(A, V | ((EXPREGS[0] & 8) << 5));
 		else if (A < 0x1000)

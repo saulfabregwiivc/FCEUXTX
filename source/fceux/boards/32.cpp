@@ -34,6 +34,7 @@ static SFORMAT StateRegs[] =
 };
 
 static void Sync(void) {
+	uint8 i;
 	uint16 swap = ((mirr & 2) << 13);
 	setmirror((mirr & 1) ^ 1);
 	setprg8r(0x10, 0x6000, 0);
@@ -41,7 +42,6 @@ static void Sync(void) {
 	setprg8(0xA000, preg[1]);
 	setprg8(0xC000 ^ swap, ~1);
 	setprg8(0xE000, ~0);
-	uint8 i;
 	for (i = 0; i < 8; i++)
 		setchr1(i << 10, creg[i]);
 }
@@ -68,18 +68,17 @@ static DECLFW(M32Write3) {
 
 static void M32Power(void) {
 	Sync();
-	SetReadHandler(0x6000,0x7fff,CartBR);
-	SetWriteHandler(0x6000,0x7fff,CartBW);
+	SetReadHandler(0x6000, 0x7fff, CartBR);
+	SetWriteHandler(0x6000, 0x7fff, CartBW);
 	SetReadHandler(0x8000, 0xFFFF, CartBR);
 	SetWriteHandler(0x8000, 0x8FFF, M32Write0);
 	SetWriteHandler(0x9000, 0x9FFF, M32Write1);
 	SetWriteHandler(0xA000, 0xAFFF, M32Write2);
 	SetWriteHandler(0xB000, 0xBFFF, M32Write3);
-	FCEU_CheatAddRAM(WRAMSIZE >> 10, 0x6000, WRAM);
+        FCEU_CheatAddRAM(WRAMSIZE >> 10, 0x6000, WRAM);
 }
 
-static void M32Close(void)
-{
+static void M32Close(void) {
 	if (WRAM)
 		FCEU_gfree(WRAM);
 	WRAM = NULL;

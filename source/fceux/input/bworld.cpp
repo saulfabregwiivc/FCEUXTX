@@ -21,54 +21,45 @@
 #include <string.h>
 #include "share.h"
 
-static int seq,ptr,bit,cnt,have;
-static uint8 bdata[32];
+static int seq, ptr, bit, cnt, have;
+static uint8 bdata[20];
 
 
-static uint8 Read(int w, uint8 ret)
-{
- if(w && have) 
- {
-  switch(seq)
-  {
-   case 0: seq++; ptr=0; ret|=0x4; break;
-   case 1: seq++; bit=bdata[ptr]; cnt=0; ret|=0x4; break;
-   case 2: ret|=((bit&0x01)^0x01)<<2; bit>>=1; if(++cnt > 7) seq++;
-	   break;
-   case 3: if(++ptr > 19)
-	   {
-	    seq=-1;
-	    have=0;
-	   }
-	   else
-	    seq=1;
-   default: break;
-  }
- }
- return(ret);
+static uint8 FP_FASTAPASS(2) Read(int w, uint8 ret) {
+	if (w && have) {
+		switch (seq) {
+		case 0: seq++; ptr = 0; ret |= 0x4; break;
+		case 1: seq++; bit = bdata[ptr]; cnt = 0; ret |= 0x4; break;
+		case 2: ret |= ((bit & 0x01) ^ 0x01) << 2; bit >>= 1; if (++cnt > 7) seq++;
+			break;
+		case 3: if (++ptr > 19) {
+				seq = -1;
+				have = 0;
+		} else
+				seq = 1;
+		default: break;
+		}
+	}
+	return(ret);
 }
 
-static void Write(uint8 V)
-{
- //printf("%02x\n",V);
+static void FP_FASTAPASS(1) Write(uint8 V) {
+	/* printf("%02x\n",V); */
 }
 
-static void Update(void *data, int arg)
-{
- if(*(uint8 *)data)
- {
-  *(uint8 *)data=0;
-  seq=ptr=0;
-  have=1;
-  strcpy((char*) bdata,      (char*) data + 1);    // mbg merge 7/17/06
-  strcpy((char*) bdata + 13, "SUNSOFT");           // mbg merge 0/17/06
- }
+static void FP_FASTAPASS(2) Update(void *data, int arg) {
+	if (*(uint8*)data) {
+		*(uint8*)data = 0;
+		seq = ptr = 0;
+		have = 1;
+		strcpy((char*)bdata, (const char*)((uint8*)data + 1));
+		memcpy((char*)&bdata[13], "SUNSOFT", 7);
+	}
 }
 
-static INPUTCFC BarcodeWorld={Read,Write,0,Update,0,0};
+static INPUTCFC BarcodeWorld = { Read, Write, 0, Update, 0, 0 };
 
-INPUTCFC *FCEU_InitBarcodeWorld(void)
-{
- return(&BarcodeWorld);
+INPUTCFC *FCEU_InitBarcodeWorld(void) {
+	return(&BarcodeWorld);
 }
 

@@ -16,18 +16,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * VRC-2/VRC-4 Konami
+ * VRC-4 Pirate
+ *
  */
 
 #include "mapinc.h"
 
-static bool isPirate;
-static uint8 is22, reg1mask, reg2mask;
+static uint8 isPirate, is22;
 static uint16 IRQCount;
 static uint8 IRQLatch, IRQa;
 static uint8 prgreg[2], chrreg[8];
 static uint16 chrhi[8];
 static uint8 regcmd, irqcmd, mirr, big_bank;
 static uint16 acount = 0;
+static uint16 weirdo = 0;
 
 static uint8 *WRAM = NULL;
 static uint32 WRAMSIZE;
@@ -37,7 +41,6 @@ static SFORMAT StateRegs[] =
 	{ prgreg, 2, "PREG" },
 	{ chrreg, 8, "CREG" },
 	{ chrhi, 16, "CRGH" },
-	{ &acount, 2, "ACNT" },
 	{ &regcmd, 1, "CMDR" },
 	{ &irqcmd, 1, "CMDI" },
 	{ &mirr, 1, "MIRR" },
@@ -60,10 +63,17 @@ static void Sync(void) {
 	setprg8(0xE000, ((~0) & 0x1F) | big_bank);
 	if (UNIFchrrama)
 		setchr8(0);
-	else{
+	else {
 		uint8 i;
-		for (i = 0; i < 8; i++)
-			setchr1(i << 10, (chrhi[i] | chrreg[i]) >> is22);
+		/* if (!weirdo) */
+			for (i = 0; i < 8; i++)
+				setchr1(i << 10, (chrhi[i] | chrreg[i]) >> is22);
+		/* else {
+			setchr1(0x0000, 0xFC);
+			setchr1(0x0400, 0xFD);
+			setchr1(0x0800, 0xFF);
+			weirdo--;
+		} */
 	}
 	switch (mirr & 0x3) {
 	case 0: setmirror(MI_V); break;
@@ -74,16 +84,16 @@ static void Sync(void) {
 }
 
 static DECLFW(VRC24Write) {
-	A = A & 0xF000 | !!(A & reg2mask) << 1 | !!(A & reg1mask);
+	A &= 0xF003;
 	if ((A >= 0xB000) && (A <= 0xE003)) {
 		if (UNIFchrrama)
-			big_bank = (V & 8) << 2;							// my personally many-in-one feature ;) just for support pirate cart 2-in-1
-		else{
+			big_bank = (V & 8) << 2;							/* my personally many-in-one feature ;) just for support pirate cart 2-in-1 */
+		else {
 			uint16 i = ((A >> 1) & 1) | ((A - 0xB000) >> 11);
 			uint16 nibble = ((A & 1) << 2);
 			chrreg[i] = (chrreg[i] & (0xF0 >> nibble)) | ((V & 0xF) << nibble);
-			if(nibble)
-				chrhi[i] = (V & 0x10) << 4;						// another one many in one feature from pirate carts
+			if (nibble)
+				chrhi[i] = (V & 0x10) << 4;						/* another one many in one feature from pirate carts */
 		}
 		Sync();
 	} else
@@ -103,7 +113,7 @@ static DECLFW(VRC24Write) {
 		case 0xA003:
 			if (!isPirate)
 				prgreg[1] = V & 0x1F;
-			else{
+			else {
 				prgreg[0] = (V & 0x1F) << 1;
 				prgreg[1] = ((V & 0x1F) << 1) | 1;
 			}
@@ -120,20 +130,75 @@ static DECLFW(VRC24Write) {
 		}
 }
 
-static void VRC24Power(void) {
-	big_bank = 0x20;
-	Sync();
-	if (WRAM) {
-		setprg8r(0x10, 0x6000, 0);
-		SetReadHandler(0x6000, 0x7FFF, CartBR);
-		SetWriteHandler(0x6000, 0x7FFF, CartBW);
-		FCEU_CheatAddRAM(WRAMSIZE >> 10, 0x6000, WRAM);
-	}
-	SetReadHandler(0x8000, 0xFFFF, CartBR);
-	SetWriteHandler(0x8000, 0xFFFF, VRC24Write);
+static DECLFW(M21Write) {
+	A = (A & 0xF000) | ((A >> 1) & 0x3) | ((A >> 6) & 0x3);		/* Ganbare Goemon Gaiden 2 - Tenka no Zaihou (J) [!] is Mapper 21*/
+	VRC24Write(A, V);
 }
 
-void VRC24IRQHook(int a) {
+static DECLFW(M22Write) {
+#if 0
+	/* Removed this hack, which was a bug in actual game cart.
+	 * http://forums.nesdev.com/viewtopic.php?f=3&t=6584
+	 */
+	if ((A >= 0xC004) && (A <= 0xC007)) {						/* Ganbare Goemon Gaiden does strange things!!! at the end credits
+		weirdo = 1;												 * quick dirty hack, seems there is no other games with such PCB, so
+																 * we never know if it will not work for something else lol
+																 */
+	}
+#endif
+	A |= ((A >> 2) & 0x3);										/* It's just swapped lines from 21 mapper
+																 */
+	VRC24Write((A & 0xF000) | ((A >> 1) & 1) | ((A << 1) & 2), V);
+}
+
+static DECLFW(M23Write) {
+	A |= ((A >> 2) & 0x3) | ((A >> 4) & 0x3);	/* actually there is many-in-one mapper source, some pirate or
+												 * licensed games use various address bits for registers
+												 */
+	VRC24Write(A, V);
+}
+
+static void M21Power(void) {
+	Sync();
+	setprg8r(0x10, 0x6000, 0);
+	SetReadHandler(0x6000, 0x7FFF, CartBR);
+	SetWriteHandler(0x6000, 0x7FFF, CartBW);
+	FCEU_CheatAddRAM(WRAMSIZE >> 10, 0x6000, WRAM);
+	SetReadHandler(0x8000, 0xFFFF, CartBR);
+	SetWriteHandler(0x8000, 0xFFFF, M21Write);
+}
+
+static void M22Power(void) {
+	Sync();
+	SetReadHandler(0x8000, 0xFFFF, CartBR);
+	SetWriteHandler(0x8000, 0xFFFF, M22Write);
+}
+
+static void M23Power(void) {
+	big_bank = 0x20;
+	Sync();
+	setprg8r(0x10, 0x6000, 0);	/* Only two Goemon games are have battery backed RAM, three more shooters
+								 * (Parodius Da!, Gradius 2 and Crisis Force uses 2k or SRAM at 6000-67FF only
+								 */
+	SetReadHandler(0x6000, 0x7FFF, CartBR);
+	SetWriteHandler(0x6000, 0x7FFF, CartBW);
+	SetReadHandler(0x8000, 0xFFFF, CartBR);
+	SetWriteHandler(0x8000, 0xFFFF, M23Write);
+	FCEU_CheatAddRAM(WRAMSIZE >> 10, 0x6000, WRAM);
+}
+
+static void M25Power(void) {
+	big_bank = 0x20;
+	Sync();
+	setprg8r(0x10, 0x6000, 0);
+	SetReadHandler(0x6000, 0x7FFF, CartBR);
+	SetWriteHandler(0x6000, 0x7FFF, CartBW);
+	SetReadHandler(0x8000, 0xFFFF, CartBR);
+	SetWriteHandler(0x8000, 0xFFFF, M22Write);
+	FCEU_CheatAddRAM(WRAMSIZE >> 10, 0x6000, WRAM);
+}
+
+void FP_FASTAPASS(1) VRC24IRQHook(int a) {
 	#define LCYCS 341
 	if (IRQa) {
 		acount += a * 3;
@@ -160,8 +225,16 @@ static void VRC24Close(void) {
 	WRAM = NULL;
 }
 
-static void VRC24_Init(CartInfo *info) {
-	info->Power = VRC24Power;
+void Mapper22_Init(CartInfo *info) {
+	isPirate = 0;
+	is22 = 1;
+	info->Power = M22Power;
+	GameStateRestore = StateRestore;
+
+	AddExState(&StateRegs, ~0, 0, 0);
+}
+
+void VRC24_Init(CartInfo *info) {
 	info->Close = VRC24Close;
 	MapIRQHook = VRC24IRQHook;
 	GameStateRestore = StateRestore;
@@ -171,56 +244,38 @@ static void VRC24_Init(CartInfo *info) {
 	SetupCartPRGMapping(0x10, WRAM, WRAMSIZE, 1);
 	AddExState(WRAM, WRAMSIZE, 0, "WRAM");
 
-	if(info->battery) {
-		info->SaveGame[0]=WRAM;
-		info->SaveGameLen[0]=WRAMSIZE;
+	if (info->battery) {
+		info->SaveGame[0] = WRAM;
+		info->SaveGameLen[0] = WRAMSIZE;
 	}
 
 	AddExState(&StateRegs, ~0, 0, 0);
 }
 
 void Mapper21_Init(CartInfo *info) {
-	isPirate = false;
+	isPirate = 0;
 	is22 = 0;
-	reg1mask = 0x42;
-	reg2mask = 0x84;
+	info->Power = M21Power;
 	VRC24_Init(info);
 }
 
-void Mapper22_Init(CartInfo *info) {
-	isPirate = false;
-	is22 = 1;
-	reg1mask = 2;
-	reg2mask = 1;
-
-	// no IRQ (all mapper 22 games are VRC2)
-	// no WRAM
-	info->Power = VRC24Power;
-	GameStateRestore = StateRestore;
-
-	AddExState(&StateRegs, ~0, 0, 0);
-}
-
 void Mapper23_Init(CartInfo *info) {
-	isPirate = false;
+	isPirate = 0;
 	is22 = 0;
-	reg1mask = 0x15;
-	reg2mask = 0x2a;
+	info->Power = M23Power;
 	VRC24_Init(info);
 }
 
 void Mapper25_Init(CartInfo *info) {
-	isPirate = false;
+	isPirate = 0;
 	is22 = 0;
-	reg1mask = 0xa;
-	reg2mask = 0x5;
+	info->Power = M25Power;
 	VRC24_Init(info);
 }
 
 void UNLT230_Init(CartInfo *info) {
-	isPirate = true;
+	isPirate = 1;
 	is22 = 0;
-	reg1mask = 0x15;
-	reg2mask = 0x2a;
+	info->Power = M23Power;
 	VRC24_Init(info);
 }

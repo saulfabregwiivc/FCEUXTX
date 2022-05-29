@@ -1,7 +1,14 @@
 #ifndef _EMU2413_H_
 #define _EMU2413_H_
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <math.h>
+#include "../fceu-types.h"
+
 #ifndef INLINE
+
 #if defined(_MSC_VER)
 #define INLINE __forceinline
 #elif defined(__GNUC__)
@@ -13,28 +20,9 @@
 #endif
 #endif
 
+
 #ifdef __cplusplus
 extern "C" {
-#endif
-
-#ifdef GEKKO
-typedef uint8_t uint8 ;
-typedef int8_t int8 ;
-
-typedef uint16_t uint16 ;
-typedef int16_t int16 ;
-
-typedef uint32_t uint32 ;
-typedef int32_t int32 ;
-#else
-typedef unsigned char uint8 ;
-typedef signed char int8 ;
-
-typedef unsigned short uint16 ;
-typedef signed short int16 ;
-
-typedef unsigned int uint32 ;
-typedef signed int int32 ;
 #endif
 
 #define PI 3.14159265358979323846
@@ -50,29 +38,29 @@ typedef struct {
 typedef struct {
 	OPLL_PATCH patch;
 
-	int32 type;         /* 0 : modulator 1 : carrier */
+	int32 type;			/* 0 : modulator 1 : carrier */
 
 	/* OUTPUT */
 	int32 feedback;
-	int32 output[2];  /* Output value of slot */
+	int32 output[2];	/* Output value of slot */
 
 	/* for Phase Generator (PG) */
-	uint16 *sintbl;   /* Wavetable */
-	uint32 phase;     /* Phase */
-	uint32 dphase;    /* Phase increment amount */
-	uint32 pgout;     /* output */
+	uint16 *sintbl;		/* Wavetable */
+	uint32 phase;		/* Phase */
+	uint32 dphase;		/* Phase increment amount */
+	uint32 pgout;		/* output */
 
 	/* for Envelope Generator (EG) */
-	int32 fnum;         /* F-Number */
-	int32 block;        /* Block */
-	int32 volume;       /* Current volume */
-	int32 sustine;      /* Sustine 1 = ON, 0 = OFF */
-	uint32 tll;             /* Total Level + Key scale level*/
-	uint32 rks;       /* Key scale offset (Rks) */
-	int32 eg_mode;      /* Current state */
-	uint32 eg_phase;  /* Phase */
-	uint32 eg_dphase; /* Phase increment amount */
-	uint32 egout;     /* output */
+	int32 fnum;			/* F-Number */
+	int32 block;		/* Block */
+	int32 volume;		/* Current volume */
+	int32 sustine;		/* Sustine 1 = ON, 0 = OFF */
+	uint32 tll;			/* Total Level + Key scale level*/
+	uint32 rks;			/* Key scale offset (Rks) */
+	int32 eg_mode;		/* Current state */
+	uint32 eg_phase;	/* Phase */
+	uint32 eg_dphase;	/* Phase increment amount */
+	uint32 egout;		/* output */
 } OPLL_SLOT;
 
 /* Mask */

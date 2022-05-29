@@ -34,7 +34,7 @@ static void Sync(void) {
 	if (regs[0] & 0x80) {
 		if (regs[1] & 0x80)
 			setprg32(0x8000, regs[1] & 0x1F);
-		else{
+		else {
 			int bank = ((regs[1] & 0x1f) << 1) | ((regs[1] >> 6) & 1);
 			setprg16(0x8000, bank);
 			setprg16(0xC000, bank);

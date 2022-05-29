@@ -16,6 +16,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * FDS Conversion
+ *
  */
 
 #include "mapinc.h"
@@ -42,10 +45,10 @@ static DECLFW(AC08Mirr) {
 }
 
 static DECLFW(AC08Write) {
-	if (A == 0x8001)             // Green Berret bank switching is only 100x xxxx xxxx xxx1 mask
+	if (A == 0x8001)			/* Green Berret bank switching is only 100x xxxx xxxx xxx1 mask */
 		reg = (V >> 1) & 0xf;
 	else
-		reg = V & 0xf;          // Sad But True, 2-in-1 mapper, Green Berret need value shifted left one byte, Castlevania doesn't
+		reg = V & 0xf;			/* Sad But True, 2-in-1 mapper, Green Berret need value shifted left one byte, Castlevania doesn't */
 	Sync();
 }
 

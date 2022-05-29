@@ -16,6 +16,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * FDS Conversion
+ *
  */
 
 #include "mapinc.h"
@@ -35,7 +38,6 @@ static void MALEEPower(void) {
 
 void MALEE_Init(CartInfo *info) {
 	info->Power = MALEEPower;
-	FCEU_MemoryRand(WRAM,sizeof(WRAM),true);
 	SetupCartPRGMapping(0x10, WRAM, 2048, 1);
 	AddExState(WRAM, 2048, 0, "WRAM");
 }

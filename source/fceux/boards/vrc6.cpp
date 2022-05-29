@@ -59,7 +59,7 @@ static SFORMAT SStateRegs[] =
 
 static void Sync(void) {
 	uint8 i;
-	if (is26)
+//	if (is26)
 		setprg8r(0x10, 0x6000, 0);
 	setprg16(0x8000, prg[0]);
 	setprg8(0xc000, prg[1]);
@@ -133,7 +133,7 @@ static void VRC6Power(void) {
 static void VRC6IRQHook(int a) {
 	if (IRQa) {
 		CycleCount += a * 3;
-		while(CycleCount >= 341) {
+		while (CycleCount >= 341) {
 			CycleCount -= 341;
 			IRQCount++;
 			if (IRQCount == 0x100) {
@@ -144,8 +144,7 @@ static void VRC6IRQHook(int a) {
 	}
 }
 
-static void VRC6Close(void)
-{
+static void VRC6Close(void) {
 	if (WRAM)
 		FCEU_gfree(WRAM);
 	WRAM = NULL;
@@ -155,7 +154,7 @@ static void StateRestore(int version) {
 	Sync();
 }
 
-// VRC6 Sound
+/* VRC6 Sound */
 
 static void DoSQV1(void);
 static void DoSQV2(void);
@@ -338,10 +337,9 @@ static void VRC6_ESI(void) {
 		}
 	} else
 		memset(sfun, 0, sizeof(sfun));
-	AddExState(&SStateRegs, ~0, 0, 0);
 }
 
-// VRC6 Sound
+/* VRC6 Sound */
 
 void Mapper24_Init(CartInfo *info) {
 	is26 = 0;
@@ -349,6 +347,15 @@ void Mapper24_Init(CartInfo *info) {
 	MapIRQHook = VRC6IRQHook;
 	VRC6_ESI();
 	GameStateRestore = StateRestore;
+			WRAMSIZE = 8192;
+	WRAM = (uint8*)FCEU_gmalloc(WRAMSIZE);
+	SetupCartPRGMapping(0x10, WRAM, WRAMSIZE, 1);
+	AddExState(WRAM, WRAMSIZE, 0, "WRAM");
+	if (info->battery) {
+		info->SaveGame[0] = WRAM;
+		info->SaveGameLen[0] = WRAMSIZE;
+	}
+	AddExState(&SStateRegs, ~0, 0, 0);
 	AddExState(&StateRegs, ~0, 0, 0);
 }
 
@@ -368,11 +375,12 @@ void Mapper26_Init(CartInfo *info) {
 		info->SaveGame[0] = WRAM;
 		info->SaveGameLen[0] = WRAMSIZE;
 	}
-
+	AddExState(&SStateRegs, ~0, 0, 0);
 	AddExState(&StateRegs, ~0, 0, 0);
 }
 
 void NSFVRC6_Init(void) {
 	VRC6_ESI();
 	SetWriteHandler(0x8000, 0xbfff, VRC6SW);
+	AddExState(&SStateRegs, ~0, 0, 0);
 }

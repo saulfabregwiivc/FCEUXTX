@@ -33,7 +33,7 @@ static void Super24PW(uint32 A, uint8 V) {
 static void Super24CW(uint32 A, uint8 V) {
 	if (EXPREGS[0] & 0x20)
 		setchr1r(0x10, A, V);
-	else{
+	else {
 		uint32 NV = V | (EXPREGS[2] << 3);
 		setchr1r((NV >> 9) & 0xF, A, NV);
 	}

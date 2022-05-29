@@ -16,6 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * FDS Conversion
+ *
+ * Bubble Bobble CHR-ROM version
+ *
  */
 
 #include "mapinc.h"
@@ -39,7 +44,7 @@ static DECLFW(UNLBBWrite) {
 	if ((A & 0x9000) == 0x8000)
 		reg = chr = V;
 	else
-		chr = V & 1;  // hacky hacky, ProWres simplified FDS conversion 2-in-1 mapper
+		chr = V & 1;	/* hacky hacky, ProWres simplified FDS conversion 2-in-1 mapper */
 	Sync();
 }
 

@@ -22,22 +22,23 @@
 /* **INCOMPLETE**             */
 /* Override stuff: CHR RAM instead of CHR ROM,   mirroring. */
 
-#include "types.h"
-#include "fceu.h"
-#include "cart.h"
-#include "unif.h"
-#include "ines.h"
-#include "utils/endian.h"
-#include "utils/memory.h"
-#include "utils/md5.h"
-#include "state.h"
-#include "file.h"
-#include "input.h"
-#include "driver.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
+
+#include  "fceu-types.h"
+#include  "fceu.h"
+#include  "cart.h"
+#include  "unif.h"
+#include  "ines.h"
+#include  "general.h"
+#include  "state.h"
+#include  "fceu-endian.h"
+#include  "file.h"
+#include  "fceu-memory.h"
+#include  "input.h"
+#include  "md5.h"
 
 typedef struct {
 	char ID[4];
@@ -45,21 +46,17 @@ typedef struct {
 } UNIF_HEADER;
 
 typedef struct {
-	const char *name;
+	char *name;
 	void (*init)(CartInfo *);
 	int flags;
 } BMAPPING;
 
 typedef struct {
-	const char *name;
+	char *name;
 	int (*init)(FCEUFILE *fp);
 } BFMAPPING;
 
-#ifdef GEKKO
 CartInfo UNIFCart;
-#else
-static CartInfo UNIFCart;
-#endif
 
 static int vramo;
 static int mirrortodo;
@@ -118,7 +115,6 @@ static void MooMirroring(void) {
 	if (mirrortodo < 0x4)
 		SetupCartMirroring(mirrortodo, 1, 0);
 	else if (mirrortodo == 0x4) {
-		FCEU_MemoryRand(exntar, sizeof(exntar), true);
 		SetupCartMirroring(4, 1, exntar);
 		AddExState(exntar, 2048, 0, "EXNR");
 	} else
@@ -133,7 +129,7 @@ static int DoMirroring(FCEUFILE *fp) {
 			return(0);
 		mirrortodo = t;
 		{
-			static const char *stuffo[6] = { "Horizontal", "Vertical", "$2000", "$2400", "\"Four-screen\"", "Controlled by Mapper Hardware" };
+			static char *stuffo[6] = { "Horizontal", "Vertical", "$2000", "$2400", "\"Four-screen\"", "Controlled by Mapper Hardware" };
 			if (t < 6)
 				FCEU_printf(" Name/Attribute Table Mirroring: %s\n", stuffo[t]);
 		}
@@ -155,7 +151,7 @@ static int NAME(FCEUFILE *fp) {
 	int index;
 	int t;
 
-	FCEU_printf(" Name: ");
+	/* FCEU_printf(" Name: "); */
 	index = 0;
 
 	while ((t = FCEU_fgetc(fp)) > 0)
@@ -163,11 +159,11 @@ static int NAME(FCEUFILE *fp) {
 			namebuf[index++] = t;
 
 	namebuf[index] = 0;
-	FCEU_printf("%s\n", namebuf);
+	FCEU_printf(" Name: %s\n", namebuf);
 
 	if (!GameInfo->name) {
-		GameInfo->name = (uint8*)malloc(strlen(namebuf) + 1); //mbg merge 7/17/06 added cast
-		strcpy((char*)GameInfo->name, namebuf); //mbg merge 7/17/06 added cast
+		GameInfo->name = malloc(strlen(namebuf) + 1);
+		strcpy((char*)GameInfo->name, namebuf);
 	}
 	return(1);
 }
@@ -194,7 +190,7 @@ static int DINF(FCEUFILE *fp) {
 	FCEU_printf(" Dumped by: %s\n", name);
 	FCEU_printf(" Dumped with: %s\n", method);
 	{
-		const char *months[12] = {
+		char *months[12] = {
 			"January", "February", "March", "April", "May", "June", "July",
 			"August", "September", "October", "November", "December"
 		};
@@ -236,14 +232,11 @@ static int TVCI(FCEUFILE *fp) {
 	if ((t = FCEU_fgetc(fp)) == EOF)
 		return(0);
 	if (t <= 2) {
-		const char *stuffo[3] = { "NTSC", "PAL", "NTSC and PAL" };
-		if (t == 0) {
+		char *stuffo[3] = { "NTSC", "PAL", "NTSC and PAL" };
+		if (t == 0)
 			GameInfo->vidsys = GIV_NTSC;
-			FCEUI_SetVidSystem(0);
-		} else if (t == 1) {
+		else if (t == 1)
 			GameInfo->vidsys = GIV_PAL;
-			FCEUI_SetVidSystem(1);
-		}
 		FCEU_printf(" TV Standard Compatibility: %s\n", stuffo[t]);
 	}
 	return(1);
@@ -263,7 +256,7 @@ static int LoadPRG(FCEUFILE *fp) {
 
 	if (z < 0 || z > 15)
 		return(0);
-	FCEU_printf(" PRG ROM %d size: %d", z, (int)uchead.info);
+	FCEU_printf(" PRG ROM %d size: %d\n", z, (int)uchead.info);
 	if (malloced[z])
 		free(malloced[z]);
 	t = FixRomSize(uchead.info, 2048);
@@ -274,8 +267,8 @@ static int LoadPRG(FCEUFILE *fp) {
 	if (FCEU_fread(malloced[z], 1, uchead.info, fp) != uchead.info) {
 		FCEU_printf("Read Error!\n");
 		return(0);
-	} else
-		FCEU_printf("\n");
+	} /* else
+		FCEU_printf("\n"); */
 
 	SetupCartPRGMapping(z, malloced[z], t, 0);
 	return(1);
@@ -298,7 +291,7 @@ static int LoadCHR(FCEUFILE *fp) {
 	z = uchead.ID[3] - '0';
 	if (z < 0 || z > 15)
 		return(0);
-	FCEU_printf(" CHR ROM %d size: %d", z, (int)uchead.info);
+	FCEU_printf(" CHR ROM %d size: %d\n", z, (int)uchead.info);
 	if (malloced[16 + z])
 		free(malloced[16 + z]);
 	t = FixRomSize(uchead.info, 8192);
@@ -309,8 +302,8 @@ static int LoadCHR(FCEUFILE *fp) {
 	if (FCEU_fread(malloced[16 + z], 1, uchead.info, fp) != uchead.info) {
 		FCEU_printf("Read Error!\n");
 		return(0);
-	} else
-		FCEU_printf("\n");
+	} /* else
+		FCEU_printf("\n"); */
 
 	SetupCartCHRMapping(z, malloced[16 + z], t, 0);
 	return(1);
@@ -353,7 +346,7 @@ static BMAPPING bmap[] = {
 	{ "CNROM", CNROM_Init, 0 },
 	{ "CPROM", CPROM_Init, BMCFLAG_16KCHRR },
 	{ "D1038", BMCD1038_Init, 0 },
-	{ "DANCE", UNLOneBus_Init, 0 },	// redundant
+	{ "DANCE", UNLOneBus_Init, 0 },	/* redundant */
 	{ "DANCE2000", UNLD2000_Init, 0 },
 	{ "DREAMTECH01", DreamTech01_Init, 0 },
 	{ "EDU2000", UNLEDU2000_Init, 0 },
@@ -372,8 +365,7 @@ static BMAPPING bmap[] = {
 	{ "H2288", UNLH2288_Init, 0 },
 	{ "HKROM", HKROM_Init, 0 },
 	{ "KOF97", UNLKOF97_Init, 0 },
-	{ "KONAMI-QTAI", QTAi_Init, 0 },
-	{ "KS7010", UNLKS7010_Init, 0 },
+	{ "KONAMI-QTAI", Mapper190_Init, 0 },
 	{ "KS7012", UNLKS7012_Init, 0 },
 	{ "KS7013B", UNLKS7013B_Init, 0 },
 	{ "KS7016", UNLKS7016_Init, 0 },
@@ -399,7 +391,6 @@ static BMAPPING bmap[] = {
 	{ "NovelDiamond9999999in1", Novel_Init, 0 },
 	{ "OneBus", UNLOneBus_Init, 0 },
 	{ "PEC-586", UNLPEC586Init, 0 },
-	{ "RET-CUFROM", Mapper29_Init, BMCFLAG_32KCHRR },
 	{ "RROM", NROM_Init, 0 },
 	{ "RROM-128", NROM_Init, 0 },
 	{ "SA-002", TCU02_Init, 0 },
@@ -427,9 +418,9 @@ static BMAPPING bmap[] = {
 	{ "SNROM", SNROM_Init, 0 },
 	{ "SOROM", SOROM_Init, 0 },
 	{ "SSS-NROM-256", SSSNROM_Init, 0 },
-	{ "SUNSOFT_UNROM", SUNSOFT_UNROM_Init, 0 },	// fix me, real pcb name, real pcb type
+	{ "SUNSOFT_UNROM", SUNSOFT_UNROM_Init, 0 },	/* fix me, real pcb name, real pcb type */
 	{ "Sachen-74LS374N", S74LS374N_Init, 0 },
-	{ "Sachen-74LS374NA", S74LS374NA_Init, 0 },	//seems to be custom mapper
+	{ "Sachen-74LS374NA", S74LS374NA_Init, 0 },	/* seems to be custom mapper */
 	{ "Sachen-8259A", S8259A_Init, 0 },
 	{ "Sachen-8259B", S8259B_Init, 0 },
 	{ "Sachen-8259C", S8259C_Init, 0 },
@@ -463,7 +454,6 @@ static BMAPPING bmap[] = {
 	{ "UOROM", UNROM_Init, 0 },
 	{ "VRC7", UNLVRC7_Init, 0 },
 	{ "YOKO", UNLYOKO_Init, 0 },
-	{ "SB-2000", UNLSB2000_Init, 0 },
 	{ "COOLBOY", COOLBOY_Init, BMCFLAG_256KCHRR },
 	{ "158B", UNL158B_Init, 0 },
 	{ "DRAGONFIGHTER", UNLBMW8544_Init, 0 },
@@ -473,14 +463,13 @@ static BMAPPING bmap[] = {
 	{ "RT-01", UNLRT01_Init, 0 },
 	{ "81-01-31-C", BMC810131C_Init, 0 },
 	{ "8-IN-1", BMC8IN1_Init, 0 },
-	{ "80013-B", BMC80013B_Init, 0 },
-	{ "HPxx", BMCHPxx_Init, 0 },
-	{ "MINDKIDS", MINDKIDS_Init, BMCFLAG_256KCHRR },
-	{ "FNS", FNS_Init, BMCFLAG_16KCHRR },
-	{ "BS-400R", BS400R_Init, 0 },
-	{ "BS-4040R", BS4040R_Init, 0 },
 
-	{ 0, 0, 0 }
+#ifdef COPYFAMI
+	{ "COPYFAMI_MMC3", MapperCopyFamiMMC3_Init, 0 },
+	{ "COPYFAMI", MapperCopyFami_Init, 0 },
+#endif
+
+	{ NULL, NULL, 0 }
 };
 
 static BFMAPPING bfunc[] = {
@@ -520,7 +509,7 @@ int LoadUNIFChunks(FCEUFILE *fp) {
 			x++;
 		}
 		if (!t)
-			if (FCEU_fseek(fp, uchead.info, SEEK_CUR) < 0)
+			if (FCEU_fseek(fp, uchead.info, SEEK_CUR))
 				return(0);
 	}
 }
@@ -543,30 +532,27 @@ static int InitializeBoard(void) {
 					CHRRAMSize = 256;
 				else
 					CHRRAMSize = 8;
-				CHRRAMSize <<= 10;
+                CHRRAMSize <<= 10;
 				if ((UNIFchrrama = (uint8*)FCEU_malloc(CHRRAMSize))) {
 					SetupCartCHRMapping(0, UNIFchrrama, CHRRAMSize, 1);
 					AddExState(UNIFchrrama, CHRRAMSize, 0, "CHRR");
 				} else
-					return 2;
+					return(-1);
 			}
 			if (bmap[x].flags & BMCFLAG_FORCE4)
 				mirrortodo = 4;
 			MooMirroring();
 			bmap[x].init(&UNIFCart);
-			return 0;
+			return(1);
 		}
 		x++;
 	}
-	return 1;
+	FCEU_PrintError("Board type not supported.");
+	return(0);
 }
 
-static void UNIFGI(GI h) {
+static void UNIFGI(int h) {
 	switch (h) {
-	case GI_RESETSAVE:
-		FCEU_ClearGameSave(&UNIFCart);
-		break;
-
 	case GI_RESETM2:
 		if (UNIFCart.Reset)
 			UNIFCart.Reset();
@@ -577,9 +563,6 @@ static void UNIFGI(GI h) {
 		if (UNIFchrrama) memset(UNIFchrrama, 0, 8192);
 		break;
 	case GI_CLOSE:
-		#ifndef GEKKO
-		FCEU_SaveGameSave(&UNIFCart);
-		#endif
 		if (UNIFCart.Close)
 			UNIFCart.Close();
 		FreeUNIF();
@@ -591,58 +574,60 @@ int UNIFLoad(const char *name, FCEUFILE *fp) {
 	FCEU_fseek(fp, 0, SEEK_SET);
 	FCEU_fread(&unhead, 1, 4, fp);
 	if (memcmp(&unhead, "UNIF", 4))
-		return LOADER_INVALID_FORMAT;
+		return 0;
 
 	ResetCartMapping();
 
 	ResetExState(0, 0);
 	ResetUNIF();
-	if (!FCEU_read32le(&unhead.info, fp)
-		|| (FCEU_fseek(fp, 0x20, SEEK_SET) < 0)
-		|| !LoadUNIFChunks(fp))
+	if (!FCEU_read32le(&unhead.info, fp))
+		goto aborto;
+	if (FCEU_fseek(fp, 0x20, SEEK_SET) < 0)
+		goto aborto;
+	if (!LoadUNIFChunks(fp))
+		goto aborto;
 	{
-		FreeUNIF();
-		ResetUNIF();
-		FCEU_PrintError("Error reading UNIF ROM image.");
-		return LOADER_HANDLED_ERROR;
+		int x;
+		struct md5_context md5;
+
+		md5_starts(&md5);
+
+		for (x = 0; x < 32; x++)
+			if (malloced[x]) {
+				md5_update(&md5, malloced[x], mallocedsizes[x]);
+			}
+		md5_finish(&md5, UNIFCart.MD5);
+		FCEU_printf(" ROM MD5:  0x%s\n", md5_asciistr(UNIFCart.MD5));
+		memcpy(GameInfo->MD5, UNIFCart.MD5, sizeof(UNIFCart.MD5));
 	}
 
-	struct md5_context md5;
-	md5_starts(&md5);
-	for (int x = 0; x < 32; x++)
-		if (malloced[x]) {
-			md5_update(&md5, malloced[x], mallocedsizes[x]);
-		}
-	md5_finish(&md5, UNIFCart.MD5);
-	FCEU_printf(" ROM MD5:  0x");
-	for (int x = 0; x < 16; x++)
-		FCEU_printf("%02x", UNIFCart.MD5[x]);
-	FCEU_printf("\n");
-	memcpy(&GameInfo->MD5, &UNIFCart.MD5, sizeof(UNIFCart.MD5));
+	if (!InitializeBoard())
+		goto aborto;
 
-	int result = InitializeBoard();
-	switch (result)
-	{
-	case 0:
-		goto init_ok;
-	case 1:
-		FCEU_PrintError("UNIF mapper \"%s\" is not supported at all.", sboardname);
-		break;
-	case 2:
-		FCEU_PrintError("Unable to allocate CHR-RAM.");
-		break;
-	}
+	GameInterface = UNIFGI;
+	return 1;
+
+ aborto:
+
 	FreeUNIF();
 	ResetUNIF();
-	return LOADER_HANDLED_ERROR;
+	return 0;
+}
 
-init_ok:
+int CopyFamiLoad() {
+	ResetCartMapping();
+	ResetExState(0, 0);
 
-	#ifndef GEKKO
-	FCEU_LoadGameSave(&UNIFCart);
-	#endif
-	strcpy(LoadedRomFName, name); //For the debugger list
+	sboardname = (uint8_t*)"COPYFAMI";
+	if (!InitializeBoard())
+		goto aborto;
+
 	GameInterface = UNIFGI;
-	currCartInfo = &UNIFCart;
-	return LOADER_OK;
+	return 1;
+
+ aborto:
+
+	FreeUNIF();
+	ResetUNIF();
+	return 0;
 }

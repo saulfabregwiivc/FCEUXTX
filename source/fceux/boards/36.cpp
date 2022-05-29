@@ -22,12 +22,11 @@
 
 #include "mapinc.h"
 
-static uint8 latche, mirr;
+static uint8 latche;
 
 static SFORMAT StateRegs[] =
 {
 	{ &latche, 1, "LATC" },
-	{ &mirr, 1, "MIRR" },
 	{ 0 }
 };
 
@@ -37,17 +36,12 @@ static void Sync(void) {
 }
 
 static DECLFW(M36Write) {
-	
-	switch((A>>12)&7) {				// need to 4-in-1 MGC-26 BMC, doesnt break other games though
-		case 0: mirr = MI_V; setmirror(mirr); break;
-		case 4: mirr = MI_H; setmirror(mirr); break;
-	}
 	latche = V;
 	Sync();
 }
 
 static DECLFR(M36Read) {
-	return latche;  // Need by Strike Wolf, being simplified mapper, this cart still uses some TCX mapper features andrely on it
+	return latche;	/* Need by Strike Wolf, being simplified mapper, this cart still uses some TCX mapper features andrely on it */
 }
 
 static void M36Power(void) {
@@ -55,7 +49,7 @@ static void M36Power(void) {
 	Sync();
 	SetReadHandler(0x4100, 0x4100, M36Read);
 	SetReadHandler(0x8000, 0xFFFF, CartBR);
-	SetWriteHandler(0x8000, 0xFFFE, M36Write);  // Actually, BUS conflict there preventing from triggering the wrong banks
+	SetWriteHandler(0x8000, 0xFFFE, M36Write);	/* Actually, BUS conflict there preventing from triggering the wrong banks */
 }
 
 static void M36Restore(int version) {

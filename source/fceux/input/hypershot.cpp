@@ -21,30 +21,26 @@
 #include <string.h>
 #include "share.h"
 
-static uint8 HSVal,HSValR;
+static uint8 HSVal, HSValR;
 
 
-static uint8 HS_Read(int w, uint8 ret)
-{
- if(w) ret|=HSValR;
+static uint8 FP_FASTAPASS(2) HS_Read(int w, uint8 ret) {
+	if (w) ret |= HSValR;
 
- return(ret);
+	return(ret);
 }
 
-static void HS_Strobe(void)
-{
- HSValR=HSVal<<1;
+static void HS_Strobe(void) {
+	HSValR = HSVal << 1;
 }
 
-static void HS_Update(void *data, int arg)
-{
- HSVal=*(uint8*)data;
+static void FP_FASTAPASS(2) HS_Update(void *data, int arg) {
+	HSVal = *(uint8*)data;
 }
 
-static INPUTCFC HyperShot={HS_Read,0,HS_Strobe,HS_Update,0,0};
+static INPUTCFC HyperShot = { HS_Read, 0, HS_Strobe, HS_Update, 0, 0 };
 
-INPUTCFC *FCEU_InitHS(void)
-{
- HSVal=HSValR=0;
- return(&HyperShot);
+INPUTCFC *FCEU_InitHS(void) {
+	HSVal = HSValR = 0;
+	return(&HyperShot);
 }

@@ -61,7 +61,7 @@ static void M234Reset(void) {
 }
 
 static void M234Power(void) {
-    M234Reset();
+	M234Reset();
 	SetReadHandler(0x8000, 0xFFFF, CartBR);
 	SetReadHandler(0xFF80, 0xFF9F, M234ReadBank);
 	SetReadHandler(0xFFE8, 0xFFF7, M234ReadPreg);

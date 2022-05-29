@@ -1,958 +1,497 @@
-/// \file
-/// \brief Implements core debugging facilities
-#include "types.h"
+/* FCE Ultra - NES/Famicom Emulator
+ *
+ * Copyright notice for this file:
+ *  Copyright (C) 2003 Xodnizel
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+#include "fceu-types.h"
 #include "x6502.h"
 #include "fceu.h"
-#include "cart.h"
-#include "ines.h"
 #include "debug.h"
-#include "driver.h"
-#include "ppu.h"
+#include "cart.h"
 
-#include "x6502abbrev.h"
 
-#include <cstdlib>
-#include <cstring>
+void FCEUI_DumpVid(const char *fname, uint32 start, uint32 end) {
+	FILE *fp = FCEUD_UTF8fopen(fname, "wb");
+	fceuindbg = 1;
+	start &= 0x3FFF;
+	end &= 0x3FFF;
+	for (; start <= end; start++)
+		fputc(VPage[start >> 10][start], fp);
+	fclose(fp);
+	fceuindbg = 0;
+}
 
-unsigned int debuggerPageSize = 14;
-int vblankScanLines = 0;	//Used to calculate scanlines 240-261 (vblank)
-int vblankPixel = 0;		//Used to calculate the pixels in vblank
+void FCEUI_DumpMem(const char *fname, uint32 start, uint32 end) {
+	FILE *fp = FCEUD_UTF8fopen(fname, "wb");
+	fceuindbg = 1;
+	for (; start <= end; start++)
+		fputc(ARead[start](start), fp);
+	fclose(fp);
+	fceuindbg = 0;
+}
 
-int offsetStringToInt(unsigned int type, const char* offsetBuffer)
+void FCEUI_LoadMem(const char *fname, uint32 start, int hl) {
+	int t;
+
+	FILE *fp = FCEUD_UTF8fopen(fname, "rb");
+	while ((t = fgetc(fp)) >= 0) {
+		if (start > 0xFFFF) break;
+		if (hl) {
+			extern uint8 *Page[32];
+			if (Page[start / 2048])
+				Page[start / 2048][start] = t;
+		} else
+			BWrite[start](start, t);
+		start++;
+	}
+	fclose(fp);
+}
+
+#ifdef FCEUDEF_DEBUGGER
+
+static char *fstrings[12] =
 {
-	int offset = -1;
+	"#$%02X",		/* immediate */
+	"$%04X",		/* RELATIVE(jump) */
+	"$%02X",		/* Z */
+	"$%02X,X",		/* Z,x */
+	"$%02X,Y",		/* Z,y */
+	"$%04X",		/*ABS */
+	"$%04X,X",		/* ABS,x */
+	"$%04X,Y",		/* ABS,y */
+	"($%04X)",		/* IND */
+	"($%02X,X)",	/* INX */
+	"($%02X),Y",	/* INY */
+	""
+};
+static int flengths[12] = { 1, 1, 1, 1, 1, 2, 2, 2, 2, 1, 1, 0 };
 
-	if (sscanf(offsetBuffer,"%7X",(unsigned int *)&offset) == EOF)
-	{
-		return -1;
-	}
+#define IMD(x)  ((0 << 16) | x)
+#define  REL(x)  ((1 << 16) | x)
+#define  ZP(x)  ((2 << 16) | x)
+#define  ZPX(x)  ((3 << 16) | x)
+#define  ZPY(x)  ((4 << 16) | x)
+#define  ABS(x)  ((5 << 16) | x)
+#define  ABX(x)  ((6 << 16) | x)
+#define ABY(x)  ((7 << 16) | x)
+#define  IND(x)  ((8 << 16) | x)
+#define  INX(x)  ((9 << 16) | x)
+#define  INY(x)  ((10 << 16) | x)
+#define IMP(x)  ((11 << 16) | x)
 
-	if (type & BT_P)
-	{
-		return offset & 0x3FFF;
-	}
-	else if (type & BT_S)
-	{
-		return offset & 0x00FF;
-	}
-	else if (type & BT_R)
-	{
-		return offset;
-	}
-	else // BT_C
-	{
-		int type = GIT_CART;
-
-		if (GameInfo)
-		{
-			type = GameInfo->type;
-		}
-		if (type == GIT_NSF) { //NSF Breakpoint keywords
-			if (strcmp(offsetBuffer,"LOAD") == 0) return (NSFHeader.LoadAddressLow | (NSFHeader.LoadAddressHigh<<8));
-			if (strcmp(offsetBuffer,"INIT") == 0) return (NSFHeader.InitAddressLow | (NSFHeader.InitAddressHigh<<8));
-			if (strcmp(offsetBuffer,"PLAY") == 0) return (NSFHeader.PlayAddressLow | (NSFHeader.PlayAddressHigh<<8));
-		}
-		else if (type == GIT_FDS) { //FDS Breakpoint keywords
-			if (strcmp(offsetBuffer,"NMI1") == 0) return (GetMem(0xDFF6) | (GetMem(0xDFF7)<<8));
-			if (strcmp(offsetBuffer,"NMI2") == 0) return (GetMem(0xDFF8) | (GetMem(0xDFF9)<<8));
-			if (strcmp(offsetBuffer,"NMI3") == 0) return (GetMem(0xDFFA) | (GetMem(0xDFFB)<<8));
-			if (strcmp(offsetBuffer,"RST") == 0) return (GetMem(0xDFFC) | (GetMem(0xDFFD)<<8));
-			if ((strcmp(offsetBuffer,"IRQ") == 0) || (strcmp(offsetBuffer,"BRK") == 0)) return (GetMem(0xDFFE) | (GetMem(0xDFFF)<<8));
-		}
-		else { //NES Breakpoint keywords
-			if ((strcmp(offsetBuffer,"NMI") == 0) || (strcmp(offsetBuffer,"VBL") == 0)) return (GetMem(0xFFFA) | (GetMem(0xFFFB)<<8));
-			if (strcmp(offsetBuffer,"RST") == 0) return (GetMem(0xFFFC) | (GetMem(0xFFFD)<<8));
-			if ((strcmp(offsetBuffer,"IRQ") == 0) || (strcmp(offsetBuffer,"BRK") == 0)) return (GetMem(0xFFFE) | (GetMem(0xFFFF)<<8));
-		}
-	}
-
-	return offset & 0xFFFF;
-}
-
-// Returns the value of a given type or register
-
-int getValue(int type)
+typedef struct {
+	char *name;
+	int type;		/* 1 for read, 2 for write, 3 for r then write. */
+	int32 modes[10];
+} OPS;
+#define NUMOPS 56
+static OPS optable[NUMOPS] =
 {
-	switch (type)
-	{
-		case 'A': return _A;
-		case 'X': return _X;
-		case 'Y': return _Y;
-		case 'N': return _P & N_FLAG ? 1 : 0;
-		case 'V': return _P & V_FLAG ? 1 : 0;
-		case 'U': return _P & U_FLAG ? 1 : 0;
-		case 'B': return _P & B_FLAG ? 1 : 0;
-		case 'D': return _P & D_FLAG ? 1 : 0;
-		case 'I': return _P & I_FLAG ? 1 : 0;
-		case 'Z': return _P & Z_FLAG ? 1 : 0;
-		case 'C': return _P & C_FLAG ? 1 : 0;
-		case 'P': return _PC;
-		case 'S': return _S;
-	}
+	{ "BRK", 0, { IMP(0x00), -1 } },
+	{ "RTI", 0, { IMP(0x40), -1 } },
+	{ "RTS", 0, { IMP(0x60), -1 } },
+	{ "PHA", 2, { IMP(0x48), -1 } },
+	{ "PHP", 2, { IMP(0x08), -1 } },
+	{ "PLA", 1, { IMP(0x68), -1 } },
+	{ "PLP", 1, { IMP(0x28), -1 } },
+	{ "JMP", 0, { ABS(0x4C), IND(0x6C), -1 } },
+	{ "JSR", 0, { ABS(0x20), -1 } },
+	{ "TAX", 0, { IMP(0xAA), -1 } },
+	{ "TXA", 0, { IMP(0x8A), -1 } },
+	{ "TAY", 0, { IMP(0xA8), -1 } },
+	{ "TYA", 0, { IMP(0x98), -1 } },
+	{ "TSX", 0, { IMP(0xBA), -1 } },
+	{ "TXS", 0, { IMP(0x9A), -1 } },
+	{ "DEX", 0, { IMP(0xCA), -1 } },
+	{ "DEY", 0, { IMP(0x88), -1 } },
+	{ "INX", 0, { IMP(0xE8), -1 } },
+	{ "INY", 0, { IMP(0xC8), -1 } },
+	{ "CLC", 0, { IMP(0x18), -1 } },
+	{ "CLD", 0, { IMP(0xD8), -1 } },
+	{ "CLI", 0, { IMP(0x58), -1 } },
+	{ "CLV", 0, { IMP(0xB8), -1 } },
+	{ "SEC", 0, { IMP(0x38), -1 } },
+	{ "SED", 0, { IMP(0xF8), -1 } },
+	{ "SEI", 0, { IMP(0x78), -1 } },
+	{ "NOP", 0, { IMP(0xEA), -1 } },
+	{ "ASL", 1, { IMP(0x0a), ZP(0x06), ZPX(0x16), ABS(0x0E), ABX(0x1E), -1 } },
+	{ "DEC", 3, { ZP(0xc6), ZPX(0xd6), ABS(0xcE), ABX(0xdE), -1 } },
+	{ "INC", 3, { ZP(0xe6), ZPX(0xf6), ABS(0xeE), ABX(0xfE), -1 } },
+	{ "LSR", 3, { IMP(0x4a), ZP(0x46), ZPX(0x56), ABS(0x4E), ABX(0x5E), -1 } },
+	{ "ROL", 3, { IMP(0x2a), ZP(0x26), ZPX(0x36), ABS(0x2E), ABX(0x3E), -1 } },
+	{ "ROR", 3, { IMP(0x6a), ZP(0x66), ZPX(0x76), ABS(0x6E), ABX(0x7E), -1 } },
+	{ "ADC", 1, { IMD(0x69), ZP(0x65), ZPX(0x75), ABS(0x6D), ABX(0x7d), ABY(0x79),
+				  INX(0x61), INY(0x71), -1 } },
+	{ "AND", 1, { IMD(0x29), ZP(0x25), ZPX(0x35), ABS(0x2D), ABX(0x3d), ABY(0x39),
+				  INX(0x21), INY(0x31), -1 } },
+	{ "BIT", 1, { ZP(0x24), ABS(0x2c), -1 } },
+	{ "CMP", 1, { IMD(0xc9), ZP(0xc5), ZPX(0xd5), ABS(0xcD), ABX(0xdd), ABY(0xd9),
+				  INX(0xc1), INY(0xd1), -1 } },
+	{ "CPX", 1, { IMD(0xe0), ZP(0xe4), ABS(0xec), -1 } },
+	{ "CPY", 1, { IMD(0xc0), ZP(0xc4), ABS(0xcc), -1 } },
+	{ "EOR", 1, { IMD(0x49), ZP(0x45), ZPX(0x55), ABS(0x4D), ABX(0x5d), ABY(0x59),
+				  INX(0x41), INY(0x51), -1 } },
+	{ "LDA", 1, { IMD(0xa9), ZP(0xa5), ZPX(0xb5), ABS(0xaD), ABX(0xbd), ABY(0xb9),
+				  INX(0xa1), INY(0xb1), -1 } },
+	{ "LDX", 1, { IMD(0xa2), ZP(0xa6), ZPY(0xB6), ABS(0xae), ABY(0xbe), -1 } },
+	{ "LDY", 1, { IMD(0xa0), ZP(0xa4), ZPX(0xB4), ABS(0xac), ABX(0xbc), -1 } },
+	{ "ORA", 1, { IMD(0x09), ZP(0x05), ZPX(0x15), ABS(0x0D), ABX(0x1d), ABY(0x19),
+				  INX(0x01), INY(0x11), -1 } },
+	{ "SBC", 1, { IMD(0xEB), IMD(0xe9), ZP(0xe5), ZPX(0xf5), ABS(0xeD), ABX(0xfd), ABY(0xf9),
+				  INX(0xe1), INY(0xf1), -1 } },
+	{ "STA", 2, { ZP(0x85), ZPX(0x95), ABS(0x8D), ABX(0x9d), ABY(0x99),
+				  INX(0x81), INY(0x91), -1 } },
+	{ "STX", 2, { ZP(0x86), ZPY(0x96), ABS(0x8E), -1 } },
+	{ "STY", 2, { ZP(0x84), ZPX(0x94), ABS(0x8C), -1 } },
+	{ "BCC", 1, { REL(0x90), -1 } },
+	{ "BCS", 1, { REL(0xb0), -1 } },
+	{ "BEQ", 1, { REL(0xf0), -1 } },
+	{ "BNE", 1, { REL(0xd0), -1 } },
+	{ "BMI", 1, { REL(0x30), -1 } },
+	{ "BPL", 1, { REL(0x10), -1 } },
+	{ "BVC", 1, { REL(0x50), -1 } },
+	{ "BVS", 1, { REL(0x70), -1 } },
+};
 
-	return 0;
-}
+uint16 FCEUI_Disassemble(void *XA, uint16 a, char *stringo) {
+	X6502 *X = XA;
+	uint8 buf;
+	uint32 arg;
+	int32 info;
+	int x;
+	int y;
 
+	info = -1;
+	fceuindbg = 1;
 
-/**
-* Checks whether a breakpoint condition is syntactically valid
-* and creates a breakpoint condition object if everything's OK.
-*
-* @param condition Condition to parse
-* @param num Number of the breakpoint in the BP list the condition belongs to
-* @return 0 in case of an error; 2 if everything went fine
-**/
-int checkCondition(const char* condition, int num)
-{
-	const char* b = condition;
+	buf = ARead[a](a);
+	a++;
 
-	// Check if the condition isn't just all spaces.
-
-	int onlySpaces = 1;
-
-	while (*b)
-	{
-		if (*b != ' ')
-		{
-			onlySpaces = 0;
-			break;
-		}
-
-		++b;
-	}
-
-
-	// If there's an actual condition create the BP condition object now
-
-	if (*condition && !onlySpaces)
-	{
-		Condition* c = generateCondition(condition);
-
-		// Remove the old breakpoint condition before adding a new condition.
-		if (watchpoint[num].cond)
-		{
-			freeTree(watchpoint[num].cond);
-			free(watchpoint[num].condText);
-			watchpoint[num].cond = 0;
-			watchpoint[num].condText = 0;
-		}
-
-		// If the creation of the BP condition object was succesful
-		// the condition is apparently valid. It can be added to the
-		// breakpoint now.
-
-		if (c)
-		{
-			watchpoint[num].cond = c;
-			watchpoint[num].condText = (char*)malloc(strlen(condition) + 1);
-            if (!watchpoint[num].condText)
-                return 0;
-			strcpy(watchpoint[num].condText, condition);
-		}
-		else
-		{
-			watchpoint[num].cond = 0;
-		}
-
-		return watchpoint[num].cond == 0 ? 2 : 0;
-	}
-	else
-	{
-		// Remove the old breakpoint condition
-		if (watchpoint[num].cond)
-		{
-			freeTree(watchpoint[num].cond);
-			free(watchpoint[num].condText);
-			watchpoint[num].cond = 0;
-			watchpoint[num].condText = 0;
-		}
-		return 0;
-	}
-}
-
-/**
-* Adds a new breakpoint.
-*
-* @param hwndDlg Handle of the debugger window
-* @param num Number of the breakpoint
-* @param
-**/
-unsigned int NewBreak(const char* name, int start, int end, unsigned int type, const char* condition, unsigned int num, bool enable)
-{
-	// Finally add breakpoint to the list
-	watchpoint[num].address = start;
-	watchpoint[num].endaddress = 0;
-
-	// Optional end address found
-	if (end != -1)
-	{
-		watchpoint[num].endaddress = end;
-	}
-
-	// Get the breakpoint flags
-	watchpoint[num].flags = 0;
-	if (enable) watchpoint[num].flags|=WP_E;
-	if (type & WP_R) watchpoint[num].flags|=WP_R;
-	if (type & WP_F) watchpoint[num].flags|=WP_F;
-	if (type & WP_W) watchpoint[num].flags|=WP_W;
-	if (type & WP_X) watchpoint[num].flags|=WP_X;
-	if (type & BT_P) {
-		watchpoint[num].flags|=BT_P;
-		watchpoint[num].flags&=~WP_X; //disable execute flag!
-	}
-	if (type & BT_S) {
-		watchpoint[num].flags|=BT_S;
-		watchpoint[num].flags&=~WP_X; //disable execute flag!
-	}
-	if (type & BT_R) {
-		watchpoint[num].flags|=BT_R;
-	}
-
-	if (watchpoint[num].desc)
-		free(watchpoint[num].desc);
-
-	watchpoint[num].desc = (char*)malloc(strlen(name) + 1);
-	strcpy(watchpoint[num].desc, name);
-
-	return checkCondition(condition, num);
-}
-
-int GetPRGAddress(int A){
-	int result;
-	if(A > 0xFFFF)
-		return -1;
-	if (GameInfo->type == GIT_FDS) {
-		if (A < 0xE000) {
-			result = &Page[A >> 11][A] - PRGptr[1];
-			if ((result > (int)PRGsize[1]) || (result < 0))
-				return -1;
-			else
-				return result;
-		} else {
-			result = &Page[A >> 11][A] - PRGptr[0];
-			if ((result > (int)PRGsize[0]) || (result < 0))
-				return -1;
-			else
-				return result + PRGsize[1];
-		}
-	} else {
-		result = &Page[A >> 11][A] - PRGptr[0];
-		if ((result > (int)PRGsize[0]) || (result < 0))
-			return -1;
-		else
-			return result;
-	}
-}
-
-/**
-* Returns the bank for a given offset.
-* Technically speaking this function does not calculate the actual bank
-* where the offset resides but the 0x4000 bytes large chunk of the ROM of the offset.
-*
-* @param offs The offset
-* @return The bank of that offset or -1 if the offset is not part of the ROM.
-**/
-int getBank(int offs)
-{
-	//NSF data is easy to overflow the return on.
-	//Anything over FFFFF will kill it.
-
-	//GetNesFileAddress doesn't work well with Unif files
-	int addr = GetNesFileAddress(offs)-16;
-
-	if (GameInfo && GameInfo->type==GIT_NSF)
-		return addr != -1 ? addr / 0x1000 : -1;
-	return addr != -1 ? addr / (1<<debuggerPageSize) : -1; //formerly, dividing by 0x4000
-}
-
-int GetNesFileAddress(int A){
-	int result;
-	if((A < 0x6000) || (A > 0xFFFF))return -1;
-	result = &Page[A>>11][A]-PRGptr[0];
-	if((result > (int)(PRGsize[0])) || (result < 0))return -1;
-	else return result+16; //16 bytes for the header remember
-}
-
-int GetRomAddress(int A){
-	int i;
-	uint8 *p = GetNesPRGPointer(A-=16);
-	for(i = 16;i < 32;i++){
-		if((&Page[i][i<<11] <= p) && (&Page[i][(i+1)<<11] > p))break;
-	}
-	if(i == 32)return -1; //not found
-
-	return (i<<11) + (p-&Page[i][i<<11]);
-}
-
-uint8 *GetNesPRGPointer(int A){
-	return PRGptr[0]+A;
-}
-
-uint8 *GetNesCHRPointer(int A){
-	return CHRptr[0]+A;
-}
-
-uint8 GetMem(uint16 A) {
-	if ((A >= 0x2000) && (A < 0x4000)) // PPU regs and their mirrors
-		switch (A&7) {
-			case 0: return PPU[0];
-			case 1: return PPU[1];
-			case 2: return PPU[2]|(PPUGenLatch&0x1F);
-			case 3: return PPU[3];
-			case 4: return SPRAM[PPU[3]];
-			case 5: return XOffset;
-			case 6: return FCEUPPU_PeekAddress() & 0xFF;
-			case 7: return VRAMBuffer;
-		}
-	// feos: added more registers
-	else if ((A >= 0x4000) && (A < 0x4010))
-		return PSG[A&15];
-	else if ((A >= 0x4010) && (A < 0x4018))
-		switch(A&7) {
-			case 0: return DMCFormat;
-			case 1: return RawDALatch;
-			case 2: return DMCAddressLatch;
-			case 3: return DMCSizeLatch;
-			case 4: return SpriteDMA;
-			case 5: return EnabledChannels;
-			case 6: return RawReg4016;
-			case 7: return IRQFrameMode;
-		}		
-	else if ((A >= 0x4018) && (A < 0x5000))	// AnS: changed the range, so MMC5 ExRAM can be watched in the Hexeditor
-		return 0xFF;
-	if (GameInfo) {							//adelikat: 11/17/09: Prevent crash if this is called with no game loaded.
-		uint32 ret;
-		fceuindbg=1;
-		ret = ARead[A](A);
-		fceuindbg=0;
-		return ret;
-	} else return 0;
-}
-
-uint8 GetPPUMem(uint8 A) {
-	uint16 tmp = FCEUPPU_PeekAddress() & 0x3FFF;
-
-	if (tmp<0x2000) return VPage[tmp>>10][tmp];
-	if (tmp>=0x3F00) return PALRAM[tmp&0x1F];
-	return vnapage[(tmp>>10)&0x3][tmp&0x3FF];
-}
-
-//---------------------
-
-uint8 evaluateWrite(uint8 opcode, uint16 address)
-{
-	// predicts value written by this opcode
-	switch (opwrite[opcode])
-	{
-		default:
-		case  0: return 0; // no write
-		case  1: return _A; // STA, PHA
-		case  2: return _X; // STX
-		case  3: return _Y; // STY
-		case  4: return _P; // PHP
-		case  5: return GetMem(address) << 1; // ASL (SLO)
-		case  6: return GetMem(address) >> 1; // LSR (SRE)
-		case  7: return (GetMem(address) << 1) | (_P & 1); // ROL (RLA)
-		case  8: return (GetMem(address) >> 1) | ((_P & 1) << 7); // ROL (RRA)
-		case  9: return GetMem(address) + 1; // INC (ISC)
-		case 10: return GetMem(address) - 1; // DEC (DCP)
-		case 11: return _A & _X; // (SAX)
-		case 12: return _A&_X&(((address-_Y)>>8)+1); // (AHX)
-		case 13: return _Y&(((address-_X)>>8)+1); // (SHY)
-		case 14: return _X&(((address-_Y)>>8)+1); // (SHX)
-		case 15: return _S& (((address-_Y)>>8)+1); // (TAS)
-	}
-	return 0;
-}
-
-// Evaluates a condition
-int evaluate(Condition* c)
-{
-	int f = 0;
-
-	int value1, value2;
-
-	if (c->lhs)
-	{
-		value1 = evaluate(c->lhs);
-	}
-	else
-	{
-		switch(c->type1)
-		{
-			case TYPE_ADDR: // This is intended to not break, and use the TYPE_NUM code
-			case TYPE_NUM: value1 = c->value1; break;
-			default: value1 = getValue(c->value1); break;
-		}
-	}
-
-	switch(c->type1)
-	{
-		case TYPE_ADDR: value1 = GetMem(value1); break;
-		case TYPE_PC_BANK: value1 = getBank(_PC); break;
-		case TYPE_DATA_BANK: value1 = getBank(debugLastAddress); break;
-		case TYPE_VALUE_READ: value1 = GetMem(debugLastAddress); break;
-		case TYPE_VALUE_WRITE: value1 = evaluateWrite(debugLastOpcode, debugLastAddress); break;
-	}
-
-	f = value1;
-
-	if (c->op)
-	{
-		if (c->rhs)
-		{
-			value2 = evaluate(c->rhs);
-		}
-		else
-		{
-			switch(c->type2)
-			{
-				case TYPE_ADDR: // This is intended to not break, and use the TYPE_NUM code
-				case TYPE_NUM: value2 = c->value2; break;
-				default: value2 = getValue(c->type2); break;
+	for (x = 0; x < NUMOPS; x++) {
+		y = 0;
+		while (optable[x].modes[y] >= 0) {
+			if ((optable[x].modes[y] & 0xFF) == buf) {
+				info = optable[x].modes[y];
+				goto endy;
 			}
-		}
-
-	switch(c->type2)
-	{
-		case TYPE_ADDR: value2 = GetMem(value2); break;
-		case TYPE_PC_BANK: value2 = getBank(_PC); break;
-		case TYPE_DATA_BANK: value2 = getBank(debugLastAddress); break;
-		case TYPE_VALUE_READ: value2 = GetMem(debugLastAddress); break;
-		case TYPE_VALUE_WRITE: value2 = evaluateWrite(debugLastOpcode, debugLastAddress); break;
-	}
-
-		switch (c->op)
-		{
-			case OP_EQ: f = value1 == value2; break;
-			case OP_NE: f = value1 != value2; break;
-			case OP_GE: f = value1 >= value2; break;
-			case OP_LE: f = value1 <= value2; break;
-			case OP_G: f = value1 > value2; break;
-			case OP_L: f = value1 < value2; break;
-			case OP_MULT: f = value1 * value2; break;
-			case OP_DIV: f = (value2==0) ? 0 : (value1 / value2); break;
-			case OP_PLUS: f = value1 + value2; break;
-			case OP_MINUS: f = value1 - value2; break;
-			case OP_OR: f = value1 || value2; break;
-			case OP_AND: f = value1 && value2; break;
+			y++;
 		}
 	}
 
-	return f;
-}
+ endy:
+	sprintf(stringo, "%02X ", buf);
+	if (info >= 0) {
+		int z = flengths[(info >> 16)];
 
-int condition(watchpointinfo* wp)
-{
-	return wp->cond == 0 || evaluate(wp->cond);
-}
-
-
-//---------------------
-
-volatile int codecount = 0, datacount = 0, undefinedcount = 0;
-unsigned char *cdloggerdata = NULL;
-unsigned int cdloggerdataSize = 0;
-static int indirectnext = 0;
-
-int debug_loggingCD = 0;
-
-//called by the cpu to perform logging if CDLogging is enabled
-void LogCDVectors(int which){
-	int j;
-	j = GetPRGAddress(which);
-	if(j == -1) return;
-
-	if(!(cdloggerdata[j] & 2)){
-		cdloggerdata[j] |= 0x0E; // we're in the last bank and recording it as data so 0x1110 or 0xE should be what we need
-		datacount++;
-		if(!(cdloggerdata[j] & 1))undefinedcount--;
-	}
-	j++;
-
-	if(!(cdloggerdata[j] & 2)){
-		cdloggerdata[j] |= 0x0E;
-		datacount++;
-		if(!(cdloggerdata[j] & 1))undefinedcount--;
-	}
-}
-
-bool break_on_unlogged_code = false;
-bool break_on_unlogged_data = false;
-
-void LogCDData(uint8 *opcode, uint16 A, int size)
-{
-	int i, j;
-	uint8 memop = 0;
-	bool newCodeHit = false, newDataHit = false;
-
-	if ((j = GetPRGAddress(_PC)) != -1)
-	{
-		for (i = 0; i < size; i++)
-		{
-			if (cdloggerdata[j+i] & 1) continue; //this has been logged so skip
-			cdloggerdata[j+i] |= 1;
-			cdloggerdata[j+i] |= ((_PC + i) >> 11) & 0x0c;
-			cdloggerdata[j+i] |= ((_PC & 0x8000) >> 8) ^ 0x80;	// 19/07/14 used last reserved bit, if bit 7 is 1, then code is running from lowe area (6000)
-			if (indirectnext)cdloggerdata[j+i] |= 0x10;
-			codecount++;
-			if (!(cdloggerdata[j+i] & 2))undefinedcount--;
-			newCodeHit = true;
-		}
-	}
-
-	//log instruction jumped to in an indirect jump
-	if(opcode[0] == 0x6c)
-		indirectnext = 1;
-	else
-		indirectnext = 0;
-
-	switch (optype[opcode[0]]) {
-		case 1:
-		case 4: memop = 0x20; break;
-	}
-
-	if ((j = GetPRGAddress(A)) != -1)
-	{
-		if (opwrite[opcode[0]] == 0)
-		{
-			if (!(cdloggerdata[j] & 2))
-			{
-				cdloggerdata[j] |= 2;
-				cdloggerdata[j] |= (A >> 11) & 0x0c;
-				cdloggerdata[j] |= memop;
-				cdloggerdata[j] |= ((A & 0x8000) >> 8) ^ 0x80;	
-				datacount++;
-				if (!(cdloggerdata[j] & 1))undefinedcount--;
-				newDataHit = true;
-			}
-		}
-		else
-		{
-			if (cdloggerdata[j] & 1)
-			{
-				codecount--;
-			}
-			if (cdloggerdata[j] & 2)
-			{
-				datacount--;
-			}
-			if ((cdloggerdata[j] & 3) != 0) undefinedcount++;
-			cdloggerdata[j] = 0;
-		}
-	}
-
-	if ( break_on_unlogged_code && newCodeHit )
-	{
-		BreakHit( BREAK_TYPE_UNLOGGED_CODE );
-	}
-	else if ( break_on_unlogged_data && newDataHit )
-	{
-		BreakHit( BREAK_TYPE_UNLOGGED_DATA );
-	}
-}
-
-//-----------debugger stuff
-
-watchpointinfo watchpoint[65]; //64 watchpoints, + 1 reserved for step over
-int iaPC;
-uint32 iapoffset; //mbg merge 7/18/06 changed from int
-int u; //deleteme
-int skipdebug; //deleteme
-int numWPs;
-
-bool break_asap = false;
-// for CPU cycles and Instructions counters
-uint64 total_cycles_base = 0;
-uint64 delta_cycles_base = 0;
-bool break_on_cycles = false;
-uint64 break_cycles_limit = 0;
-uint64 total_instructions = 0;
-uint64 delta_instructions = 0;
-bool break_on_instructions = false;
-uint64 break_instructions_limit = 0;
-
-static DebuggerState dbgstate;
-
-DebuggerState &FCEUI_Debugger() { return dbgstate; }
-
-void ResetDebugStatisticsCounters()
-{
-	ResetCyclesCounter();
-	ResetInstructionsCounter();
-}
-void ResetCyclesCounter()
-{
-	total_cycles_base = delta_cycles_base = timestampbase + (uint64)timestamp;
-}
-void ResetInstructionsCounter()
-{
-	total_instructions = delta_instructions = 0;
-}
-void ResetDebugStatisticsDeltaCounters()
-{
-	delta_cycles_base = timestampbase + (uint64)timestamp;
-	delta_instructions = 0;
-}
-void IncrementInstructionsCounters()
-{
-	total_instructions++;
-	delta_instructions++;
-}
-
-bool CondForbidTest(int bp_num) {
-	if (bp_num >= 0 && !condition(&watchpoint[bp_num]))
-	{
-		return false;	// condition rejected
-	}
-
-	//check to see whether we fall in any forbid zone
-	for (int i = 0; i < numWPs; i++)
-	{
-		watchpointinfo& wp = watchpoint[i];
-		if (!(wp.flags & WP_F) || !(wp.flags & WP_E))
-			continue;
-
-		if (condition(&wp))
-		{
-			if (wp.endaddress) {
-				if ((wp.address <= _PC) && (wp.endaddress >= _PC))
-					return false;	// forbid
-			}
-			else {
-				if (wp.address == _PC)
-					return false;	// forbid
-			}
-		}
-	}
-	return true;
-}
-
-void BreakHit(int bp_num)
-{
-	FCEUI_SetEmulationPaused(EMULATIONPAUSED_PAUSED); //mbg merge 7/19/06 changed to use EmulationPaused()
-
-//#ifdef WIN32
-	FCEUD_DebugBreakpoint(bp_num);
-//#endif
-}
-
-int StackAddrBackup;
-uint16 StackNextIgnorePC = 0xFFFF;
-
-///fires a breakpoint
-static void breakpoint(uint8 *opcode, uint16 A, int size) {
-	int i, j, romAddrPC;
-	uint8 brk_type;
-	uint8 stackop=0;
-	uint8 stackopstartaddr=0,stackopendaddr=0;
-
-	debugLastAddress = A;
-	debugLastOpcode = opcode[0];
-
-	if (break_asap)
-	{
-		break_asap = false;
-		BreakHit(BREAK_TYPE_LUA);
-	}
-
-	if (break_on_cycles && ((timestampbase + (uint64)timestamp - total_cycles_base) > break_cycles_limit))
-		BreakHit(BREAK_TYPE_CYCLES_EXCEED);
-	if (break_on_instructions && (total_instructions > break_instructions_limit))
-		BreakHit(BREAK_TYPE_INSTRUCTIONS_EXCEED);
-
-	//if the current instruction is bad, and we are breaking on bad opcodes, then hit the breakpoint
-	if(dbgstate.badopbreak && (size == 0))
-		BreakHit(BREAK_TYPE_BADOP);
-
-	//if we're stepping out, track the nest level
-	if (dbgstate.stepout) {
-		if (opcode[0] == 0x20) dbgstate.jsrcount++;
-		else if (opcode[0] == 0x60) {
-			if (dbgstate.jsrcount)
-				dbgstate.jsrcount--;
-			else {
-				dbgstate.stepout = false;
-				dbgstate.step = true;
-				return;
-			}
-		}
-	}
-
-	//if we're stepping, then we'll always want to break
-	if (dbgstate.step) {
-		dbgstate.step = false;
-		BreakHit(BREAK_TYPE_STEP);
-		return;
-	}
-
-	//if we're running for a scanline, we want to check if we've hit the cycle limit
-	if (dbgstate.runline) {
-		uint64 ts = timestampbase;
-		ts+=timestamp;
-		int diff = dbgstate.runline_end_time-ts;
-		if (diff<=0)
-		{
-			dbgstate.runline=false;
-			BreakHit(BREAK_TYPE_STEP);
-			return;
-		}
-	}
-
-	//check the step over address and break if we've hit it
-	if ((watchpoint[64].address == _PC) && (watchpoint[64].flags)) {
-		watchpoint[64].address = 0;
-		watchpoint[64].flags = 0;
-		BreakHit(BREAK_TYPE_STEP);
-		return;
-	}
-
-	romAddrPC = GetNesFileAddress(_PC);
-
-	brk_type = opbrktype[opcode[0]] | WP_X;
-
-	switch (opcode[0]) {
-		//Push Ops
-		case 0x08: //Fall to next
-		case 0x48: debugLastAddress=stackopstartaddr=stackopendaddr=X.S-1; stackop=WP_W; StackAddrBackup = X.S; StackNextIgnorePC=_PC+1; break;
-		//Pull Ops
-		case 0x28: //Fall to next
-		case 0x68: debugLastAddress=stackopstartaddr=stackopendaddr=X.S+1; stackop=WP_R; StackAddrBackup = X.S; StackNextIgnorePC=_PC+1; break;
-		//JSR (Includes return address - 1)
-		case 0x20: stackopstartaddr=stackopendaddr=X.S-1; stackop=WP_W; StackAddrBackup = X.S; StackNextIgnorePC=(opcode[1]|opcode[2]<<8); break;
-		//RTI (Includes processor status, and exact return address)
-		case 0x40: stackopstartaddr=X.S+1; stackopendaddr=X.S+3; stackop=WP_R; StackAddrBackup = X.S; StackNextIgnorePC=(GetMem(X.S+2|0x0100)|GetMem(X.S+3|0x0100)<<8); break;
-		//RTS (Includes return address - 1)
-		case 0x60: stackopstartaddr=X.S+1; stackopendaddr=X.S+2; stackop=WP_R; StackAddrBackup = X.S; StackNextIgnorePC=(GetMem(stackopstartaddr|0x0100)|GetMem(stackopendaddr|0x0100)<<8)+1; break;
-		default: break;
-	}
-
-#define BREAKHIT(x) { if (CondForbidTest(x)) { breakHit = (x); goto STOPCHECKING; } }
-	int breakHit = -1;
-	for (i = 0; i < numWPs; i++)
-	{
-		if ((watchpoint[i].flags & WP_E))
-		{
-			if (watchpoint[i].flags & BT_P)
-			{
-				// PPU Mem breaks
-				if ((watchpoint[i].flags & brk_type) && ((A >= 0x2000) && (A < 0x4000)) && ((A&7) == 7))
-				{
-					const uint32 PPUAddr = FCEUPPU_PeekAddress();
-					if (watchpoint[i].endaddress)
-					{
-						if ((watchpoint[i].address <= PPUAddr) && (watchpoint[i].endaddress >= PPUAddr))
-							BREAKHIT(i);
-					} else
-					{
-						if (watchpoint[i].address == PPUAddr)
-							BREAKHIT(i);
-					}
-				}
-			} else if (watchpoint[i].flags & BT_S)
-			{
-				// Sprite Mem breaks
-				if ((watchpoint[i].flags & brk_type) && ((A >= 0x2000) && (A < 0x4000)) && ((A&7) == 4))
-				{
-					if (watchpoint[i].endaddress)
-					{
-						if ((watchpoint[i].address <= PPU[3]) && (watchpoint[i].endaddress >= PPU[3]))
-							BREAKHIT(i);
-					} else
-					{
-						if (watchpoint[i].address == PPU[3])
-						BREAKHIT(i);
-					}
-				} else if ((watchpoint[i].flags & WP_W) && (A == 0x4014))
-				{
-					// Sprite DMA! :P
-					BREAKHIT(i);
-				}
+		if (z) {
+			arg = ARead[a](a);
+			sprintf(stringo + strlen(stringo), "%02X ", arg);
+			a++;
+			if (z == 2) {
+				arg |= ARead[a](a) << 8; sprintf(stringo + strlen(stringo), "%02X ", arg >> 8); a++;
 			} else
-			{
-				// CPU mem breaks
-				if ((watchpoint[i].flags & brk_type))
-				{
-					if (watchpoint[i].endaddress)
-					{
-						if (((watchpoint[i].flags & (WP_R | WP_W)) && (watchpoint[i].address <= A) && (watchpoint[i].endaddress >= A)) ||
-							((watchpoint[i].flags & WP_X) && (watchpoint[i].address <= _PC) && (watchpoint[i].endaddress >= _PC)))
-							BREAKHIT(i);
-					}
-					else
-					{
-						if (watchpoint[i].flags & BT_R)
-						{
-							if ( (watchpoint[i].flags & WP_X) && (watchpoint[i].address == romAddrPC) )
-							{
-								BREAKHIT(i);
-							}
-							//else if ( (watchpoint[i].flags & WP_R) && (watchpoint[i].address == A) )
-							//{
-							//	BREAKHIT(i);
-							//}	
-						}
-						else
-						{
-							if ( (watchpoint[i].flags & (WP_R | WP_W)) && (watchpoint[i].address == A)) 
-							{
-								BREAKHIT(i);
-							}
-							else if ( (watchpoint[i].flags & WP_X) && (watchpoint[i].address == _PC) )
-							{
-								BREAKHIT(i);
-							}
-						}
-					}
-				} else
-				{
-					// brk_type independant coding
-					if (stackop > 0)
-					{
-						// Announced stack mem breaks
-						// PHA, PLA, PHP, and PLP affect the stack data.
-						// TXS and TSX only deal with the pointer.
-						if (watchpoint[i].flags & stackop)
-						{
-							for (j = (stackopstartaddr|0x0100); j <= (stackopendaddr|0x0100); j++)
-							{
-								if (watchpoint[i].endaddress)
-								{
-									if ((watchpoint[i].address <= j) && (watchpoint[i].endaddress >= j))
-										BREAKHIT(i);
-								} else
-								{
-									if (watchpoint[i].address == j)
-										BREAKHIT(i);
-								}
-							}
-						}
-					}
-					if (StackNextIgnorePC == _PC)
-					{
-						// Used to make it ignore the unannounced stack code one time
-						StackNextIgnorePC = 0xFFFF;
-					} else
-					{
-						if (StackAddrBackup != -1 && (X.S < StackAddrBackup) && (stackop==0))
-						{
-							// Unannounced stack mem breaks
-							// Pushes to stack
-							if (watchpoint[i].flags & WP_W)
-							{
-								for (j = (X.S|0x0100); j < (StackAddrBackup|0x0100); j++)
-								{
-									if (watchpoint[i].endaddress)
-									{
-										if ((watchpoint[i].address <= j) && (watchpoint[i].endaddress >= j))
-											BREAKHIT(i);
-									} else
-									{
-										if (watchpoint[i].address == j)
-											BREAKHIT(i);
-									}
-								}
-							}
-						} else if (StackAddrBackup != -1 && (StackAddrBackup < X.S) && (stackop==0))
-						{
-							// Pulls from stack
-							if (watchpoint[i].flags & WP_R)
-							{
-								for (j = (StackAddrBackup|0x0100); j < (X.S|0x0100); j++)
-								{
-									if (watchpoint[i].endaddress)
-									{
-										if ((watchpoint[i].address <= j) && (watchpoint[i].endaddress >= j))
-											BREAKHIT(i);
-									} else
-									{
-										if (watchpoint[i].address == j)
-											BREAKHIT(i);
-									}
-								}
-							}
-						}
-					}
+				strcat(stringo, "   ");
 
+			if ((info >> 16) == 1)	/* Relative branch */
+				arg = a + (char)arg;
+			sprintf(stringo + strlen(stringo), "%s ", optable[x].name);
+			sprintf(stringo + strlen(stringo), fstrings[info >> 16], arg);
+/*
+	0  "#$%02X",       // immediate
+	1  "$%04X",  // RELATIVE(jump)
+	2  "$%02X",  // Z
+	3  "$%02X,X",      // Z,x
+	4  "$%02X,Y",      // Z,y
+	5  "$%04X",  //ABS
+	6 "$%04X,X",      // ABS,x
+	7  "$%04X,Y",      // ABS,y
+	8  "($%04X)",      // IND
+	9  "($%02X,X)",    // INX
+	10 "($%02X),Y",    // INY
+	11 #define IMP(x)  ((11<<16)|x)
+*/
+			{
+				uint32 tmp;
+				switch (info >> 16) {
+				case 2: tmp = arg;
+					if (optable[x].type & 1) {
+						sprintf(stringo + strlen(stringo), "    @ $%04X", tmp);
+						sprintf(stringo + strlen(stringo), " = $%02X", ARead[tmp](tmp));
+					}
+					break;
+				case 3: tmp = (arg + X->X) & 0xff;
+					sprintf(stringo + strlen(stringo), "    @ $%04X", tmp);
+					if (optable[x].type & 1)
+						sprintf(stringo + strlen(stringo), " = $%02X", ARead[tmp](tmp));
+					break;
+				case 4: tmp = (arg + X->Y) & 0xff;
+					sprintf(stringo + strlen(stringo), "    @ $%04X", tmp);
+					if (optable[x].type & 1)
+						sprintf(stringo + strlen(stringo), " = $%02X", ARead[tmp](tmp));
+					break;
+				case 5: tmp = arg;
+					if (optable[x].type & 1) {
+						sprintf(stringo + strlen(stringo), "  @ $%04X", tmp);
+						sprintf(stringo + strlen(stringo), " = $%02X", ARead[tmp](tmp));
+					}
+					break;
+				case 6: tmp = (arg + X->X) & 0xffff;
+					sprintf(stringo + strlen(stringo), "  @ $%04X", tmp);
+					if (optable[x].type & 1)
+						sprintf(stringo + strlen(stringo), " = $%02X", ARead[tmp](tmp));
+					break;
+				case 7: tmp = (arg + X->Y) & 0xffff;
+					sprintf(stringo + strlen(stringo), "  @ $%04X", tmp);
+					if (optable[x].type & 1)
+						sprintf(stringo + strlen(stringo), " = $%02X", ARead[tmp](tmp));
+					break;
+				case 8: tmp = ARead[arg](arg) | (ARead[(arg + 1) & 0xffff]((arg + 1) & 0xffff) << 8);
+					sprintf(stringo + strlen(stringo), " $%04X", tmp);
+					break;
+				case 9: tmp = (arg + X->X) & 0xFF;
+					tmp = ARead[tmp](tmp) | (ARead[(tmp + 1) & 0xFF]((tmp + 1) & 0xFF) << 8);
+					sprintf(stringo + strlen(stringo), "  @ $%04X", tmp);
+					if (optable[x].type & 1)
+						sprintf(stringo + strlen(stringo), " = $%02X", ARead[tmp](tmp));
+					break;
+				case 10: tmp = ARead[arg](arg) | (ARead[(arg + 1) & 0xFF]((arg + 1) & 0xFF) << 8);
+					tmp = (tmp + X->Y) & 0xFFFF;
+					sprintf(stringo + strlen(stringo), "  @ $%04X", tmp);
+					if (optable[x].type & 1)
+						sprintf(stringo + strlen(stringo), " = $%02X", ARead[tmp](tmp));
+					break;
+				}
+			}
+		} else {
+			strcat(stringo, "      ");
+			strcat(stringo, optable[x].name);
+		}
+	} else
+		sprintf(stringo + strlen(stringo), "      .db $%02X", buf);
+	fceuindbg = 0;
+	return(a);
+}
+
+void FCEUI_MemDump(uint16 a, int32 len, void (*callb)(uint16 a, uint8 v)) {
+	fceuindbg = 1;
+	while (len) {
+		callb(a, ARead[a](a));
+		a++;
+		len--;
+	}
+	fceuindbg = 0;
+}
+
+uint8 FCEUI_MemSafePeek(uint16 A) {
+	uint8 ret;
+
+	fceuindbg = 1;
+	ret = ARead[A](A);
+	fceuindbg = 0;
+	return(ret);
+}
+
+void FCEUI_MemPoke(uint16 a, uint8 v, int hl) {
+	extern uint8 *Page[32];
+	if (hl) {
+		if (Page[a / 2048])
+			Page[a / 2048][a] = v;
+	} else
+		BWrite[a](a, v);
+}
+
+typedef struct __BPOINT {
+	struct __BPOINT *next;
+	void (*Handler)(X6502 *X, int type, uint32 A);
+	uint32 A[2];
+	int type;
+} BPOINT;
+
+static BPOINT *BreakPoints = NULL;
+static BPOINT *LastBP = NULL;
+
+static void (*CPUHook)(X6502 *) = NULL;
+
+static int FindBPoint(X6502 *X, int who, uint32 A) {
+	BPOINT *tmp;
+
+	tmp = BreakPoints;
+	while (tmp) {
+		if (who & BPOINT_EXCLUDE) {
+			if ((tmp->type & who) == who) {
+				if ((X->PC >= tmp->A[0]) && (X->PC <= tmp->A[1])) {
+					return(1);
+				}
+			}
+		} else {
+			if (tmp->type & who) {
+				if (tmp->type & BPOINT_PC)
+					if (X->PC != A) goto don;
+				if (tmp->type & BPOINT_EXCLUDE) goto don;
+
+				if ((A >= tmp->A[0]) && (A <= tmp->A[1])) {
+					if (!FindBPoint(X, who | BPOINT_EXCLUDE, A)) {
+						tmp->Handler(X, tmp->type, A);
+						return(1);
+					}
 				}
 			}
 		}
-	} //loop across all breakpoints
-
-STOPCHECKING:
-	
-	//Update the stack address with the current one, now that changes have registered.
-	//ZEROMUS THINKS IT MAKES MORE SENSE HERE
-	StackAddrBackup = X.S;
-
-	if(breakHit != -1)
-		BreakHit(i);
-
-	////Update the stack address with the current one, now that changes have registered.
-	//StackAddrBackup = X.S;
-}
-//bbit edited: this is the end of the inserted code
-
-void DebugCycle()
-{
-	uint8 opcode[3] = {0};
-	uint16 A = 0, tmp;
-	int size;
-
-	if (scanline == 240)
-	{
-		vblankScanLines = (PAL?int((double)timestamp / ((double)341 / (double)3.2)):timestamp / 114);	//114 approximates the number of timestamps per scanline during vblank.  Approx 2508. NTSC: (341 / 3.0) PAL: (341 / 3.2). Uses (3.? * cpu_cycles) / 341.0, and assumes 1 cpu cycle.
-		if (vblankScanLines) vblankPixel = 341 / vblankScanLines;	//341 pixels per scanline
-		//FCEUI_printf("vbPixel = %d",vblankPixel);					     //Debug
-		//FCEUI_printf("ts: %d line: %d\n", timestamp, vblankScanLines); //Debug
+ don:
+		tmp = tmp->next;
 	}
+	return(0);
+}
+
+static uint8 ReadHandler(X6502 *X, uint32 A) {
+	extern X6502 XSave;
+
+	if (X->preexec)
+		FindBPoint(&XSave, BPOINT_READ, A);
+	return(ARead[A](A));
+}
+
+static void WriteHandler(X6502 *X, uint32 A, uint8 V) {
+	extern X6502 XSave;
+
+	if (X->preexec)
+		FindBPoint(&XSave, BPOINT_WRITE, A);
 	else
-		vblankScanLines = 0;
-
-	if (GameInfo->type==GIT_NSF)
-	{
-		if ((_PC >= 0x3801) && (_PC <= 0x3824)) return;
-	}
-
-	opcode[0] = GetMem(_PC);
-	size = opsize[opcode[0]];
-	switch (size)
-	{
-		default:
-		case 1: break;
-		case 2:
-			opcode[1] = GetMem(_PC + 1);
-			break;
-		case 0: // illegal instructions may have operands
-		case 3:
-			opcode[1] = GetMem(_PC + 1);
-			opcode[2] = GetMem(_PC + 2);
-			break;
-	}
-
-	switch (optype[opcode[0]])
-	{
-		case 0: break;
-		case 1:
-			tmp = (opcode[1] + _X) & 0xFF;
-			A = GetMem(tmp);
-			tmp = (opcode[1] + _X + 1) & 0xFF;
-			A |= (GetMem(tmp) << 8);
-			break;
-		case 2: A = opcode[1]; break;
-		case 3: A = opcode[1] | (opcode[2] << 8); break;
-		case 4: A = (GetMem(opcode[1]) | (GetMem((opcode[1] + 1) & 0xFF) << 8)) + _Y; break;
-		case 5: A = opcode[1] + _X; break;
-		case 6: A = (opcode[1] | (opcode[2] << 8)) + _Y; break;
-		case 7: A = (opcode[1] | (opcode[2] << 8)) + _X; break;
-		case 8: A = opcode[1] + _Y; break;
-	}
-
-	if (numWPs || dbgstate.step || dbgstate.runline || dbgstate.stepout || watchpoint[64].flags || dbgstate.badopbreak || break_on_cycles || break_on_instructions || break_asap)
-		breakpoint(opcode, A, size);
-
-	if(debug_loggingCD)
-		LogCDData(opcode, A, size);
-
-	FCEUD_TraceInstruction(opcode, size);
+		BWrite[A](A, V);
 }
+
+int FCEUI_AddBreakPoint(int type, uint32 A1, uint32 A2,
+						void (*Handler)(X6502 *, int type, uint32 A)) {
+	BPOINT *tmp;
+
+	tmp = (BPOINT*)malloc(sizeof(BPOINT));
+
+	tmp->A[0] = A1;
+	tmp->A[1] = A2;
+	tmp->Handler = Handler;
+	tmp->type = type;
+	tmp->next = 0;
+
+	if (BreakPoints == NULL)
+		BreakPoints = tmp;
+	else
+		LastBP->next = tmp;
+
+	LastBP = tmp;
+
+	X6502_Debug(CPUHook, ReadHandler, WriteHandler);
+	return(1);
+}
+
+int FCEUI_SetBreakPoint(uint32 w, int type, uint32 A1, uint32 A2,
+						void (*Handler)(X6502 *, int type, uint32 A)) {
+	uint32 x = 0;
+	BPOINT *tmp;
+
+	tmp = BreakPoints;
+
+	while (tmp) {
+		if (w == x) {
+			tmp->type = type;
+			tmp->A[0] = A1;
+			tmp->A[1] = A2;
+			tmp->Handler = Handler;
+			return(1);
+		}
+		x++;
+		tmp = tmp->next;
+	}
+	return(0);
+}
+
+int FCEUI_GetBreakPoint(uint32 w, int *type, uint32 *A1, uint32 *A2,
+						void(**Handler) (X6502 *, int type, uint32 A)) {
+	uint32 x = 0;
+	BPOINT *tmp;
+
+	tmp = BreakPoints;
+
+	while (tmp) {
+		if (w == x) {
+			*type = tmp->type;
+			*A1 = tmp->A[0];
+			*A2 = tmp->A[1];
+			*Handler = tmp->Handler;
+			return(1);
+		}
+		x++;
+		tmp = tmp->next;
+	}
+	return(0);
+}
+
+int FCEUI_ListBreakPoints(int (*callb)(int type, uint32 A1, uint32 A2,
+									   void (*Handler)(X6502 *, int type, uint32 A))) {
+	BPOINT *tmp;
+	tmp = BreakPoints;
+	while (tmp) {
+		callb(tmp->type, tmp->A[0], tmp->A[1], tmp->Handler);
+		tmp = tmp->next;
+	}
+	return(1);
+}
+
+int FCEUI_DeleteBreakPoint(uint32 w) {
+	BPOINT *tmp, *prev = NULL;
+	uint32 x = 0;
+
+	tmp = BreakPoints;
+
+	while (tmp) {
+		if (w == x) {
+			if (prev) {	/* Not the first breakpoint. */
+				if (tmp->next)	/* More breakpoints. */
+					prev->next = tmp->next;
+				else {	/* This is the last breakpoint. */
+					prev->next = 0;
+					LastBP = prev;
+				}
+			} else {/* The first breakpoint. */
+				if (tmp->next)	/* More breakpoints. */
+					BreakPoints = tmp->next;
+				else {
+					BreakPoints = LastBP = 0;	/* No more breakpoints. */
+					/* Update the CPU hooks. */
+					X6502_Debug(CPUHook, BreakPoints ? ReadHandler : 0, BreakPoints ? WriteHandler : 0);
+				}
+			}
+			free(tmp);
+			tmp = 0;
+			return(1);
+		}
+		prev = tmp;
+		tmp = tmp->next;
+		x++;
+	}
+	return(0);
+}
+
+void FCEUI_SetCPUCallback(void (*callb)(X6502 *X)) {
+	CPUHook = callb;
+	X6502_Debug(CPUHook, BreakPoints ? ReadHandler : 0, BreakPoints ? WriteHandler : 0);
+}
+#endif

@@ -41,7 +41,7 @@ static SFORMAT StateRegs[] =
 static void Sync(void) {
 	uint8 i;
 	if ((preg[3] & 0xC0) == 0xC0)
-		setprg8r(0x10, 0x6000, preg[3] & 0x3F);
+		setprg8r(0x10, 0x6000, 0);
 	else
 		setprg8(0x6000, preg[3] & 0x3F);
 	setprg8(0x8000, preg[0]);
@@ -89,13 +89,16 @@ static DECLFW(M69Write1) {
 	case 0xA: preg[1] = V; Sync(); break;
 	case 0xB: preg[2] = V; Sync(); break;
 	case 0xC: mirr = V & 3; Sync();break;
+	/* 17/10/17- reg $0D should awknowledge IRQ and no other
+	 * http://forums.nesdev.com/viewtopic.php?f=2&t=12436&start=15
+	 */
 	case 0xD: IRQa = V; X6502_IRQEnd(FCEU_IQEXT); break;
 	case 0xE: IRQCount &= 0xFF00; IRQCount |= V; break;
 	case 0xF: IRQCount &= 0x00FF; IRQCount |= V << 8; break;
 	}
 }
 
-// SUNSOFT-5/FME-7 Sound
+/* SUNSOFT-5/FME-7 Sound */
 
 static void AYSound(int Count);
 static void AYSoundHQ(void);
@@ -215,10 +218,9 @@ void Mapper69_ESI(void) {
 	memset(dcount, 0, sizeof(dcount));
 	memset(vcount, 0, sizeof(vcount));
 	memset(CAYBC, 0, sizeof(CAYBC));
-	AddExState(&SStateRegs, ~0, 0, 0);
 }
 
-// SUNSOFT-5/FME-7 Sound
+/* SUNSOFT-5/FME-7 Sound */
 
 static void M69Power(void) {
 	cmdreg = sndcmd = 0;
@@ -258,10 +260,7 @@ void Mapper69_Init(CartInfo *info) {
 	info->Power = M69Power;
 	info->Close = M69Close;
 	MapIRQHook = M69IRQHook;
-	if(info->ines2)
-		WRAMSIZE = info->wram_size + info->battery_wram_size;
-	else
-		WRAMSIZE = 8192;
+	WRAMSIZE = 8192;
 	WRAM = (uint8*)FCEU_gmalloc(WRAMSIZE);
 	SetupCartPRGMapping(0x10, WRAM, WRAMSIZE, 1);
 	AddExState(WRAM, WRAMSIZE, 0, "WRAM");
@@ -271,6 +270,7 @@ void Mapper69_Init(CartInfo *info) {
 	}
 	GameStateRestore = StateRestore;
 	Mapper69_ESI();
+	AddExState(&SStateRegs, ~0, 0, 0);
 	AddExState(&StateRegs, ~0, 0, 0);
 }
 
@@ -279,4 +279,5 @@ void NSFAY_Init(void) {
 	SetWriteHandler(0xC000, 0xDFFF, M69SWrite0);
 	SetWriteHandler(0xE000, 0xFFFF, M69SWrite1);
 	Mapper69_ESI();
+	AddExState(&SStateRegs, ~0, 0, 0);
 }
