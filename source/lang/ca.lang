@@ -88,8 +88,8 @@ msgstr "Comandament clàssic"
 msgid "Close"
 msgstr "Tancar"
 
-msgid "Coding & menu design"
-msgstr "Programació & disseny menú"
+msgid "Coding"
+msgstr "Programació"
 
 msgid "Controles"
 msgstr "Controls"
@@ -114,6 +114,9 @@ msgstr "Dades DVD"
 
 msgid "Default"
 msgstr "Per defecte"
+
+msgid "Delete"
+msgstr "Suprimeix"
 
 msgid "Directory name is too long!"
 msgstr "Nom de directori massa larg!"
@@ -199,9 +202,6 @@ msgstr "Configuració - Cheats"
 msgid "Game Settings - Video"
 msgstr "Configuració - Vídeo"
 
-msgid "Region"
-msgstr "regió"
-
 msgid "GameCube Controller"
 msgstr "Comandament Gamecube"
 
@@ -210,6 +210,9 @@ msgstr "Alemany"
 
 msgid "Go Back"
 msgstr "Tornar"
+
+msgid "Hide RAM Saving"
+msgstr "Amaga desar RAM"
 
 msgid "High"
 msgstr "Alt"
@@ -430,11 +433,17 @@ msgstr "Desar RAM és incompatible per als jocs FDS!"
 msgid "Reboot"
 msgstr "Reiniciar"
 
+msgid "Region"
+msgstr "regió"
+
 msgid "Rendering"
 msgstr "Renderitzat"
 
-msgid "Reset Game"
+msgid "Reset"
 msgstr "Reiniciar"
+
+msgid "Reset Game"
+msgstr "Reiniciar Joc"
 
 msgid "Reset this game? Any unsaved progress will be lost."
 msgstr "Reiniciar joc? Es perdrà qualsevol progrés no desat."
@@ -531,6 +540,9 @@ msgstr "No trobo targeta SD!"
 
 msgid "Shift"
 msgstr "Maj."
+
+msgid "Show Frame Rate"
+msgstr "Mostra FPS"
 
 msgid "Sound Quality"
 msgstr "Qualitat de so"

@@ -25,6 +25,7 @@ pal rp2c04_0004[512] = {
 
 pal rp2c03[512] = {
  #include "rp2c03.h"
+	EMPTY_PALETTE_DEEMPH_X_7
 };
 
 // Fixed palette entries used by the GUI

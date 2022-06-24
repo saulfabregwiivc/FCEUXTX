@@ -106,8 +106,8 @@ msgstr "Escolher Jogo "
 msgid "Close"
 msgstr "Fechar"
 
-msgid "Coding & menu design"
-msgstr "Programação & design do menu "
+msgid "Coding"
+msgstr "Programação"
 
 msgid "Controller"
 msgstr "Controle"
@@ -238,9 +238,6 @@ msgstr "Configurações - Trapaças"
 msgid "Game Settings - Video"
 msgstr "Configurações - Vídeo"
 
-msgid "Region"
-msgstr "Região"
-
 msgid "GameCube Controller"
 msgstr "Controle do GameCube"
 
@@ -249,6 +246,9 @@ msgstr "Alemão"
 
 msgid "Go Back"
 msgstr "Voltar"
+
+msgid "Hide RAM Saving"
+msgstr "Ocultar Salvar RAM"
 
 msgid "High"
 msgstr "Alta"
@@ -324,9 +324,6 @@ msgstr "Carregando Patch..."
 
 msgid "Loading..."
 msgstr "Carregando..."
-
-msgid "Logo"
-msgstr "Logotipo"
 
 msgid "Low (Recommended)"
 msgstr "Baixo (Recomendado)"
@@ -459,6 +456,9 @@ msgstr "Salvar em RAM não está disponível para jogos FDS (Famicom Disk System
 
 msgid "Reboot"
 msgstr "Reiniciar"
+
+msgid "Region"
+msgstr "Região"
 
 msgid "Rendering"
 msgstr "Renderização"

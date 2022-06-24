@@ -3,6 +3,7 @@
  * Nintendo Wii/GameCube Port
  *
  * Tantric 2008-2022
+ *
  * Tanooki 2019-2022
  *
  * fceuxtx.h
@@ -18,7 +19,7 @@
 #include "fceux/driver.h"
 
 #define APPNAME			"FCEUX TX"
-#define APPVERSION		"1.1.3"
+#define APPVERSION		"1.1.4"
 #define APPFOLDER 		"fceuxtx"
 #define PREF_FILE_NAME	"settings.xml"
 
@@ -110,6 +111,7 @@ struct SGCSettings
 	char	ScreenshotsFolder[MAXPATHLEN]; // Path to screenshots files
 	char	CoverFolder[MAXPATHLEN]; 	// Path to cover files
 	char	ArtworkFolder[MAXPATHLEN]; 	// Path to artwork files
+	int		HideRAMSaving;
 	int		AutoloadGame;
 
 	float	zoomHor; // horizontal zoom amount

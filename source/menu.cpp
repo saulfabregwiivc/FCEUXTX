@@ -88,6 +88,7 @@ static char progressTitle[101];
 static char progressMsg[201];
 static int progressDone = 0;
 static int progressTotal = 0;
+static bool showCredits = false;
 
 u8 * bg_music;
 u32 bg_music_size;
@@ -800,7 +801,7 @@ SettingWindow(const char * title, GuiWindow * w)
  ***************************************************************************/
 static void WindowCredits(void * ptr)
 {
-	if(btnLogo->GetState() != STATE_CLICKED)
+	if(btnLogo->GetState() != STATE_CLICKED && !showCredits)
 		return;
 
 	btnLogo->ResetState();
@@ -818,7 +819,7 @@ static void WindowCredits(void * ptr)
 	creditsBoxImg.SetAlignment(ALIGN_CENTRE, ALIGN_MIDDLE);
 	creditsWindowBox.Append(&creditsBoxImg);
 
-	int numEntries = 23;
+	int numEntries = 26;
 	GuiText * txt[numEntries];
 
 	txt[i] = new GuiText("Credits", 26, (GXColor){255, 255, 255, 255});
@@ -826,34 +827,40 @@ static void WindowCredits(void * ptr)
 
 	GuiText::SetPresets(20, (GXColor){0, 0, 0, 255}, 0, FTGX_JUSTIFY_LEFT | FTGX_ALIGN_TOP, ALIGN_LEFT, ALIGN_TOP);
 
-	txt[i] = new GuiText("Coding & menu design");
+	txt[i] = new GuiText("Coding");
 	txt[i]->SetPosition(60,y); i++;
-	txt[i] = new GuiText("Tantric");
-	txt[i]->SetPosition(350,y); i++; y+=24;
-	txt[i] = new GuiText("Additional improvements");
-	txt[i]->SetPosition(60,y); i++;
-	txt[i] = new GuiText("Tanooki, others");
+	txt[i] = new GuiText("Tanooki");
 	txt[i]->SetPosition(350,y); i++; y+=24;
 	txt[i] = new GuiText("Menu artwork");
 	txt[i]->SetPosition(60,y); i++;
-	txt[i] = new GuiText("Tanooki, the3seashells");
+	txt[i] = new GuiText("the3seashells, Tanooki");
 	txt[i]->SetPosition(350,y); i++; y+=24;
-	txt[i] = new GuiText("Logo");
+	txt[i] = new GuiText("Additional improvements");
 	txt[i]->SetPosition(60,y); i++;
-	txt[i] = new GuiText("Tanooki");
-	txt[i]->SetPosition(350,y); i++; y+=48;
+	txt[i] = new GuiText("Askot, Zopenko,");
+	txt[i]->SetPosition(350,y); i++; y+=24;
+	txt[i] = new GuiText("InfiniteBlue, others");
+	txt[i]->SetPosition(350,y); i++; y+=24;
 
-	txt[i] = new GuiText("FCE Ultra GX GameCube");
-	txt[i]->SetPosition(60,y); i++;
-	txt[i] = new GuiText("SoftDev, askot,");
-	txt[i]->SetPosition(350,y); i++; y+=24;
-	txt[i] = new GuiText("dsbomb, others");
-	txt[i]->SetPosition(350,y); i++; y+=24;
 	txt[i] = new GuiText("FCEUX");
 	txt[i]->SetPosition(60,y); i++;
 	txt[i] = new GuiText("FCEUX Team");
 	txt[i]->SetPosition(350,y); i++; y+=24;
+	txt[i] = new GuiText("FCE Ultra GX Wii");
+	txt[i]->SetPosition(60,y); i++;
+	txt[i] = new GuiText("Tantric");
+	txt[i]->SetPosition(350,y); i++; y+=24;
+	txt[i] = new GuiText("FCE Ultra GX GameCube");
+	txt[i]->SetPosition(60,y); i++;
+	txt[i] = new GuiText("SoftDev, Askot,");
+	txt[i]->SetPosition(350,y); i++; y+=24;
+	txt[i] = new GuiText("dsbomb, others");
+	txt[i]->SetPosition(350,y); i++; y+=24;
 
+	txt[i] = new GuiText("libwiigui");
+	txt[i]->SetPosition(60,y); i++;
+	txt[i] = new GuiText("Tantric");
+	txt[i]->SetPosition(350,y); i++; y+=24;
 	txt[i] = new GuiText("libogc / devkitPPC");
 	txt[i]->SetPosition(60,y); i++;
 	txt[i] = new GuiText("shagkur & WinterMute");
@@ -929,6 +936,7 @@ static void WindowCredits(void * ptr)
 		   (userInput[3].wpad->btns_d || userInput[3].pad.btns_d || userInput[3].wiidrcdata.btns_d))
 		{
 			exit = true;
+			showCredits = false;
 		}
 		usleep(THREAD_SLEEP);
 	}
@@ -1984,7 +1992,20 @@ static int MenuGameSaves(int action)
 			}
 			else // save
 			{
-				if(ret == -2) // new RAM
+				if(ret == -2) // new State
+				{
+					for(i=1; i < 100; i++)
+						if(saves.files[FILE_STATE][i] == 0)
+							break;
+
+					if(i < 100)
+					{
+						MakeFilePath(filepath, FILE_STATE, romFilename, i);
+						SaveState (filepath, NOTSILENT);
+						menu = MENU_GAME_SAVE;
+					}
+				}
+				else if(ret == -1 && GCSettings.HideRAMSaving == 0) // new RAM
 				{
 					for(i=1; i < 100; i++)
 						if(saves.files[FILE_RAM][i] == 0)
@@ -1994,19 +2015,6 @@ static int MenuGameSaves(int action)
 					{
 						MakeFilePath(filepath, FILE_RAM, romFilename, i);
 						SaveRAM(filepath, NOTSILENT);
-						menu = MENU_GAME_SAVE;
-					}
-				}
-				else if(ret == -1) // new State
-				{
-					for(i=1; i < 100; i++)
-						if(saves.files[FILE_STATE][i] == 0)
-							break;
-
-					if(i < 100)
-					{
-						MakeFilePath(filepath, FILE_STATE, romFilename, i);
-						SaveState(filepath, NOTSILENT);
 						menu = MENU_GAME_SAVE;
 					}
 				}
@@ -3722,15 +3730,11 @@ static int MenuSettingsAudio()
 				break;
 
 			case 1:
-				GCSettings.lowpass++;
-				if (GCSettings.lowpass > 1)
-					GCSettings.lowpass = 0;
+				GCSettings.lowpass ^= 1;
 				break;
 
 			case 2:
-				GCSettings.swapDuty++;
-				if (GCSettings.swapDuty > 1)
-					GCSettings.swapDuty = 0;
+				GCSettings.swapDuty ^= 1;
 				break;
 		}
 
@@ -3790,7 +3794,8 @@ static int MenuSettings()
 	GuiImageData btnLargeOutlineOver(button_large_over_png);
 	GuiImageData iconFile(icon_settings_file_png);
 	GuiImageData iconMenu(icon_settings_menu_png);
-	GuiImageData iconCheats(icon_game_gamegenie_png);
+	GuiImageData iconGameGenie(icon_game_gamegenie_png);
+	GuiImageData iconCredits(icon_credits_png);
 
 	GuiText savingBtnTxt1("Saving", 22, (GXColor){0, 0, 0, 255});
 	GuiText savingBtnTxt2("&", 18, (GXColor){0, 0, 0, 255});
@@ -3833,26 +3838,45 @@ static int MenuSettings()
 	menuBtn.SetTrigger(trig2);
 	menuBtn.SetEffectGrow();
 	
-	GuiText cheatsBtnTxt("Game Genie", 22, (GXColor){0, 0, 0, 255});
-	GuiText cheatsBtnTxt2(gameGenieTxt, 18, (GXColor){0, 0, 0, 255});
-	cheatsBtnTxt.SetPosition(0, -16);
-	cheatsBtnTxt2.SetPosition(0, +8);
-	GuiImage cheatsBtnImg(&btnLargeOutline);
-	GuiImage cheatsBtnImgOver(&btnLargeOutlineOver);
-	GuiImage cheatsBtnIcon(&iconCheats);
-	GuiButton cheatsBtn(btnLargeOutline.GetWidth(), btnLargeOutline.GetHeight());
-	cheatsBtn.SetAlignment(ALIGN_CENTRE, ALIGN_TOP);
-	cheatsBtn.SetPosition(0, 250);
-	cheatsBtn.SetLabel(&cheatsBtnTxt, 0);
-	cheatsBtn.SetLabel(&cheatsBtnTxt2, 1);
-	cheatsBtn.SetImage(&cheatsBtnImg);
-	cheatsBtn.SetImageOver(&cheatsBtnImgOver);
-	cheatsBtn.SetIcon(&cheatsBtnIcon);
-	cheatsBtn.SetSoundOver(&btnSoundOver);
-	cheatsBtn.SetSoundClick(&btnSoundClick);
-	cheatsBtn.SetTrigger(trigA);
-	cheatsBtn.SetTrigger(trig2);
-	cheatsBtn.SetEffectGrow();
+	GuiText gameGenieBtnTxt("Game Genie", 22, (GXColor){0, 0, 0, 255});
+	GuiText gameGenieBtnTxt2(gameGenieTxt, 18, (GXColor){0, 0, 0, 255});
+	gameGenieBtnTxt.SetPosition(0, -16);
+	gameGenieBtnTxt2.SetPosition(0, +8);
+	GuiImage gameGenieBtnImg(&btnLargeOutline);
+	GuiImage gameGenieBtnImgOver(&btnLargeOutlineOver);
+	GuiImage gameGenieBtnIcon(&iconGameGenie);
+	GuiButton gameGenieBtn(btnLargeOutline.GetWidth(), btnLargeOutline.GetHeight());
+	gameGenieBtn.SetAlignment(ALIGN_CENTRE, ALIGN_TOP);
+	gameGenieBtn.SetPosition(-125, 250);
+	gameGenieBtn.SetLabel(&gameGenieBtnTxt, 0);
+	gameGenieBtn.SetLabel(&gameGenieBtnTxt2, 1);
+	gameGenieBtn.SetImage(&gameGenieBtnImg);
+	gameGenieBtn.SetImageOver(&gameGenieBtnImgOver);
+	gameGenieBtn.SetIcon(&gameGenieBtnIcon);
+	gameGenieBtn.SetSoundOver(&btnSoundOver);
+	gameGenieBtn.SetSoundClick(&btnSoundClick);
+	gameGenieBtn.SetTrigger(trigA);
+	gameGenieBtn.SetTrigger(trig2);
+	gameGenieBtn.SetEffectGrow();
+
+	GuiText creditsBtnTxt("Credits", 22, (GXColor){0, 0, 0, 255});
+	creditsBtnTxt.SetWrap(true, btnLargeOutline.GetWidth()-20);
+	GuiImage creditsBtnImg(&btnLargeOutline);
+	GuiImage creditsBtnImgOver(&btnLargeOutlineOver);
+	GuiImage creditsBtnIcon(&iconCredits);
+	GuiButton creditsBtn(btnLargeOutline.GetWidth(), btnLargeOutline.GetHeight());
+	creditsBtn.SetAlignment(ALIGN_CENTRE, ALIGN_TOP);
+	creditsBtn.SetPosition(125, 250);
+	creditsBtn.SetLabel(&creditsBtnTxt);
+	creditsBtn.SetImage(&creditsBtnImg);
+	creditsBtn.SetImageOver(&creditsBtnImgOver);
+	creditsBtn.SetIcon(&creditsBtnIcon);
+	creditsBtn.SetSoundOver(&btnSoundOver);
+	creditsBtn.SetSoundClick(&btnSoundClick);
+	creditsBtn.SetTrigger(trigA);
+	creditsBtn.SetTrigger(trig2);
+	creditsBtn.SetEffectGrow();
+	creditsBtn.SetUpdateCallback(WindowCredits);
 
 	GuiText backBtnTxt("Go Back", 22, (GXColor){0, 0, 0, 255});
 	GuiImage backBtnImg(&btnOutline);
@@ -3889,7 +3913,8 @@ static int MenuSettings()
 	w.Append(&titleTxt);
 	w.Append(&savingBtn);
 	w.Append(&menuBtn);
-	w.Append(&cheatsBtn);
+	w.Append(&gameGenieBtn);
+	w.Append(&creditsBtn);
 	w.Append(&backBtn);
 	w.Append(&resetBtn);
 
@@ -3909,9 +3934,9 @@ static int MenuSettings()
 		{
 			menu = MENU_SETTINGS_MENU;
 		}
-		else if(cheatsBtn.GetState() == STATE_CLICKED)
+		else if(gameGenieBtn.GetState() == STATE_CLICKED)
 		{
-			cheatsBtn.ResetState();
+			gameGenieBtn.ResetState();
 			
 			if(!FindGameGenie())
 			{
@@ -3922,8 +3947,13 @@ static int MenuSettings()
 				GCSettings.gamegenie ^= 1;
 				if (GCSettings.gamegenie) sprintf(gameGenieTxt, "ON");
 				else sprintf(gameGenieTxt, "OFF");
-				cheatsBtnTxt2.SetText(gameGenieTxt);
+				gameGenieBtnTxt2.SetText(gameGenieTxt);
 			}
+		}
+		else if(creditsBtn.GetState() == STATE_CLICKED)
+		{
+			showCredits = true;
+			creditsBtn.SetState(STATE_SELECTED);
 		}
 		else if(backBtn.GetState() == STATE_CLICKED)
 		{
@@ -4173,6 +4203,7 @@ static int MenuSettingsMenu()
 	sprintf(options.name[i++], "Sound Effects Volume");
 	sprintf(options.name[i++], "Language");
 	sprintf(options.name[i++], "Preview Image");
+	sprintf(options.name[i++], "Hide RAM Saving");
 	options.length = i;
 
 	for(i=0; i < options.length; i++)
@@ -4255,6 +4286,9 @@ static int MenuSettingsMenu()
 				if(GCSettings.PreviewImage > 2)
 					GCSettings.PreviewImage = 0;
 				break;
+			case 6:
+				GCSettings.HideRAMSaving ^= 1;
+				break;
 		}
 
 		if(ret >= 0 || firstRun)
@@ -4329,6 +4363,11 @@ static int MenuSettingsMenu()
 					break; 
 			}
 			
+			if (GCSettings.HideRAMSaving == 1)
+				sprintf (options.value[6], "On");
+			else
+				sprintf (options.value[6], "Off");
+
 			optionBrowser.TriggerUpdate();
 		}
 
@@ -4513,6 +4552,11 @@ MainMenu (int menu)
 				break;
 		}
 		lastMenu = currentMenu;
+		if (btnLogo->GetState() == STATE_CLICKED)
+		{
+			showCredits = true;
+			btnLogo->ResetState();
+		}
 		usleep(THREAD_SLEEP);
 	}
 

@@ -82,6 +82,9 @@ msgstr "Cheats bestand niet gevonden!"
 msgid "Cheats Folder"
 msgstr "Cheats Map"
 
+msgid "Chinese (Simplified)"
+msgstr "Vereenvoudigd Chinees"
+
 msgid "Choose Game"
 msgstr "Kies Spel"
 
@@ -91,8 +94,8 @@ msgstr "Traditionele Controller"
 msgid "Close"
 msgstr "Sluiten"
 
-msgid "Coding & menu design"
-msgstr "Programmering & menu ontwerp"
+msgid "Coding"
+msgstr "Programmering"
 
 msgid "Cover View"
 msgstr "Omslag Weergave"
@@ -108,6 +111,9 @@ msgstr "DVD-ROM"
 
 msgid "Default"
 msgstr "Standaard"
+
+msgid "Delete"
+msgstr "Verwijderen"
 
 msgid "Directory name is too long!"
 msgstr "Mapnaam is te lang!"
@@ -196,14 +202,14 @@ msgstr "Spelinstellingen - Cheats"
 msgid "Game Settings - Video"
 msgstr "Spelinstellingen - Video"
 
-msgid "Region"
-msgstr "Regio"
-
 msgid "German"
 msgstr "Duits"
 
 msgid "Go Back"
 msgstr "Ga Terug"
+
+msgid "Hide RAM Saving"
+msgstr "Verberg RAM-sparen"
 
 msgid "High"
 msgstr "Hoog"
@@ -409,8 +415,14 @@ msgstr "RAM opslaan is niet beschikbaar voor FDS spellen!"
 msgid "Reboot"
 msgstr "Herstart"
 
+msgid "Region"
+msgstr "Regio"
+
 msgid "Rendering"
 msgstr "Renderen"
+
+msgid "Reset"
+msgstr "Herstart"
 
 msgid "Reset Game"
 msgstr "Herstart Spel"
@@ -511,8 +523,8 @@ msgstr "SD Kaart"
 msgid "SD card not found!"
 msgstr "Geen SD kaart gevonden!"
 
-msgid "Chinese (Simplified)"
-msgstr "Vereenvoudigd Chinees"
+msgid "Show Frame Rate"
+msgstr "Toon Framerate"
 
 msgid "Sound Effects Volume"
 msgstr "Volume Geluidseffecten"

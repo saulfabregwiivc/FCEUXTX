@@ -100,8 +100,8 @@ msgstr "クラコン"
 msgid "Close"
 msgstr "とじる"
 
-msgid "Coding & menu design"
-msgstr "設計とメニューのデザイン"
+msgid "Coding"
+msgstr "プログラミング"
 
 msgid "Controles"
 msgstr "操作"
@@ -226,9 +226,6 @@ msgstr "ゲーム設定 - 改造コード"
 msgid "Game Settings - Video"
 msgstr "ゲーム設定 - 映像"
 
-msgid "Region"
-msgstr "領域"
-
 msgid "GameCube Controller"
 msgstr "GCコントローラ"
 
@@ -237,6 +234,9 @@ msgstr "ドイツ語"
 
 msgid "Go Back"
 msgstr "戻る"
+
+msgid "Hide RAM Saving"
+msgstr "RAMセーブを隠す"
 
 msgid "High"
 msgstr "高い"
@@ -472,6 +472,9 @@ msgstr "ディスクシステムにはRAMセーブはありません"
 msgid "Reboot"
 msgstr "再起動"
 
+msgid "Region"
+msgstr "領域"
+
 msgid "Rendering"
 msgstr "描画"
 
@@ -678,9 +681,6 @@ msgstr "ザッパー"
 
 msgid "Zapper Crosshair"
 msgstr "ｻﾞｯﾊﾟｰの十字ｶｰｿﾙ"
-
-msgid "Logo"
-msgstr "ロゴ"
 
 msgid "Automatic"
 msgstr "自動"

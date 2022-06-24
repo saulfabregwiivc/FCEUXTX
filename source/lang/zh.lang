@@ -100,8 +100,8 @@ msgstr "传统控制器"
 msgid "Close"
 msgstr "关闭"
 
-msgid "Coding & menu design"
-msgstr "编码 & 菜单设计"
+msgid "Coding"
+msgstr "编码"
 
 msgid "Controles"
 msgstr "控制装置"
@@ -220,9 +220,6 @@ msgstr "游戏设定 - 金手指"
 msgid "Game Settings - Video"
 msgstr "游戏设定 - 视频"
 
-msgid "Region"
-msgstr "地区"
-
 msgid "GameCube Controller"
 msgstr "GameCube 控制器"
 
@@ -231,6 +228,9 @@ msgstr "德语"
 
 msgid "Go Back"
 msgstr "返回"
+
+msgid "Hide RAM Saving"
+msgstr "隐藏RAM保存"
 
 msgid "High"
 msgstr "高的"
@@ -463,6 +463,9 @@ msgstr "任天堂磁盘驱动器游戏， 不能以RAM保存！"
 msgid "Reboot"
 msgstr "重新启动"
 
+msgid "Region"
+msgstr "地区"
+
 msgid "Rendering"
 msgstr "描绘"
 
@@ -655,9 +658,6 @@ msgstr "Zapper光线枪"
 msgid "Zapper Crosshair"
 msgstr "Zapper光枪十字准线"
 
-msgid "Logo"
-msgstr "图形标识"
-
 msgid "Color Palette"
 msgstr "调色板"
 
@@ -675,9 +675,6 @@ msgstr "土耳其语"
 
 msgid "Game Genie"
 msgstr "游戏金手指"
-
-msgid "FCE Ultra GX GameCube"
-msgstr "FCE Ultra GX GameCube版"
 
 msgid "libogc / devkitPPC"
 msgstr "libogc / devkitPPC开发源码"

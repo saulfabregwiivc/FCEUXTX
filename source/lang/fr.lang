@@ -106,8 +106,8 @@ msgstr "Manette Classique"
 msgid "Close"
 msgstr "Fermer"
 
-msgid "Coding & menu design"
-msgstr "Programmation & design du menu"
+msgid "Coding"
+msgstr "Programmation"
 
 msgid "Color Palette"
 msgstr "Palette de couleurs"
@@ -255,6 +255,9 @@ msgstr "Allemand"
 
 msgid "Go Back"
 msgstr "Retour"
+
+msgid "Hide RAM Saving"
+msgstr "Masquer sauvegarder RAM"
 
 msgid "High"
 msgstr "Haute"

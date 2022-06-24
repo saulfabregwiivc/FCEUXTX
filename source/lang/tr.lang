@@ -26,7 +26,7 @@ msgid "A (Rapid)"
 msgstr "A (Seri)"
 
 msgid "Additional improvements"
-msgstr "İlave kod"
+msgstr "Ek kod"
 
 msgid "Are you sure that you want to reset this game? Any unsaved progress will be lost."
 msgstr "Oyunu tekrar başlatmak istediğinizden emin misiniz? Kaydedilmemiş tüm veriler kaybolacak."
@@ -91,6 +91,9 @@ msgstr "Hile dosyası bulunamadı!"
 msgid "Cheats Folder"
 msgstr "Hile Dizini"
 
+msgid "Chinese (Simplified)"
+msgstr "Basitleştirilmiş Çince"
+
 msgid "Choose Game"
 msgstr "Oyun Seç"
 
@@ -100,8 +103,8 @@ msgstr "Klasik Oyun Kumandası"
 msgid "Close"
 msgstr "Kapat"
 
-msgid "Coding & menu design"
-msgstr "Kod & Menü Tasarımı"
+msgid "Coding"
+msgstr "Kod"
 
 msgid "Controles"
 msgstr "Oyun Kumandaları"
@@ -126,6 +129,9 @@ msgstr "Veri DVD'si"
 
 msgid "Default"
 msgstr "Varsayılan"
+
+msgid "Delete"
+msgstr "Silmek"
 
 msgid "Directory name is too long!"
 msgstr "Dizin adı çok uzun!"
@@ -217,9 +223,6 @@ msgstr "Oyun Ayarları - Hileler"
 msgid "Game Settings - Video"
 msgstr "Oyun Ayarları - Ekran"
 
-msgid "Region"
-msgstr "Bölge"
-
 msgid "GameCube Controller"
 msgstr "GameCube Oyun Kumandası"
 
@@ -228,6 +231,9 @@ msgstr "Almanca"
 
 msgid "Go Back"
 msgstr "Geri Dön"
+
+msgid "Hide RAM Saving"
+msgstr "RAM kayıt gizle"
 
 msgid "High"
 msgstr "Yüksek"
@@ -457,6 +463,9 @@ msgstr "RAM kaydetme FDS oyunları için mevcut değil!"
 msgid "Reboot"
 msgstr "Yeniden Başlat"
 
+msgid "Region"
+msgstr "Bölge"
+
 msgid "Reset"
 msgstr "Tekrar Başlat"
 
@@ -556,8 +565,8 @@ msgstr "SD Kartı"
 msgid "SD card not found!"
 msgstr "SD kartı bulunamadı!"
 
-msgid "Chinese (Simplified)"
-msgstr "Basitleştirilmiş Çince"
+msgid "Show Frame Rate"
+msgstr "FPS'yi Göster"
 
 msgid "Snapshot"
 msgstr "Enstantane"

@@ -91,6 +91,9 @@ msgstr "Ficheiro de truques não encontrado!"
 msgid "Cheats Folder"
 msgstr "Pasta de Truques"
 
+msgid "Chinese (Simplified)"
+msgstr "Chinês Simp."
+
 msgid "Choose Game"
 msgstr "Escolher Jogo"
 
@@ -100,8 +103,8 @@ msgstr "Comando Clássico"
 msgid "Close"
 msgstr "Fechar"
 
-msgid "Coding & menu design"
-msgstr "Programação & desenho do menu"
+msgid "Coding"
+msgstr "Programação"
 
 msgid "Controles"
 msgstr "Controlos"
@@ -220,9 +223,6 @@ msgstr "Configurações - Truques"
 msgid "Game Settings - Video"
 msgstr "Configurações - Vídeo"
 
-msgid "Region"
-msgstr "Região"
-
 msgid "GameCube Controller"
 msgstr "Comando GameCube"
 
@@ -231,6 +231,9 @@ msgstr "Alemão"
 
 msgid "Go Back"
 msgstr "Voltar"
+
+msgid "Hide RAM Saving"
+msgstr "Ocultar gravar RAM"
 
 msgid "High"
 msgstr "Alta"
@@ -306,9 +309,6 @@ msgstr "A Carregar patch..."
 
 msgid "Loading..."
 msgstr "A carregar..."
-
-msgid "Logo"
-msgstr "Logotipo"
 
 msgid "Low (Recommended)"
 msgstr "Baixo (Recomendado)"
@@ -460,6 +460,9 @@ msgstr "Gravar RAM não está disponível para jogos do FDS (Famicom Disk System
 msgid "Reboot"
 msgstr "Reiniciar"
 
+msgid "Region"
+msgstr "Região"
+
 msgid "Rendering"
 msgstr "Renderização"
 
@@ -565,8 +568,8 @@ msgstr "Cartão SD"
 msgid "SD card not found!"
 msgstr "Cartão SD não encontrado!"
 
-msgid "Chinese (Simplified)"
-msgstr "Chinês Simp."
+msgid "Show Frame Rate"
+msgstr "Mostrar FPS"
 
 msgid "Sound Effects Volume"
 msgstr "Volume de Efeitos Sonoros"

@@ -82,14 +82,17 @@ msgstr "Cheatdatei nicht gefunden!"
 msgid "Cheats Folder"
 msgstr "Ordner f. Cheats"
 
+msgid "Chinese (Simplified)"
+msgstr "Vereinfachtes Chinesisch"
+
 msgid "Choose Game"
 msgstr "Spiel auswählen"
 
 msgid "Close"
 msgstr "Schließen"
 
-msgid "Coding & menu design"
-msgstr "Programmierung & Menüdesign"
+msgid "Coding"
+msgstr "Programmierung"
 
 msgid "Color Palette"
 msgstr "Farbpalette"
@@ -207,6 +210,9 @@ msgstr "Deutsch"
 
 msgid "Go Back"
 msgstr "Zurück"
+
+msgid "Hide RAM Saving"
+msgstr "Ausblenden speichern RAM"
 
 msgid "High"
 msgstr "Hoch"
@@ -517,8 +523,8 @@ msgstr "Einstellungen - Speichern & Laden"
 msgid "SD card not found!"
 msgstr "SD Card nicht gefunden!"
 
-msgid "Chinese (Simplified)"
-msgstr "Vereinfachtes Chinesisch"
+msgid "Show Frame Rate"
+msgstr "Zeige Bildfrequenz"
 
 msgid "Snapshot"
 msgstr "Schnappschuss"

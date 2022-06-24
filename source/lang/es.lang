@@ -220,6 +220,9 @@ msgstr "Alemán"
 msgid "Go Back"
 msgstr "Volver"
 
+msgid "Hide RAM Saving"
+msgstr "Ocultar RAM Guardar"
+
 msgid "High"
 msgstr "Alta"
 
@@ -550,8 +553,8 @@ msgstr "Automático"
 msgid "B (Rapid)"
 msgstr "B (Rápido)"
 
-msgid "Coding & menu design"
-msgstr "Programación y diseño de menú"
+msgid "Coding"
+msgstr "Programación"
 
 msgid "Crop Overscan"
 msgstr "Cortar Bordes"

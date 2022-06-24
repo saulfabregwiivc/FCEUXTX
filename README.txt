@@ -7,13 +7,26 @@ FCEUX TX is a fork of FCE Ultra GX: https://github.com/dborth/fceugx
 Update History
 --------------
 
+---FCEUX TX 1.1.4---
+---June 23 2022---
+
+- Updated to the latest FCEUX (git 14c2152)
+- Updated to the latest FCE Ultra GX 3.5.2
+- Added mapper 126 support for Power Joy 84-in-1
+- Added option to hide/show "Save RAM" button in save menu (thanks InfiniteBlue!)
+- Added credits button in main menu settings (thanks InfiniteBlue!)
+- Updated credits
+- Updated all language files
+- Updated UI PNG images
+- Compiled with latest devkitPPC and libfat with UStealth Mod (thanks SaulFabre!)
+
 ---FCEUX TX 1.1.3---
 ---May 17 2022---
 
 - Updated to the latest FCEUX 2.6.4 (git def5768)
 - Updated to the latest FCE Ultra GX (git 10b4ff8)
 - Added mapper 218 support for Magic Floor
-- Restored turbo mode and added button remapping feature and submenu (thanks InfiniteBlueGX)
+- Restored turbo mode and added button remapping feature and submenu (thanks InfiniteBlue!)
 - Added option to choose sound quality (Low/High/Highest) in audio settings
 - Added option to turn it on/off low pass filtering in audio settings to simulate NES RF sound
 - Added SMB Game & Watch color palette
@@ -36,7 +49,7 @@ Update History
 - Added Digital Prime color palette by FBX and rename Smootz to Smooth V2
 - Replaced old PAL color palette by that of r57Shell (more accurate)
 - Removed rumble function from menu (your batteries will last longer)
-- Updated Korean translation (thanks DDinghoya)
+- Updated Korean translation (thanks DDinghoya!)
 - Updated UI PNG images
 - Compiled with latest devkitPPC/libogc
 - Updated Forwarder Channel (1.5)
@@ -70,7 +83,7 @@ Update History
 - Updated to the latest FCEUX 2.3.0 (git c544c13)
 - Updated to the latest FCE Ultra GX 3.5.0 (git 373e12b)
 - Removed SMB support (SMB 1.0 has a major security issue due to flaws in the protocol)
-- Added Mayflash 2-port Snes USB adapter support (thanks EthanArmbrust)
+- Added Mayflash 2-port Snes USB adapter support (thanks EthanArmbrust!)
 - Removed Retrode 2 and Hornet USB controller support (not really useful for Wii)
 - Removed PocketNES interoperability
 - Removed Dendy support (priority to PAL 576i/288p video mode which does not suit Dendy mode)
@@ -81,7 +94,7 @@ Update History
 - Reverted moved app version in credits box info
 - Reworked UI PNG images (improved colors, shadow effects and logo)
 - Added option to turn it on/off swap duty cycles to simulate sound of some NES clones
-- Added audio settings in game menu (thanks Bladeoner)
+- Added audio settings in game menu (thanks Bladeoner!)
 - Removed menu music (use a bg_music.ogg file in root fceuxtx folder)
 - Updated French translation
 - Changed root folder name to fceuxtx
@@ -148,7 +161,7 @@ Update History
 ---December 28 2019---
 
 - Updated to the latest FCE Ultra GX (git a8caf23)
-- Added Restored Wii VC color palette (thanks SuperrSonic)
+- Added Restored Wii VC color palette (thanks SuperrSonic!)
   restored version adjusts brightness levels significantly
 - Updated to the latest FCEUX (git 0b4be4b)
 - Updated UI color and added Wii/vWii Forwarder Channel (1.1)
@@ -159,7 +172,7 @@ Update History
 
 - Updated to the latest FCEUX (git 88d7f39)
 - Added vWii Forwarder Channel for Wii U
-- Updated PPU color palettes from FCEUmm (libretro)
+- Updated PPU color palettes (libretro fceumm)
 - Added A+B+START trigger to go back to menu with Classic Controller
   work with NES/Snes Classic Mini controllers
 - Fixed dialogue box text color to screen position and controller settings
@@ -170,9 +183,9 @@ Update History
 
 - Added separate PAL audio sample rate
 - Increased sound volume in games
-- Added Retrode support (thanks revvv)
+- Added Retrode support (thanks revvv!)
 - Changed default mapping of buttons A and B
-- Added button mapping for NES Zapper (thanks niuus)
+- Added button mapping for NES Zapper (thanks niuus!)
 - Corrected the PAL noise frequency table
 - Added all PAL regions detection
 - Removed PAL 60Hz video mode

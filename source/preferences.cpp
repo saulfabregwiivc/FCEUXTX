@@ -165,6 +165,7 @@ preparePrefsData ()
 	createXMLSetting("SFXVolume", "Sound Effects Volume", toStr(GCSettings.SFXVolume));
 	createXMLSetting("language", "Language", toStr(GCSettings.language));
 	createXMLSetting("PreviewImage", "Preview Image", toStr(GCSettings.PreviewImage));
+	createXMLSetting("HideRAMSaving", "Hide RAM Saving", toStr(GCSettings.HideRAMSaving));
 
 	createXMLSection("Controller", "Controller Settings");
 
@@ -332,7 +333,8 @@ decodePrefsData ()
 			loadXMLSetting(&GCSettings.SFXVolume, "SFXVolume");
 			loadXMLSetting(&GCSettings.language, "language");
 			loadXMLSetting(&GCSettings.PreviewImage, "PreviewImage");
-			
+			loadXMLSetting(&GCSettings.HideRAMSaving, "HideRAMSaving");			
+
 			// Controller Settings
 
 			loadXMLSetting(&GCSettings.Controller, "Controller");
@@ -401,24 +403,22 @@ DefaultSettings ()
 
 	ResetControls(); // controller button mappings
 
-	GCSettings.currpal = 1; // FBX's Digital Prime Palette
-	GCSettings.region = 2; // automatic region detection
-	GCSettings.videomode = 0; // automatic video mode detection
-
 	GCSettings.Controller = CTRL_PAD2; // NES Pad, Four Score, Zapper
-	GCSettings.TurboMode = 1; // turbo mode enabled
-	GCSettings.TurboModeButton = 0; // right analog stick
+	GCSettings.TurboMode = 1; // Enabled by default
+	GCSettings.TurboModeButton = 0; // Default is Right Analog Stick (0)
 
-	GCSettings.spritelimit = 1; // sprite limit enabled
-	GCSettings.crosshair = 1; // show crosshair enabled
-	GCSettings.gamegenie = 0; // game genie disabled
+	GCSettings.sndquality = 0; // low
+	GCSettings.lowpass = 0; // Disabled by default
+	GCSettings.swapDuty = 0; // Disabled by default
 
-	GCSettings.sndquality = 0; // low sound quality
-	GCSettings.lowpass = 0; // lowpass disabled
-	GCSettings.swapDuty = 0; // swap duty cycles disabled
-
-	GCSettings.render = 1; // unfiltered rendering
+	GCSettings.videomode = 0; // automatic video mode detection
+	GCSettings.render = 1; // Unfiltered
+	GCSettings.region = 2; // Auto
+	GCSettings.currpal = 1; // color palette
 	GCSettings.hideoverscan = 1; // hide vertical
+	GCSettings.spritelimit = 1; // Enabled by default
+	GCSettings.crosshair = 1; // Enabled by default
+	GCSettings.gamegenie = 0; // Disabled by default
 
 	GCSettings.widescreen = 0;
 
@@ -438,6 +438,7 @@ DefaultSettings ()
 	GCSettings.MusicVolume = 100;
 	GCSettings.SFXVolume = 40;
 	GCSettings.PreviewImage = 0;
+	GCSettings.HideRAMSaving = 0;
 	
 #ifdef HW_RVL
 	GCSettings.language = CONF_GetLanguage();

@@ -214,9 +214,6 @@ msgstr "게임 설정 - 치트"
 msgid "Game Settings - Video"
 msgstr "게임 설정 - 비디오"
 
-msgid "Region"
-msgstr "지역"
-
 msgid "Game Genie"
 msgstr "게임 지니"
 
@@ -228,6 +225,9 @@ msgstr "독일어"
 
 msgid "Go Back"
 msgstr "뒤로 가기"
+
+msgid "Hide RAM Saving"
+msgstr "숨기기 저장 RAM"
 
 msgid "High"
 msgstr "높은"
@@ -279,9 +279,6 @@ msgstr "DVD 불러오기 중..."
 
 msgid "Loading..."
 msgstr "불러오기 중..."
-
-msgid "Logo"
-msgstr "로고"
 
 msgid "Low (Recommended)"
 msgstr "낮음(추천)"
@@ -387,6 +384,9 @@ msgstr "이 게임을 종료하겠습니까? 저장되지 않는 진행은 손�
 
 msgid "Reboot"
 msgstr "재부팅"
+
+msgid "Region"
+msgstr "지역"
 
 msgid "Rendering"
 msgstr "렌더링"
@@ -601,8 +601,8 @@ msgstr "자동"
 msgid "B (Rapid)"
 msgstr "B (연사)"
 
-msgid "Coding & menu design"
-msgstr "코딩 & 메뉴 디자인"
+msgid "Coding"
+msgstr "코딩"
 
 msgid "Crop Overscan"
 msgstr "자르기"
