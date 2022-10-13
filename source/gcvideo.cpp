@@ -3,6 +3,7 @@
  * Nintendo Wii/GameCube Port
  *
  * Tantric 2008-2022
+ * Tanooki 2019-2022
  *
  * gcvideo.cpp
  *
@@ -111,23 +112,18 @@ static camera cam = {
 	{0.0F, 0.0F, -0.5F}
 };
 
-/***
-*** Custom Video modes (used to emulate original console video modes)
-***/
-
-/** Original NES PAL Resolutions: **/
-
+/*** custom Video modes (used to emulate original console video modes) ***/
 /* 288 lines progressive (PAL 50Hz) */
 static GXRModeObj TV50hz_288p =
 {
 	VI_TVMODE_PAL_DS,       // viDisplayMode
 	512,             // fbWidth
-	288,             // efbHeight
-	288,             // xfbHeight
+	286,             // efbHeight
+	286,             // xfbHeight
 	(VI_MAX_WIDTH_PAL - 644)/2,         // viXOrigin
-	(VI_MAX_HEIGHT_PAL - 576)/2,        // viYOrigin
+	(VI_MAX_HEIGHT_PAL - 572)/2,        // viYOrigin
 	644,             // viWidth
-	576,             // viHeight
+	572,             // viHeight
 	VI_XFBMODE_SF,   // xFBmode
 	GX_FALSE,        // field_rendering
 	GX_FALSE,        // aa
@@ -151,8 +147,6 @@ static GXRModeObj TV50hz_288p =
 		0          // line n+1
 	}
 };
-
-/** Original NES NTSC Resolutions: **/
 
 /* 240 lines progressive (NTSC or PAL 60Hz) */
 static GXRModeObj TV60hz_240p =
@@ -402,12 +396,12 @@ UpdateScaling()
 	int xscale, yscale;
 
 	// update scaling
-	if (GCSettings.render == 0)	// original render mode
+	if (GCSettings.render == 1)	// 240p render mode
 	{
 		xscale = 256;
 		yscale = TEX_HEIGHT / 2;
 	}
-	else // unfiltered and filtered mode
+	else // default rendering mode
 	{
 		xscale = 256;
 		yscale = vmode->efbHeight / 2;
@@ -415,7 +409,7 @@ UpdateScaling()
 
 	if (GCSettings.widescreen)
 	{
-		if(GCSettings.render == 0)
+		if(GCSettings.render == 1)
 			xscale = (3*xscale)/4;
 		else
 			xscale = 256; // match the original console's width for "widescreen" to prevent flickering
@@ -424,11 +418,10 @@ UpdateScaling()
 	xscale *= GCSettings.zoomHor;
 	yscale *= GCSettings.zoomVert;
 
-	// update vertex position matrix
-	square[0] = square[9] = (-xscale) + GCSettings.xshift;
-	square[3] = square[6] = (xscale) + GCSettings.xshift;
-	square[1] = square[4] = (yscale) - GCSettings.yshift;
-	square[7] = square[10] = (-yscale) - GCSettings.yshift;
+	square[6] = square[3]  =  xscale + GCSettings.xshift;
+	square[0] = square[9]  = -xscale + GCSettings.xshift;
+	square[4] = square[1]  =  yscale - GCSettings.yshift;
+	square[7] = square[10] = -yscale - GCSettings.yshift;
 	DCFlushRange (square, 32); // update memory BEFORE the GPU accesses it!
 	draw_init ();
 }
@@ -437,7 +430,7 @@ UpdateScaling()
  * FindVideoMode
  *
  * Finds the optimal video mode, or uses the user-specified one
- * Also configures original video modes
+ * Also configures rendering modes
  ***************************************************************************/
 static GXRModeObj * FindVideoMode()
 {
@@ -472,34 +465,34 @@ static GXRModeObj * FindVideoMode()
 			break;
 	}
 
-	// configure original modes
+	// configure rendering modes
 	switch (mode->viTVMode >> 2)
 	{
 		case VI_PAL:
 			// 576 lines (PAL 50Hz)
 			vmode_60hz = false;
 
-			// Original Video modes (forced to PAL 50Hz)
 			// set video signal mode
 			TV60hz_240p.viTVMode = VI_TVMODE_PAL_DS;
+			TV60hz_240p.viYOrigin = (VI_MAX_HEIGHT_PAL - 480)/2;
 			break;
 
 		case VI_NTSC:
 			// 480 lines (NTSC 60Hz)
 			vmode_60hz = true;
 
-			// Original Video modes (forced to NTSC 60hz)
 			// set video signal mode
 			TV60hz_240p.viTVMode = VI_TVMODE_NTSC_DS;
+			TV60hz_240p.viYOrigin = (VI_MAX_HEIGHT_NTSC - 480)/2;
 			break;
 
 		default:
 			// 480 lines (PAL 60Hz)
 			vmode_60hz = true;
 
-			// Original Video modes (forced to PAL 60hz)
 			// set video signal mode
 			TV60hz_240p.viTVMode = VI_TVMODE(mode->viTVMode >> 2, VI_NON_INTERLACE);
+			TV60hz_240p.viYOrigin = (VI_MAX_HEIGHT_NTSC - 480)/2;
 			break;
 	}
 
@@ -629,9 +622,9 @@ ResetVideo_Emu ()
 	GXRModeObj *rmode;
 	Mtx44 p;
 
-	// set VI mode and audio sample rate depending on if original mode is used
+	// set VI mode and audio sample rate depending on if 240p mode is used
 
-	if (GCSettings.render == 0)
+	if (GCSettings.render == 1)
 	{
 		rmode = tvmodes[FCEUI_GetCurrentVidSystem(NULL, NULL)];
 
@@ -678,7 +671,7 @@ ResetVideo_Emu ()
 	GX_SetZMode (GX_TRUE, GX_LEQUAL, GX_TRUE);
 	GX_SetColorUpdate (GX_TRUE);
 
-	guOrtho(p, rmode->efbHeight/2, -(rmode->efbHeight/2), -(rmode->fbWidth/2), rmode->fbWidth/2, 100, 1000); // matrix, t, b, l, r, n, f
+	guOrtho(p, rmode->efbHeight/2, -(rmode->efbHeight/2), -(rmode->fbWidth/2), rmode->fbWidth/2, 100, 1000);	// matrix, t, b, l, r, n, f
 	GX_LoadProjectionMtx (p, GX_ORTHOGRAPHIC);
 
 	// set aspect ratio
@@ -689,8 +682,8 @@ ResetVideo_Emu ()
 	GX_InvalidateTexAll ();
 	GX_InitTexObj (&texobj, texturemem, TEX_WIDTH, TEX_HEIGHT, GX_TF_RGB565, GX_CLAMP, GX_CLAMP, GX_FALSE);	// initialize the texture obj we are going to use
 	
-	if (GCSettings.render == 0 || GCSettings.render == 1)
-	GX_InitTexObjLOD(&texobj,GX_NEAR,GX_NEAR_MIP_NEAR,2.5,9.0,0.0,GX_FALSE,GX_FALSE,GX_ANISO_1); // original/unfiltered video mode: force texture filtering OFF
+	if (GCSettings.bilinear == 0)
+		GX_InitTexObjLOD(&texobj,GX_NEAR,GX_NEAR_MIP_NEAR,2.5,9.0,0.0,GX_FALSE,GX_FALSE,GX_ANISO_1); // bilinear filtering OFF
 	
 	GX_LoadTexObj (&texobj, GX_TEXMAP0);
 	memset(texturemem, 0, TEXTUREMEM_SIZE); // clear texture memory
@@ -783,10 +776,10 @@ void RenderFrame(unsigned char *XBuf)
 
 	if(ScreenshotRequested)
 	{
-		if(GCSettings.render == 0) // we can't take a screenshot in Original mode
+		if(GCSettings.render == 1) // we can't take a screenshot in 240p rendering mode
 		{
-			oldRenderMode = 0;
-			GCSettings.render = 1; // switch to unfiltered mode
+			oldRenderMode = 1;
+			GCSettings.render = 0; // switch to default rendering mode
 			UpdateVideo = 1; // request the switch
 		}
 		else
@@ -908,10 +901,10 @@ void RenderStereoFrames(unsigned char *XBufLeft, unsigned char *XBufRight)
 
 	if(ScreenshotRequested)
 	{
-		if(GCSettings.render == 0) // we can't take a screenshot in Original mode
+		if(GCSettings.render == 1) // we can't take a screenshot in 240p rendering mode
 		{
-			oldRenderMode = 0;
-			GCSettings.render = 1; // switch to unfiltered mode
+			oldRenderMode = 1;
+			GCSettings.render = 0; // switch to default rendering mode
 			UpdateVideo = 1; // request the switch
 		}
 		else

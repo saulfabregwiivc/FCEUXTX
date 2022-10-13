@@ -54,7 +54,6 @@ int GCMemROM(int size)
 
 	/*** Set internal sound information ***/
 	SetSampleRate();
-	FCEUI_SetSoundVolume(150);
 
 	FCEUFILE * fceufp = new FCEUFILE();
 	fceufp->size = size;

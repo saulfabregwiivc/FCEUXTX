@@ -4,6 +4,9 @@ msgstr "&"
 msgid "16:9 Correction"
 msgstr "Correzione 16:9"
 
+msgid "240p Output"
+msgstr "Uscita 240p"
+
 msgid "7z decompression failed: Archive contains too many files"
 msgstr "7z decompressione fallita: L'archivio contiene troppi file"
 
@@ -63,6 +66,9 @@ msgstr "Automatico (Raccomandato)"
 
 msgid "B (Rapid)"
 msgstr "B (Rapido)"
+
+msgid "Bilinear Filtering"
+msgstr "Filtrando Bilineare"
 
 msgid "Both"
 msgstr "Entrambi"
@@ -142,6 +148,9 @@ msgstr "Olandese"
 msgid "Empty or invalid ZIP file!"
 msgstr "File ZIP vuoto o non valido!"
 
+msgid "Emulation Hacks"
+msgstr "Hack di Emulazione"
+
 msgid "English"
 msgstr "Inglese"
 
@@ -184,9 +193,6 @@ msgstr "File BIOS FDS non valido!"
 msgid "FDS BIOS file not found!"
 msgstr "File BIOS FDS non trovato!"
 
-msgid "Filtered"
-msgstr "Filtrato"
-
 msgid "Fire"
 msgstr "Fuoco"
 
@@ -208,6 +214,9 @@ msgstr "Impostazioni di Gioco - Mappature pulsanti"
 msgid "Game Settings - Cheats"
 msgstr "Impostazioni di Gioco - Cheat"
 
+msgid "Game Settings - Emulation Hacks"
+msgstr "Impostazioni di Gioco - Hack di Emulazione"
+
 msgid "Game Settings - Video"
 msgstr "Impostazioni di Gioco - Video"
 
@@ -222,9 +231,6 @@ msgstr "Nascondi Salvataggio RAM"
 
 msgid "High"
 msgstr "Alto"
-
-msgid "Highest"
-msgstr "Molto Alto"
 
 msgid "Horizontal"
 msgstr "Orizzontale"
@@ -295,8 +301,8 @@ msgstr "Caricando patch..."
 msgid "Loading..."
 msgstr "Caricando..."
 
-msgid "Low (Recommended)"
-msgstr "Basso (Raccomandato)"
+msgid "Low"
+msgstr "Basso"
 
 msgid "Low Pass Filtering"
 msgstr "Filtro Passa Basso"
@@ -337,29 +343,17 @@ msgstr "Nintendo Zapper"
 msgid "New"
 msgstr "Nuovo"
 
-msgid "New Snapshot"
-msgstr "Nuovo Snapshot"
-
-msgid "New SRAM"
-msgstr "Nuova SRAM"
-
 msgid "No data to save!"
 msgstr "Nessun dato da salvare!"
 
 msgid "No disc inserted!"
 msgstr "Disco non inserito!"
 
-msgid "No SRAM data to save!"
-msgstr "Nessuna SRAM dove salvare!"
-
 msgid "No game saves found."
 msgstr "Nessun salvataggio trovato."
 
 msgid "None"
 msgstr "Nessuno"
-
-msgid "Original"
-msgstr "Originale"
 
 msgid "Out of memory!"
 msgstr "Memoria esaurita!"
@@ -478,12 +472,6 @@ msgstr "Salvataggio"
 msgid "Save RAM and State?"
 msgstr "Salvare RAM e STATO?"
 
-msgid "Save Snapshot?"
-msgstr "Salvare Snapshot?"
-
-msgid "Save SRAM and Snapshot?"
-msgstr "Salvare SRAM e Snapshot?"
-
 msgid "Save successful"
 msgstr "Salvato con successo"
 
@@ -495,9 +483,6 @@ msgstr "Salvando le preferenze..."
 
 msgid "Saving..."
 msgstr "Salvando..."
-
-msgid "Scaling"
-msgstr "Scalettatura"
 
 msgid "Screen Position"
 msgstr "Posizione Schermo"
@@ -523,8 +508,8 @@ msgstr "Scheda SD"
 msgid "SD card not found!"
 msgstr "Scheda SD non trovata!"
 
-msgid "Show Frame Rate"
-msgstr "Mostra FPS"
+msgid "Show Crosshair"
+msgstr "Mostra Mirino"
 
 msgid "Sound Effects Volume"
 msgstr "Volume Effetti Sonori"
@@ -536,10 +521,7 @@ msgid "Spanish"
 msgstr "Spagnolo"
 
 msgid "Sprite Limit"
-msgstr "Limite Sprite"
-
-msgid "SRAM file not found"
-msgstr "File SRAM non trovato"
+msgstr "Limite di Sprite"
 
 msgid "State"
 msgstr "Stato"
@@ -551,7 +533,7 @@ msgid "State file not found"
 msgstr "File di stato non trovato"
 
 msgid "Swap Duty Cycles"
-msgstr "Inversione di Cicli"
+msgstr "Inversione del Ciclo"
 
 msgid "Turbo Mode"
 msgstr "Modalità Turbo"
@@ -564,9 +546,6 @@ msgstr "Impossibile localizzare una periferica di caricamento!"
 
 msgid "Unable to locate a save device!"
 msgstr "Impossibile localizzare una periferica di salvataggio!"
-
-msgid "Unfiltered"
-msgstr "Non filtrato!"
 
 msgid "Unknown file type!"
 msgstr "Tipo di file sconosciuto!"
@@ -595,6 +574,9 @@ msgstr "Memoria di Massa USB"
 msgid "Vertical"
 msgstr "Verticale"
 
+msgid "Very High"
+msgstr "Molto Alto"
+
 msgid "Video Mode"
 msgstr "Modalità Video"
 
@@ -606,9 +588,6 @@ msgstr "Si"
 
 msgid "Zapper"
 msgstr "Nintendo Zapper"
-
-msgid "Zapper Crosshair"
-msgstr "Mirino Zapper"
 
 msgid "Automatic"
 msgstr "Automatico"

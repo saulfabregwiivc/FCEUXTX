@@ -4,6 +4,9 @@ msgstr "&"
 msgid "16:9 Correction"
 msgstr "16:9 Düzeltmesi"
 
+msgid "240p Output"
+msgstr "240p Çıkış"
+
 msgid "7z decompression failed: Archive contains too many files"
 msgstr "7z dosya çıkarma başarısız: Arşiv çok fazla dosya içeriyor"
 
@@ -43,6 +46,9 @@ msgstr "Yükleme aygıtı belirlenmeye çalışılıyor..."
 msgid "Attempting to determine save device..."
 msgstr "Kayıt aygıtı belirlenmeye çalışılıyor..."
 
+msgid "Audio"
+msgstr "Ses"
+
 msgid "Auto"
 msgstr "Otomatik"
 
@@ -66,6 +72,9 @@ msgstr "B (Seri)"
 
 msgid "Back"
 msgstr "Sil"
+
+msgid "Bilinear Filtering"
+msgstr "Bilineer Filtreleme"
 
 msgid "Both"
 msgstr "Her İkisi"
@@ -154,6 +163,9 @@ msgstr "Flemenkçe"
 msgid "Empty or invalid ZIP file!"
 msgstr "Boş veya geçersiz ZIP dosyası!"
 
+msgid "Emulation Hacks"
+msgstr "Emülasyon Hacks"
+
 msgid "English"
 msgstr "İngilizce"
 
@@ -199,9 +211,6 @@ msgstr "Geçersiz FDS BIOS dosyası!"
 msgid "FDS BIOS file not found!"
 msgstr "FDS BIOS dosyası bulunamadı!"
 
-msgid "Filtered"
-msgstr "Filtre Var"
-
 msgid "Fire"
 msgstr "Ateş"
 
@@ -214,11 +223,17 @@ msgstr "Game Genie ROM'u bulunamadı!"
 msgid "Game Settings"
 msgstr "Oyun Ayarları"
 
+msgid "Game Settings - Audio"
+msgstr "Oyun Ayarları - Ses"
+
 msgid "Game Settings - Button Mappings"
 msgstr "Oyun Ayarları - Buton Ayarları"
 
 msgid "Game Settings - Cheats"
 msgstr "Oyun Ayarları - Hileler"
+
+msgid "Game Settings - Emulation Hacks"
+msgstr "Oyun Ayarları - Emülasyon Hacks"
 
 msgid "Game Settings - Video"
 msgstr "Oyun Ayarları - Ekran"
@@ -237,9 +252,6 @@ msgstr "RAM kayıt gizle"
 
 msgid "High"
 msgstr "Yüksek"
-
-msgid "Highest"
-msgstr "Çok Yüksek"
 
 msgid "Horizontal"
 msgstr "Yatay"
@@ -313,11 +325,11 @@ msgstr "Yama dosyası yükleniyor..."
 msgid "Loading..."
 msgstr "Yükleniyor..."
 
-msgid "Low (Recommended)"
-msgstr "Düşük (Önerilen)"
+msgid "Low"
+msgstr "Düşük"
 
 msgid "Low Pass Filtering"
-msgstr "Alçak Geçiş Filtresi"
+msgstr "Düşük Geçişli Filtreleme"
 
 msgid "Main Menu"
 msgstr "Ana Menü"
@@ -361,12 +373,6 @@ msgstr "Nintendo Zapper"
 msgid "New"
 msgstr "Yeni"
 
-msgid "New Snapshot"
-msgstr "Yeni Enstantane"
-
-msgid "New SRAM"
-msgstr "Yeni SRAM"
-
 msgid "No"
 msgstr "Hayır"
 
@@ -375,9 +381,6 @@ msgstr "Kaydedilecek veri yok!"
 
 msgid "No disc inserted!"
 msgstr "Disk takılmamış!"
-
-msgid "No SRAM data to save!"
-msgstr "Kaydedilecek SRAM verisi yok!"
 
 msgid "No game saves found."
 msgstr "Hiç bir oyun kaydı bulunamadı."
@@ -399,9 +402,6 @@ msgstr "Açık"
 
 msgid "ON"
 msgstr "Açık"
-
-msgid "Original"
-msgstr "Orijinal"
 
 msgid "Out of memory!"
 msgstr "Bellek yetersiz!"
@@ -426,6 +426,9 @@ msgstr "Brezilya Portekizcesi"
 
 msgid "Power off Wii"
 msgstr "Wii'yi kapat"
+
+msgid "PPU Overclocking"
+msgstr "PPU Hız Aşırtma"
 
 msgid "Preferences saved"
 msgstr "Ayarlar kaydedildi"
@@ -520,12 +523,6 @@ msgstr "Oyunu Kaydet"
 msgid "Save RAM and State?"
 msgstr "RAM ve Durum Kaydedilsin mi?"
 
-msgid "Save Snapshot?"
-msgstr "Enstantane Kaydedilsin mi?"
-
-msgid "Save SRAM and Snapshot?"
-msgstr "SRAM ve Enstantane Kaydedilsin mi?"
-
 msgid "Save State?"
 msgstr "Durum kaydedilsin mi?"
 
@@ -540,9 +537,6 @@ msgstr "Ayarlar kaydediliyor..."
 
 msgid "Saving..."
 msgstr "Kaydediliyor..."
-
-msgid "Scaling"
-msgstr "Ölçekleme"
 
 msgid "Screen Position"
 msgstr "Ekran Konumu"
@@ -565,14 +559,8 @@ msgstr "SD Kartı"
 msgid "SD card not found!"
 msgstr "SD kartı bulunamadı!"
 
-msgid "Show Frame Rate"
-msgstr "FPS'yi Göster"
-
-msgid "Snapshot"
-msgstr "Enstantane"
-
-msgid "Snapshot (Auto)"
-msgstr "Enstantane (Otomatik)"
+msgid "Show Crosshair"
+msgstr "Artı İmleci Göster"
 
 msgid "Sound Effects Volume"
 msgstr "Efekt Sesleri"
@@ -586,9 +574,6 @@ msgstr "İspanyolca"
 msgid "Sprite Limit"
 msgstr "Sprite Sınırı"
 
-msgid "SRAM file not found"
-msgstr "SRAM dosyası bulunamadı"
-
 msgid "State"
 msgstr "Durum"
 
@@ -597,6 +582,9 @@ msgstr "Durum (Otomatik)"
 
 msgid "State file not found"
 msgstr "Durum dosyası bulunamadı"
+
+msgid "Swap Duty Cycles"
+msgstr "Ters Görev Döngüleri"
 
 msgid "Turbo Mode"
 msgstr "Turbo Modu"
@@ -609,9 +597,6 @@ msgstr "Yükleme aygıtı bulunamıyor!"
 
 msgid "Unable to locate a save device!"
 msgstr "Kayıt aygıtı bulunamıyor!"
-
-msgid "Unfiltered"
-msgstr "Filtre Yok"
 
 msgid "Unknown file type!"
 msgstr "Tanınmayan dosya türü!"
@@ -640,6 +625,9 @@ msgstr "USB Yığın Depolama Aygıtı"
 msgid "Vertical"
 msgstr "Dikey"
 
+msgid "Very High"
+msgstr "Çok Yüksek"
+
 msgid "Video"
 msgstr "Ekran"
 
@@ -657,9 +645,6 @@ msgstr "Evet"
 
 msgid "Zapper"
 msgstr "Nintendo Zapper"
-
-msgid "Zapper Crosshair"
-msgstr "Zapper Artı İmleci"
 
 msgid "Color Palette"
 msgstr "Renk Paleti"

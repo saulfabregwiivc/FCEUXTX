@@ -4,6 +4,9 @@ msgstr "&"
 msgid "16:9 Correction"
 msgstr "Correcció 16:9"
 
+msgid "240p Output"
+msgstr "Sortida de 240p"
+
 msgid "7z decompression failed: Archive contains too many files"
 msgstr "Error descomprimint 7z: L'arxiu conté massa fitxers"
 
@@ -43,6 +46,9 @@ msgstr "Detectant dispositiu de càrrega..."
 msgid "Attempting to determine save device..."
 msgstr "Detectant el dispositiu d'enmagatzament"
 
+msgid "Audio"
+msgstr "Àudio"
+
 msgid "Auto Detect"
 msgstr "Auto detectar"
 
@@ -60,6 +66,9 @@ msgstr "B (Ràpid)"
 
 msgid "Back"
 msgstr "Enrera"
+
+msgid "Bilinear Filtering"
+msgstr "Filtrar bilineal"
 
 msgid "Both"
 msgstr "Tots dos"
@@ -139,6 +148,9 @@ msgstr "Holandès"
 msgid "Empty or invalid ZIP file!"
 msgstr "Fitxer zip buit o invàlid!"
 
+msgid "Emulation Hacks"
+msgstr "Hacks d'emulació"
+
 msgid "English"
 msgstr "Anglès"
 
@@ -178,9 +190,6 @@ msgstr "Fitxer BIOS FDS invàlid!"
 msgid "FDS BIOS file not found!"
 msgstr "Fitxer BIOS FDS no trobat!"
 
-msgid "Filtered"
-msgstr "Filtrat"
-
 msgid "Fire"
 msgstr "Foc"
 
@@ -193,11 +202,17 @@ msgstr "No es troba ROM GameGenie!"
 msgid "Game Settings"
 msgstr "Configuració"
 
+msgid "Game Settings - Audio"
+msgstr "Configuració - Àudio"
+
 msgid "Game Settings - Button Mappings"
 msgstr "Configuració - Redefinir botons"
 
 msgid "Game Settings - Cheats"
 msgstr "Configuració - Cheats"
+
+msgid "Game Settings - Emulation Hacks"
+msgstr "Configuració - Hacks d'emulació"
 
 msgid "Game Settings - Video"
 msgstr "Configuració - Vídeo"
@@ -216,9 +231,6 @@ msgstr "Amaga desar RAM"
 
 msgid "High"
 msgstr "Alt"
-
-msgid "Highest"
-msgstr "Molt alt"
 
 msgid "Horizontal"
 msgstr "Horitzontal"
@@ -292,11 +304,11 @@ msgstr "Carregant patch..."
 msgid "Loading..."
 msgstr "Carregant..."
 
-msgid "Low (Recommended)"
-msgstr "Baix (Recomanat)"
+msgid "Low"
+msgstr "Baix"
 
 msgid "Low Pass Filtering"
-msgstr "Filtre de pas baix"
+msgstr "Filtrar de pas baix"
 
 msgid "Main Menu"
 msgstr "Inici"
@@ -340,20 +352,11 @@ msgstr "Nintendo Zapper"
 msgid "New"
 msgstr "Nou"
 
-msgid "New Snapshot"
-msgstr "Nova captura"
-
-msgid "New SRAM"
-msgstr "Nova SRAM"
-
 msgid "No data to save!"
 msgstr "cap dada per desar!"
 
 msgid "No disc inserted!"
 msgstr "No hi ha cap disc!"
-
-msgid "No SRAM data to save!"
-msgstr "Cap dada SRAM per desar!"
 
 msgid "No game saves found."
 msgstr "No hi ha partides"
@@ -434,10 +437,7 @@ msgid "Reboot"
 msgstr "Reiniciar"
 
 msgid "Region"
-msgstr "regió"
-
-msgid "Rendering"
-msgstr "Renderitzat"
+msgstr "Regió"
 
 msgid "Reset"
 msgstr "Reiniciar"
@@ -493,12 +493,6 @@ msgstr "Desar Joc"
 msgid "Save RAM and State?"
 msgstr "Desar RAM i estat?"
 
-msgid "Save Snapshot?"
-msgstr "Desar imatge?"
-
-msgid "Save SRAM and Snapshot?"
-msgstr "Desar SRAM i imatge?"
-
 msgid "Save State?"
 msgstr "Desar estat?"
 
@@ -513,9 +507,6 @@ msgstr "Desant preferències..."
 
 msgid "Saving..."
 msgstr "Desant..."
-
-msgid "Scaling"
-msgstr "Ajust"
 
 msgid "Screen Position"
 msgstr "Posició pantalla"
@@ -541,20 +532,14 @@ msgstr "No trobo targeta SD!"
 msgid "Shift"
 msgstr "Maj."
 
-msgid "Show Frame Rate"
-msgstr "Mostra FPS"
+msgid "Show Crosshair"
+msgstr "Mostra punter"
 
 msgid "Sound Quality"
 msgstr "Qualitat de so"
 
 msgid "Chinese (Simplified)"
 msgstr "Xinès simpl."
-
-msgid "Snapshot"
-msgstr "Imatge"
-
-msgid "Snapshot (Auto)"
-msgstr "Imatge (Auto)"
 
 msgid "Sound Effects Volume"
 msgstr "Volum d'efectes sonors"
@@ -563,10 +548,7 @@ msgid "Spanish"
 msgstr "Castellà"
 
 msgid "Sprite Limit"
-msgstr "Límit sprites"
-
-msgid "SRAM file not found"
-msgstr "No trobo fitxer SRAM"
+msgstr "Límit de sprites"
 
 msgid "State"
 msgstr "Estat"
@@ -592,9 +574,6 @@ msgstr "No trobo dispositiu de càrrega!"
 msgid "Unable to locate a save device!"
 msgstr "No trobo dispositiu per desar!"
 
-msgid "Unfiltered"
-msgstr "No filtrat"
-
 msgid "Unknown file type!"
 msgstr "Fitxer desconegut!"
 
@@ -619,6 +598,9 @@ msgstr "No trobo dispositiu USB!"
 msgid "USB Mass Storage"
 msgstr "Dispositiu USB"
 
+msgid "Very High"
+msgstr "Molt alt"
+
 msgid "Video Mode"
 msgstr "Mode vídeo"
 
@@ -630,6 +612,3 @@ msgstr "Sí"
 
 msgid "Zapper"
 msgstr "Nintendo Zapper"
-
-msgid "Zapper Crosshair"
-msgstr "Punter Zapper"

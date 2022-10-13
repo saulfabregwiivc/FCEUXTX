@@ -4,6 +4,9 @@ msgstr ""
 msgid "16:9 Correction"
 msgstr "16:9 수정"
 
+msgid "240p Output"
+msgstr "240p 출력"
+
 msgid "7z decompression failed: Archive contains too many files."
 msgstr "7z 압축 해제 실패: 압축 파일에 너무 많은 파일이 포함되었습니다."
 
@@ -66,6 +69,9 @@ msgstr "자동 (추천)"
 
 msgid "Back"
 msgstr "뒤로"
+
+msgid "Bilinear Filtering"
+msgstr "쌍선형 필터링"
 
 msgid "Both"
 msgstr "둘 다"
@@ -154,6 +160,9 @@ msgstr "아래쪽"
 msgid "Dutch"
 msgstr "네덜란드어"
 
+msgid "Emulation Hacks"
+msgstr "에뮬레이션 해킹"
+
 msgid "English"
 msgstr "영어"
 
@@ -211,6 +220,9 @@ msgstr "게임 설정 - 버튼 맵핑"
 msgid "Game Settings - Cheats"
 msgstr "게임 설정 - 치트"
 
+msgid "Game Settings - Emulation Hacks"
+msgstr "게임 설정 - 에뮬레이션 해킹"
+
 msgid "Game Settings - Video"
 msgstr "게임 설정 - 비디오"
 
@@ -231,9 +243,6 @@ msgstr "숨기기 저장 RAM"
 
 msgid "High"
 msgstr "높은"
-
-msgid "Highest"
-msgstr "매우 높은"
 
 msgid "Horizontal"
 msgstr "수평"
@@ -280,11 +289,11 @@ msgstr "DVD 불러오기 중..."
 msgid "Loading..."
 msgstr "불러오기 중..."
 
-msgid "Low (Recommended)"
-msgstr "낮음(추천)"
+msgid "Low"
+msgstr "낮음"
 
 msgid "Low Pass Filtering"
-msgstr "저역 통과 필터"
+msgstr "저역 통과 필터링"
 
 msgid "Main Menu"
 msgstr "메인 메뉴"
@@ -319,6 +328,9 @@ msgstr "삽입된 디스크가 없습니다!"
 msgid "No game saves found."
 msgstr "게임 저장을 찾을 수 없습니다."
 
+msgid "None"
+msgstr "없음"
+
 msgid "Nunchuk"
 msgstr "눈챠크"
 
@@ -330,9 +342,6 @@ msgstr "확인"
 
 msgid "On"
 msgstr "켬"
-
-msgid "Original"
-msgstr "오리지널"
 
 msgid "Out of memory: too many files!"
 msgstr "메모리 부족: 너무 많은 파일!"
@@ -387,9 +396,6 @@ msgstr "재부팅"
 
 msgid "Region"
 msgstr "지역"
-
-msgid "Rendering"
-msgstr "렌더링"
 
 msgid "Reset"
 msgstr "리셋"
@@ -450,9 +456,6 @@ msgstr "환경 설정 저장 중..."
 
 msgid "Saving..."
 msgstr "저장 중..."
-
-msgid "Scaling"
-msgstr "스케일"
 
 msgid "Screen Position"
 msgstr "화면 위치"
@@ -544,9 +547,6 @@ msgstr "저장 장치를 찾을 수 없습니다!"
 msgid "under the terms of the GNU General Public License (GPL) Version 2."
 msgstr "GNU 일반 공중 사용 허가서(GPL) 버전 2의 조건에 의거합니다."
 
-msgid "Unfiltered"
-msgstr "필터링되지 않음"
-
 msgid "Unrecognized DVD format."
 msgstr "인식할 수 없는 DVD 형식입니다."
 
@@ -573,6 +573,9 @@ msgstr "USB 대용량 저장 장치"
 
 msgid "Vertical"
 msgstr "수직"
+
+msgid "Very High"
+msgstr "매우 높은"
 
 msgid "Video"
 msgstr "비디오"
@@ -605,7 +608,7 @@ msgid "Coding"
 msgstr "코딩"
 
 msgid "Crop Overscan"
-msgstr "자르기"
+msgstr "오버스캔 자르기"
 
 msgid "DISABLED"
 msgstr "사용 불가"
@@ -615,9 +618,6 @@ msgstr "FDS 바이오스 파일이 잘못되었습니다."
 
 msgid "FDS BIOS file not found!"
 msgstr "FDS 바이오스 파일을 찾을 수 없습니다!"
-
-msgid "Filtered"
-msgstr "필터"
 
 msgid "Fire"
 msgstr "발사"
@@ -664,6 +664,9 @@ msgstr "팔레트"
 msgid "Progressive (480p)"
 msgstr "프로그레시브 (480p)"
 
+msgid "PPU Overclocking"
+msgstr "PPU 오버클럭"
+
 msgid "R TRIG"
 msgstr "R 트리거"
 
@@ -676,6 +679,9 @@ msgstr "RAM과 상태를 저장하겠습니까?"
 msgid "Save file not found"
 msgstr "저장 파일을 찾을 수 없습니다"
 
+msgid "Show Crosshair"
+msgstr "십자선 보기"
+
 msgid "Sprite Limit"
 msgstr "스프라이트 제한"
 
@@ -684,9 +690,6 @@ msgstr "상태 파일을 찾을 수 없습니다"
 
 msgid "Unknown file type!"
 msgstr "알 수 없는 파일 유형!"
-
-msgid "Zapper Crosshair"
-msgstr "재퍼건 십자 버튼"
 
 msgid "Zapper"
 msgstr "재퍼건"

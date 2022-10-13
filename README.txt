@@ -7,6 +7,30 @@ FCEUX TX is a fork of FCE Ultra GX: https://github.com/dborth/fceugx
 Update History
 --------------
 
+---FCEUX TX 1.1.6---
+---September 25 2022---
+
+- Updated to the latest FCEUX (git 06b53e9)
+- Changed low sound quality to high by default (to take full advantage of the new sound settings)
+- Added option to choose master/triangle/square 1/square 2/noise/pcm sound volume in audio settings
+- Updated french language file
+
+---FCEUX TX 1.1.5---
+---September 4 2022---
+
+- Updated to the latest FCEUX (git 069727c)
+  except git c37f86d (does not compile)
+- Updated to the latest FCE Ultra GX (git 2246982)
+- Removed exit sound of UI (sometimes causes a small audio crackle when returning to game)
+- Removed filtered render and replaced render option by an option to turn on/off 240p output
+- Added option to turn on/off bilinear filtering in video setting (works with 240p output)
+- Added 2x-postrender/2x-vblank PPU overclocking option in emulation hacks settings
+- Added new emulation hacks settings button and moved screenshot button to main game menu
+- Fixed not loading vertical video shift setting preference
+- Updated video code
+- Updated all language files
+- Updated and changed position of some text and UI PNG images
+
 ---FCEUX TX 1.1.4---
 ---June 23 2022---
 

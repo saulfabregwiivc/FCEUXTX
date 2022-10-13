@@ -4,6 +4,9 @@ msgstr "&"
 msgid "16:9 Correction"
 msgstr "Correção 16:9"
 
+msgid "240p Output"
+msgstr "Saída 240p"
+
 msgid "7z decompression failed: Archive contains too many files"
 msgstr "Falha na descompressão 7z: Arquivo contém arquivos demais"
 
@@ -69,6 +72,9 @@ msgstr "B (Rápido)"
 
 msgid "Back"
 msgstr "Voltar"
+
+msgid "Bilinear Filtering"
+msgstr "Filtragem Bilinear"
 
 msgid "Both"
 msgstr "Ambos"
@@ -166,6 +172,9 @@ msgstr "Holandês"
 msgid "Empty or invalid ZIP file!"
 msgstr "Arquivo ZIP vazio ou inválido!"
 
+msgid "Emulation Hacks"
+msgstr "Emulação Hacks"
+
 msgid "English"
 msgstr "Inglês"
 
@@ -208,9 +217,6 @@ msgstr "Arquivo BIOS do FDS (Famicom Disk System) é inválido!"
 msgid "FDS BIOS file not found!"
 msgstr "Arquivo BIOS do FDS (Famicom Disk System) não foi encontrado!"
 
-msgid "Filtered"
-msgstr "Filtrado"
-
 msgid "Fire"
 msgstr "Atirar"
 
@@ -235,6 +241,9 @@ msgstr "Configurações - Mapeamento dos Botões"
 msgid "Game Settings - Cheats"
 msgstr "Configurações - Trapaças"
 
+msgid "Game Settings - Emulation Hacks"
+msgstr "Configurações - Emulação Hacks"
+
 msgid "Game Settings - Video"
 msgstr "Configurações - Vídeo"
 
@@ -252,9 +261,6 @@ msgstr "Ocultar Salvar RAM"
 
 msgid "High"
 msgstr "Alta"
-
-msgid "Highest"
-msgstr "Muito Alta"
 
 msgid "Information"
 msgstr "Informação"
@@ -325,8 +331,8 @@ msgstr "Carregando Patch..."
 msgid "Loading..."
 msgstr "Carregando..."
 
-msgid "Low (Recommended)"
-msgstr "Baixo (Recomendado)"
+msgid "Low"
+msgstr "Baixo"
 
 msgid "Low Pass Filtering"
 msgstr "Filtragem Passa Baixa"
@@ -370,12 +376,6 @@ msgstr "Zapper do Nintendinho"
 msgid "New"
 msgstr "Novo"
 
-msgid "New Snapshot"
-msgstr "Nova Snapshop"
-
-msgid "New SRAM"
-msgstr "Novo SRAM"
-
 msgid "No"
 msgstr "Não"
 
@@ -384,9 +384,6 @@ msgstr "Sem dados para salvar!"
 
 msgid "No disc inserted!"
 msgstr "Sem disco inserido!"
-
-msgid "No SRAM data to save!"
-msgstr "Sem dados SRAM para salvar!"
 
 msgid "No game saves found."
 msgstr "Nenhum jogo salvo encontrado."
@@ -460,9 +457,6 @@ msgstr "Reiniciar"
 msgid "Region"
 msgstr "Região"
 
-msgid "Rendering"
-msgstr "Renderização"
-
 msgid "Reset"
 msgstr "Resetar"
 
@@ -520,12 +514,6 @@ msgstr "Salvar o Jogo"
 msgid "Save RAM and State?"
 msgstr "Salvar em RAM e State? "
 
-msgid "Save Snapshot?"
-msgstr "Salvar Snapshot?"
-
-msgid "Save SRAM and Snapshot?"
-msgstr "Salvar em SRAM e Snapshot?"
-
 msgid "Save State?"
 msgstr "Salvar State?"
 
@@ -540,9 +528,6 @@ msgstr "Salvando as configurações..."
 
 msgid "Saving..."
 msgstr "Salvando..."
-
-msgid "Scaling"
-msgstr "Formato"
 
 msgid "Screen Position"
 msgstr "Posição da Tela"
@@ -580,11 +565,8 @@ msgstr "Configurações - Salvar & Carregar"
 msgid "Shift"
 msgstr "Maius."
 
-msgid "Snapshot"
-msgstr "Posição Salva"
-
-msgid "Snapshot (auto)"
-msgstr "Posição Salva (auto)"
+msgid "Show Crosshair"
+msgstr "Mostrar Mira"
 
 msgid "Sound Effects Volume"
 msgstr "Volume dos Efeitos Sonoros"
@@ -596,16 +578,13 @@ msgid "Spanish"
 msgstr "Espanhol"
 
 msgid "Sprite Limit"
-msgstr "Limite de Sprites"
-
-msgid "SRAM file not found"
-msgstr "Arquivo SRAM não foi encontrado"
+msgstr "Limite de Sprite"
 
 msgid "State file not found"
 msgstr "Arquivo de State não foi encontrado"
 
 msgid "Swap Duty Cycles"
-msgstr "Inversão de Ciclos"
+msgstr "Reversão de Ciclos"
 
 msgid "The current IOS has been altered (fake-signed). Functionality and/or stability may be adversely affected."
 msgstr "A IOS atual foi alterada (feita falsa assinatura). Funcionalidade e/ou estabilidade pode ser negativamente afetada."
@@ -630,9 +609,6 @@ msgstr "Não foi possível localizar o dispositivo de carregamento!"
 
 msgid "Unable to locate a save device!"
 msgstr "Não foi possível localizar o dispositivo de jogo salvo!"
-
-msgid "Unfiltered"
-msgstr "Sem Filtro"
 
 msgid "Unknown file type!"
 msgstr "Tipo de arquivo desconhecido!"
@@ -661,6 +637,9 @@ msgstr "Dispositivo USB não foi encontrado!"
 msgid "USB Mass Storage"
 msgstr "Dispositivo USB"
 
+msgid "Very High"
+msgstr "Muito Alta"
+
 msgid "Video Mode"
 msgstr "Modo de Vídeo"
 
@@ -669,6 +648,3 @@ msgstr "Orientação do WiiMote"
 
 msgid "Yes"
 msgstr "Sim"
-
-msgid "Zapper Crosshair"
-msgstr "Mira do Zapper"

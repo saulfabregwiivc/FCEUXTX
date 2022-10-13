@@ -3,6 +3,7 @@
  * Nintendo Wii/GameCube Port
  *
  * Tantric 2008-2022
+ * Tanooki 2019-2022
  *
  * preferences.cpp
  *
@@ -23,6 +24,7 @@
 #include "filebrowser.h"
 #include "menu.h"
 #include "fileop.h"
+#include "gcvideo.h"
 #include "pad.h"
 
 struct SGCSettings GCSettings;
@@ -137,15 +139,15 @@ preparePrefsData ()
 	createXMLSection("Video", "Video Settings");
 
 	createXMLSetting("videomode", "Video Mode", toStr(GCSettings.videomode));
-	createXMLSetting("currpal", "Color Palette", toStr(GCSettings.currpal));
-	createXMLSetting("region", "Region", toStr(GCSettings.region));
-	createXMLSetting("spritelimit", "Sprite Limit", toStr(GCSettings.spritelimit));
-	createXMLSetting("crosshair", "Zapper Crosshair", toStr(GCSettings.crosshair));
 	createXMLSetting("zoomHor", "Horizontal Zoom Level", FtoStr(GCSettings.zoomHor));
 	createXMLSetting("zoomVert", "Vertical Zoom Level", FtoStr(GCSettings.zoomVert));
-	createXMLSetting("render", "Video Filtering", toStr(GCSettings.render));
+	createXMLSetting("render", "Video Rendering", toStr(GCSettings.render));
+	createXMLSetting("bilinear", "Bilinear Filtering", toStr(GCSettings.bilinear));
 	createXMLSetting("widescreen", "Aspect Ratio Correction", toStr(GCSettings.widescreen));
 	createXMLSetting("hideoverscan", "Crop Overscan", toStr(GCSettings.hideoverscan));
+	createXMLSetting("currpal", "Color Palette", toStr(GCSettings.currpal));
+	createXMLSetting("region", "Region", toStr(GCSettings.region));
+	createXMLSetting("crosshair", "Show Crosshair", toStr(GCSettings.crosshair));
 	createXMLSetting("xshift", "Horizontal Video Shift", toStr(GCSettings.xshift));
 	createXMLSetting("yshift", "Vertical Video Shift", toStr(GCSettings.yshift));
 
@@ -153,7 +155,18 @@ preparePrefsData ()
 
 	createXMLSetting("sndquality", "Sound Quality", toStr(GCSettings.sndquality));
 	createXMLSetting("lowpass", "Low Pass Filtering", toStr(GCSettings.lowpass));
-	createXMLSetting("swapDuty", "Swap Duty Cycles", toStr(GCSettings.swapDuty));
+	createXMLSetting("swapduty", "Swap Duty Cycles", toStr(GCSettings.swapduty));
+	createXMLSetting("volume", "Master Volume", toStr(GCSettings.volume));
+	createXMLSetting("trianglevol", "Triangle Volume", toStr(GCSettings.trianglevol));
+	createXMLSetting("square1vol", "Square1 Volume", toStr(GCSettings.square1vol));
+	createXMLSetting("square2vol", "Square2 Volume", toStr(GCSettings.square2vol));
+	createXMLSetting("noisevol", "Noise Volume", toStr(GCSettings.noisevol));
+	createXMLSetting("pcmvol", "PCM Volume", toStr(GCSettings.pcmvol));
+
+	createXMLSection("Emulation Hacks", "Emulation Hacks Settings");
+
+	createXMLSetting("overclock", "PPU Overclocking", toStr(GCSettings.overclock));
+	createXMLSetting("spritelimit", "Sprite Limit", toStr(GCSettings.spritelimit));
 
 	createXMLSection("Menu", "Menu Settings");
 
@@ -308,22 +321,34 @@ decodePrefsData ()
 			// Video Settings
 
 			loadXMLSetting(&GCSettings.videomode, "videomode");
-			loadXMLSetting(&GCSettings.currpal, "currpal");
-			loadXMLSetting(&GCSettings.region, "region");
-			loadXMLSetting(&GCSettings.spritelimit, "spritelimit");
-			loadXMLSetting(&GCSettings.crosshair, "crosshair");
 			loadXMLSetting(&GCSettings.zoomHor, "zoomHor");
 			loadXMLSetting(&GCSettings.zoomVert, "zoomVert");
 			loadXMLSetting(&GCSettings.render, "render");
+			loadXMLSetting(&GCSettings.bilinear, "bilinear");
 			loadXMLSetting(&GCSettings.widescreen, "widescreen");
 			loadXMLSetting(&GCSettings.hideoverscan, "hideoverscan");
+			loadXMLSetting(&GCSettings.currpal, "currpal");
+			loadXMLSetting(&GCSettings.region, "region");
+			loadXMLSetting(&GCSettings.crosshair, "crosshair");
 			loadXMLSetting(&GCSettings.xshift, "xshift");
+			loadXMLSetting(&GCSettings.yshift, "yshift");
 
 			// Audio Settings
 
 			loadXMLSetting(&GCSettings.sndquality, "sndquality");
 			loadXMLSetting(&GCSettings.lowpass, "lowpass");
-			loadXMLSetting(&GCSettings.swapDuty, "swapDuty");
+			loadXMLSetting(&GCSettings.swapduty, "swapduty");
+			loadXMLSetting(&GCSettings.volume, "volume");
+			loadXMLSetting(&GCSettings.trianglevol, "trianglevol");
+			loadXMLSetting(&GCSettings.square1vol, "square1vol");
+			loadXMLSetting(&GCSettings.square2vol, "square2vol");
+			loadXMLSetting(&GCSettings.noisevol, "noisevol");
+			loadXMLSetting(&GCSettings.pcmvol, "pcmvol");
+
+			// Emulation Hacks Settings
+
+			loadXMLSetting(&GCSettings.overclock, "overclock");
+			loadXMLSetting(&GCSettings.spritelimit, "spritelimit");
 
 			// Menu Settings
 
@@ -383,12 +408,24 @@ void FixInvalidSettings()
 		GCSettings.language = LANG_ENGLISH;
 	if(GCSettings.Controller > CTRL_PAD4 || GCSettings.Controller < CTRL_ZAPPER)
 		GCSettings.Controller = CTRL_PAD2;
-	if(!(GCSettings.render >= 0 && GCSettings.render < 3))
-		GCSettings.render = 2;
-	if(GCSettings.region < 0 || GCSettings.region > 2)
-		GCSettings.region = 2;
+	if(!(GCSettings.volume >= 0 && GCSettings.volume <= 150))
+		GCSettings.volume = 100;
+	if(!(GCSettings.trianglevol >= 0 && GCSettings.trianglevol <= 256))
+		GCSettings.trianglevol = 256;
+	if(!(GCSettings.square1vol >= 0 && GCSettings.square1vol <= 256))
+		GCSettings.square1vol = 256;
+	if(!(GCSettings.square2vol >= 0 && GCSettings.square2vol <= 256))
+		GCSettings.square2vol = 256;
+	if(!(GCSettings.noisevol >= 0 && GCSettings.noisevol <= 256))
+		GCSettings.noisevol = 256;
+	if(!(GCSettings.pcmvol >= 0 && GCSettings.pcmvol <= 256))
+		GCSettings.pcmvol = 256;
 	if(!(GCSettings.videomode >= 0 && GCSettings.videomode < 5))
 		GCSettings.videomode = 0;
+	if(!(GCSettings.render >= 0 && GCSettings.render < 2))
+		GCSettings.render = 0;
+	if(GCSettings.region < 0 || GCSettings.region > 2)
+		GCSettings.region = 2;
 }
 
 /****************************************************************************
@@ -401,24 +438,35 @@ DefaultSettings ()
 {
 	memset (&GCSettings, 0, sizeof (GCSettings));
 
-	ResetControls(); // controller button mappings
+	ResetControls(); // Controller button mappings
 
 	GCSettings.Controller = CTRL_PAD2; // NES Pad, Four Score, Zapper
 	GCSettings.TurboMode = 1; // Enabled by default
-	GCSettings.TurboModeButton = 0; // Default is Right Analog Stick (0)
+	GCSettings.TurboModeButton = 0; // Default is right analog stick (0)
 
-	GCSettings.sndquality = 0; // low
-	GCSettings.lowpass = 0; // Disabled by default
-	GCSettings.swapDuty = 0; // Disabled by default
-
-	GCSettings.videomode = 0; // automatic video mode detection
-	GCSettings.render = 1; // Unfiltered
-	GCSettings.region = 2; // Auto
-	GCSettings.currpal = 1; // color palette
-	GCSettings.hideoverscan = 1; // hide vertical
-	GCSettings.spritelimit = 1; // Enabled by default
-	GCSettings.crosshair = 1; // Enabled by default
 	GCSettings.gamegenie = 0; // Disabled by default
+
+	GCSettings.sndquality = 1; // High quality
+	GCSettings.lowpass = 0; // Disabled by default
+	GCSettings.swapduty = 0; // Disabled by default
+
+	GCSettings.volume = 100;
+	GCSettings.trianglevol = 256;
+	GCSettings.square1vol = 256;
+	GCSettings.square2vol = 256;
+	GCSettings.noisevol = 256;
+	GCSettings.pcmvol = 256;
+
+	GCSettings.overclock = 0; // Disabled by default
+	GCSettings.spritelimit = 1; // Enabled by default
+
+	GCSettings.videomode = 0; // Automatic video mode detection
+	GCSettings.render = 0; // Default rendering mode
+	GCSettings.bilinear = 0; // Disabled by default
+	GCSettings.hideoverscan = 1; // Hide vertical
+	GCSettings.currpal = 1; // FBX's digital prime
+	GCSettings.region = 2; // Automatic region detection
+	GCSettings.crosshair = 1; // Enabled by default
 
 	GCSettings.widescreen = 0;
 
@@ -427,10 +475,10 @@ DefaultSettings ()
 		GCSettings.widescreen = 1;
 #endif
 
-	GCSettings.zoomHor = 1.0; // horizontal zoom level
-	GCSettings.zoomVert = 1.0; // vertical zoom level
-	GCSettings.xshift = 0; // horizontal video shift
-	GCSettings.yshift = 0; // vertical video shift
+	GCSettings.zoomHor = 1.0; // Horizontal zoom level
+	GCSettings.zoomVert = 1.0; // Vertical zoom level
+	GCSettings.xshift = 0; // Horizontal video shift
+	GCSettings.yshift = 0; // Vertical video shift
 
 	GCSettings.WiimoteOrientation = 0;
 	GCSettings.AutoloadGame = 0;
@@ -631,6 +679,10 @@ bool LoadPrefs()
 		CreateDirectory(dirPath);
 		sprintf(dirPath, "%s%s", pathPrefix[GCSettings.LoadMethod], GCSettings.CheatFolder);
 		CreateDirectory(dirPath);
+	}
+
+	if(GCSettings.videomode > 0) {
+		ResetVideo_Menu();
 	}
 
 #ifdef HW_RVL

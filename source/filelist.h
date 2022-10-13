@@ -37,7 +37,6 @@
 #ifdef HW_RVL
 // background music is Wii-only
 #include "enter_ogg.h"
-#include "exit_ogg.h"
 #endif
 #include "button_over_pcm.h"
 #include "button_click_pcm.h"
@@ -49,7 +48,6 @@
 #include "bg_bottom_png.h"
 #include "icon_settings_png.h"
 #include "icon_home_png.h"
-#include "icon_credits_png.h"
 #include "icon_game_settings_png.h"
 #include "icon_game_cheats_png.h"
 #include "icon_game_gamegenie_png.h"
@@ -58,6 +56,7 @@
 #include "icon_game_save_png.h"
 #include "icon_game_delete_png.h"
 #include "icon_game_reset_png.h"
+#include "icon_game_screenshot_png.h"
 #include "icon_settings_wiimote_png.h"
 #include "icon_settings_classic_png.h"
 #include "icon_settings_gamecube_png.h"
@@ -70,9 +69,10 @@
 #include "icon_settings_file_png.h"
 #include "icon_settings_mappings_png.h"
 #include "icon_settings_menu_png.h"
+#include "icon_settings_credits_png.h"
 #include "icon_settings_video_png.h"
 #include "icon_settings_audio_png.h"
-#include "icon_settings_screenshot_png.h"
+#include "icon_settings_hacks_png.h"
 #include "button_png.h"
 #include "button_over_png.h"
 #include "button_prompt_png.h"

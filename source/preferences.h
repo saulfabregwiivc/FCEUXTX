@@ -3,6 +3,7 @@
  * Nintendo Wii/GameCube Port
  *
  * Tantric 2008-2022
+ * Tanooki 2019-2022
  *
  * preferences.h
  *

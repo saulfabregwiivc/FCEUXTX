@@ -4,6 +4,9 @@ msgstr "y"
 msgid "16:9 Correction"
 msgstr "Corrección 16:9"
 
+msgid "240p Output"
+msgstr "Salida de 240p"
+
 msgid "7z decompression failed: Archive contains too many files."
 msgstr "Descompresión 7z falló: El archivo contiene demasiados archivos."
 
@@ -63,6 +66,9 @@ msgstr "Automático (Recomendado)"
 
 msgid "Back"
 msgstr "Atrás"
+
+msgid "Bilinear Filtering"
+msgstr "Filtro Bilineal"
 
 msgid "Both"
 msgstr "Ambos"
@@ -151,6 +157,9 @@ msgstr "ABAJO"
 msgid "Dutch"
 msgstr "Holandés"
 
+msgid "Emulation Hacks"
+msgstr "Hacks de Emulación"
+
 msgid "English"
 msgstr "Inglés"
 
@@ -208,6 +217,9 @@ msgstr "Configuración - Controles"
 msgid "Game Settings - Cheats"
 msgstr "Configuración - Trucos"
 
+msgid "Game Settings - Emulation Hacks"
+msgstr "Configuración - Hacks de Emulación"
+
 msgid "Game Settings - Video"
 msgstr "Configuración - Vídeo"
 
@@ -225,9 +237,6 @@ msgstr "Ocultar RAM Guardar"
 
 msgid "High"
 msgstr "Alta"
-
-msgid "Highest"
-msgstr "Muy Alta"
 
 msgid "Information"
 msgstr "Información"
@@ -271,8 +280,8 @@ msgstr "Cargando DVD..."
 msgid "Loading..."
 msgstr "Cargando..."
 
-msgid "Low (Recommended)"
-msgstr "Baja (Recomendado)"
+msgid "Low"
+msgstr "Baja"
 
 msgid "Low Pass Filtering"
 msgstr "Filtro de Paso Bajo"
@@ -306,6 +315,9 @@ msgstr "¡Disco no insertado!"
 
 msgid "No game saves found."
 msgstr "No hay partidas guardadas."
+
+msgid "None"
+msgstr "Ninguno"
 
 msgid "Nunchuk + Wiimote"
 msgstr "Wiimote y Nunchuk"
@@ -370,9 +382,6 @@ msgstr "¿Salir del juego? Se perderá cualquier progreso no guardado."
 msgid "Reboot"
 msgstr "Reiniciar"
 
-msgid "Rendering"
-msgstr "Renderizado"
-
 msgid "Reset"
 msgstr "Reiniciar"
 
@@ -432,9 +441,6 @@ msgstr "Guardando configuraciones..."
 
 msgid "Saving..."
 msgstr "Guardando..."
-
-msgid "Scaling"
-msgstr "Escalado"
 
 msgid "Screen Position"
 msgstr "Posición de Pantalla"
@@ -511,9 +517,6 @@ msgstr "¡No se puede localizar un dispositivo para carga!"
 msgid "Unable to locate a save device!"
 msgstr "¡No se puede encontrar un dispositivo para guardados!"
 
-msgid "Unfiltered"
-msgstr "Sin filtrado"
-
 msgid "Unrecognized DVD format."
 msgstr "Formato de DVD no reconocido."
 
@@ -531,6 +534,9 @@ msgstr "¡Unidad USB no encontrada!"
 
 msgid "USB Mass Storage"
 msgstr "Unidad USB"
+
+msgid "Very High"
+msgstr "Muy Alta"
 
 msgid "Video Mode"
 msgstr "Modo de Vídeo"
@@ -570,9 +576,6 @@ msgstr "¡Archivo de BIOS de FDS inválido!"
 
 msgid "FDS BIOS file not found!"
 msgstr "¡Archivo de BIOS de FDS no encontrado!"
-
-msgid "Filtered"
-msgstr "Filtrado"
 
 msgid "Fire"
 msgstr "Disparar"
@@ -631,6 +634,9 @@ msgstr "¿Guardar RAM y partida?"
 msgid "Save file not found"
 msgstr "Archivo de guardado no encontrado."
 
+msgid "Show Crosshair"
+msgstr "Mostrar Cursor"
+
 msgid "Sprite Limit"
 msgstr "Límite de Sprites"
 
@@ -648,6 +654,3 @@ msgstr "bajo los términos de la Licencia Pública General GNU (GPL) Versión 2.
 
 msgid "Unknown file type!"
 msgstr "¡Tipo de archivo desconocido!"
-
-msgid "Zapper Crosshair"
-msgstr "Cursor de Zapper"

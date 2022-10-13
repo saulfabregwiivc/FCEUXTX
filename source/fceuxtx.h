@@ -3,7 +3,6 @@
  * Nintendo Wii/GameCube Port
  *
  * Tantric 2008-2022
- *
  * Tanooki 2019-2022
  *
  * fceuxtx.h
@@ -19,7 +18,7 @@
 #include "fceux/driver.h"
 
 #define APPNAME			"FCEUX TX"
-#define APPVERSION		"1.1.4"
+#define APPVERSION		"1.1.6"
 #define APPFOLDER 		"fceuxtx"
 #define PREF_FILE_NAME	"settings.xml"
 
@@ -30,8 +29,7 @@
 const char pathPrefix[9][8] =
 { "", "sd:/", "usb:/", "dvd:/", "carda:/", "cardb:/", "port2:/" };
 
-enum 
-{
+enum {
 	DEVICE_AUTO,
 	DEVICE_SD,
 	DEVICE_USB,
@@ -41,15 +39,14 @@ enum
 	DEVICE_SD_PORT2
 };
 
-enum 
-{
+enum {
 	FILE_RAM,
 	FILE_STATE,
 	FILE_ROM,
 	FILE_CHEAT
 };
 
-enum
+enum 
 {
 	CTRL_PAD,
 	CTRL_ZAPPER,
@@ -79,8 +76,7 @@ enum {
 	TURBO_BUTTON_MINUS
 };
 
-enum 
-{
+enum {
 	LANG_JAPANESE = 0,
 	LANG_ENGLISH,
 	LANG_GERMAN,
@@ -98,8 +94,7 @@ enum
 	LANG_LENGTH
 };
 
-struct SGCSettings
-{
+struct SGCSettings{
 	int		AutoLoad;
     int		AutoSave;
     int		LoadMethod; // For ROMS: Auto, SD, DVD, USB
@@ -114,25 +109,33 @@ struct SGCSettings
 	int		HideRAMSaving;
 	int		AutoloadGame;
 
-	float	zoomHor; // horizontal zoom amount
-	float	zoomVert; // vertical zoom amount
+	float	zoomHor; // Horizontal zoom amount
+	float	zoomVert; // Vertical zoom amount
 	int		videomode; // 0 - Automatic, 1 - NTSC (480i), 2 - Progressive (480p), 3 - PAL (50Hz), 4 - PAL (60Hz)
-	int		render;		// 0 - Original, 1 - Unfiltered, 2 - Filtered
-	int		hideoverscan; // 0 = Off, 1 = Vertical, 2 = Horizontal, 3 = Both
+	int		render;		// 0 - Default, 1 - 240p Output
+	int		bilinear;    // Bilinear filter
+	int		hideoverscan; // 0 = None, 1 = Vertical, 2 = Horizontal, 3 = Both
 	int		Controller;
-	int		spritelimit;
-	int		crosshair;
 	int		TurboMode;
 	int		TurboModeButton;
-	int		widescreen;	// 0 - 4:3 aspect, 1 - 16:9 aspect
-	int		xshift;		// video output shift
-	int		yshift;
 	int		currpal;
 	int		region;		// 0 - NTSC, 1 - PAL, 2 - Automatic
-	int		gamegenie;
-	int		sndquality; // 0 - Low, 1 - High, 2 - Highest
+	int		crosshair;
+	int		widescreen;
+	int		xshift;		// Video output shift
+	int		yshift;
+	int		sndquality; // 0 - Low, 1 - High, 2 - Very High
 	int		lowpass;
-	int		swapDuty;
+	int		swapduty;
+	int		volume;
+	int		trianglevol;
+	int		square1vol;
+	int		square2vol;
+	int		noisevol;
+	int		pcmvol;
+	int		overclock;  // 0 - None, 1 - 2x Postrender, 2 - 2x VBlank
+	int		spritelimit;
+	int		gamegenie;
 	int		WiimoteOrientation;
 	int		ExitAction;
 	int		MusicVolume;

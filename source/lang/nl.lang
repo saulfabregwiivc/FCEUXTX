@@ -2,7 +2,10 @@ msgid "&"
 msgstr "&"
 
 msgid "16:9 Correction"
-msgstr 16:9 Correctie"
+msgstr "16:9 Correctie"
+
+msgid "240p Output"
+msgstr "240p Uitgang"
 
 msgid "7z decompression failed: Archive contains too many files"
 msgstr "7z uitpakken mislukt: te veel bestanden in het archief"
@@ -60,6 +63,9 @@ msgstr "B (Snel)"
 
 msgid "Back"
 msgstr "Terug"
+
+msgid "Bilinear Filtering"
+msgstr "Bilineaire Filteren"
 
 msgid "Both"
 msgstr "Beide"
@@ -136,6 +142,9 @@ msgstr "Nederlands"
 msgid "Empty or invalid ZIP file!"
 msgstr "Leeg of beschadigd ZIP bestand!"
 
+msgid "Emulation Hacks"
+msgstr "Emulatie Hacks"
+
 msgid "English"
 msgstr "Engels"
 
@@ -178,9 +187,6 @@ msgstr "FDS BIOS bestand is verkeerd!"
 msgid "FDS BIOS file not found!"
 msgstr "FDS BIOS bestand kan niet gevonden worden!"
 
-msgid "Filtered"
-msgstr "Gefilterd"
-
 msgid "Fire"
 msgstr "Vuren"
 
@@ -193,11 +199,17 @@ msgstr "Game Genie ROM niet gevonden!"
 msgid "Game Settings"
 msgstr "Spelinstellingen"
 
+msgid "Game Settings - Audio"
+msgstr "Spelinstellingen - Audio"
+
 msgid "Game Settings - Button Mappings"
 msgstr "Spelinstellingen - Controller Configuratie"
 
 msgid "Game Settings - Cheats"
 msgstr "Spelinstellingen - Cheats"
+
+msgid "Game Settings - Emulation Hacks"
+msgstr "Spelinstellingen - Emulatie Hacks"
 
 msgid "Game Settings - Video"
 msgstr "Spelinstellingen - Video"
@@ -213,9 +225,6 @@ msgstr "Verberg RAM-sparen"
 
 msgid "High"
 msgstr "Hoog"
-
-msgid "Highest"
-msgstr "Heel Hoog"
 
 msgid "Horizontal"
 msgstr "Horizontaal"
@@ -289,8 +298,8 @@ msgstr "Bezig met patch laden..."
 msgid "Loading..."
 msgstr "Bezig met laden..."
 
-msgid "Low (Recommended)"
-msgstr "Laag (Aanbevolen)"
+msgid "Low"
+msgstr "Laag"
 
 msgid "Low Pass Filtering"
 msgstr "Laagdoorlaatfilter"
@@ -322,12 +331,6 @@ msgstr "Nintendo Zapper"
 msgid "New"
 msgstr "Nieuw"
 
-msgid "New Snapshot"
-msgstr "Nieuw Snapshot"
-
-msgid "New SRAM"
-msgstr "Nieuw SRAM"
-
 msgid "No"
 msgstr "Nee"
 
@@ -336,9 +339,6 @@ msgstr "Geen data om op te slaan!"
 
 msgid "No disc inserted!"
 msgstr "Geen schijf ingevoerd!"
-
-msgid "No SRAM data to save!"
-msgstr "Geen SRAM om op te slaan!"
 
 msgid "No game saves found."
 msgstr "Geen opgeslagen spellen gevonden."
@@ -358,9 +358,6 @@ msgstr "Aan"
 msgid "ON"
 msgstr "AAN"
 
-msgid "Original"
-msgstr "Origineel"
-
 msgid "Out of memory!"
 msgstr "Te weinig geheugen!"
 
@@ -378,6 +375,9 @@ msgstr "Portugees"
 
 msgid "Power off Wii"
 msgstr "Wii uitschakelen"
+
+msgid "PPU Overclocking"
+msgstr "PPU Overklokken"
 
 msgid "Preferences saved"
 msgstr "Instellingen opgeslagen"
@@ -417,9 +417,6 @@ msgstr "Herstart"
 
 msgid "Region"
 msgstr "Regio"
-
-msgid "Rendering"
-msgstr "Renderen"
 
 msgid "Reset"
 msgstr "Herstart"
@@ -475,12 +472,6 @@ msgstr "Spel Opslaan"
 msgid "Save RAM and State?"
 msgstr "Geheugen en status opslaan?"
 
-msgid "Save Snapshot?"
-msgstr "Snapshot Opslaan?"
-
-msgid "Save SRAM and Snapshot?"
-msgstr "SRAM en Snapshot opslaan?"
-
 msgid "Save State?"
 msgstr "Status Opslaan?"
 
@@ -495,9 +486,6 @@ msgstr "Instellingen opslaan..."
 
 msgid "Saving..."
 msgstr "Bezig met opslaan..."
-
-msgid "Scaling"
-msgstr "Schaal"
 
 msgid "Screen Position"
 msgstr "Schermpositie"
@@ -523,8 +511,8 @@ msgstr "SD Kaart"
 msgid "SD card not found!"
 msgstr "Geen SD kaart gevonden!"
 
-msgid "Show Frame Rate"
-msgstr "Toon Framerate"
+msgid "Show Crosshair"
+msgstr "Toon Dradenkruis"
 
 msgid "Sound Effects Volume"
 msgstr "Volume Geluidseffecten"
@@ -538,9 +526,6 @@ msgstr "Spaans"
 msgid "Sprite Limit"
 msgstr "Sprite Limiet"
 
-msgid "SRAM file not found"
-msgstr "SRAM bestand niet gevonden"
-
 msgid "State"
 msgstr "Status"
 
@@ -551,22 +536,19 @@ msgid "State file not found"
 msgstr "Status bestand niet gevonden"
 
 msgid "Swap Duty Cycles"
-msgstr "De Cycli Omkeren"
+msgstr "Omkering Van Cycli"
 
 msgid "Turbo Mode"
 msgstr "Turbo Modus"
 
 msgid "Turbo Mode Button"
-msgstr "Turbo Modus-Knop"
+msgstr "Turbo Modus Knop"
 
 msgid "Unable to locate a load device!"
 msgstr "Kan laadapparaat niet vinden!"
 
 msgid "Unable to locate a save device!"
 msgstr "Kan opslagapparaat niet vinden!"
-
-msgid "Unfiltered"
-msgstr "Ongefiltered"
 
 msgid "Unknown file type!"
 msgstr "Onbekend bestandstype!"
@@ -594,6 +576,9 @@ msgstr "USB Mass Storage"
 
 msgid "Vertical"
 msgstr "Vertikaal"
+
+msgid "Very High"
+msgstr "Heel Hoog"
 
 msgid "Video Mode"
 msgstr "Video Modus"

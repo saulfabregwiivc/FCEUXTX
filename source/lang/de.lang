@@ -2,7 +2,10 @@ msgid "&"
 msgstr ""
 
 msgid "16:9 Correction"
-msgstr "16:9"
+msgstr "16:9 Korrektur"
+
+msgid "240p Output"
+msgstr "240p Ausgabe"
 
 msgid "7z decompression failed: Archive contains too many files"
 msgstr "7z Dekomprimierung fehlgeschlagen: Archiv enthält zu viele Dateien"
@@ -63,6 +66,9 @@ msgstr "B (Turbo)"
 
 msgid "Back"
 msgstr "Zurück"
+
+msgid "Bilinear Filtering"
+msgstr "Bilineare Filter"
 
 msgid "Both"
 msgstr "Beide"
@@ -178,9 +184,6 @@ msgstr "FDS BIOS Datei ist ungültig!"
 msgid "FDS BIOS file not found!"
 msgstr "FDS BIOS Datei nicht gefunden!"
 
-msgid "Filtered"
-msgstr "Gefiltert"
-
 msgid "Fire"
 msgstr "Schießen"
 
@@ -191,16 +194,19 @@ msgid "Game Genie ROM not found!"
 msgstr "Game Genie ROM nicht gefunden!"
 
 msgid "Game Settings"
-msgstr "Spiel Einstellungen"
+msgstr "Spieleinstellungen"
 
 msgid "Game Settings - Audio"
-msgstr "Spiel Einstellungen - Audio"
+msgstr "Spieleinstellungen - Audio"
 
 msgid "Game Settings - Button Mappings"
 msgstr "Spieleinstellungen - Tastenbelegung"
 
 msgid "Game Settings - Cheats"
 msgstr "Spieleinstellungen - Cheats"
+
+msgid "Game Settings - Emulation Hacks"
+msgstr "Spieleinstellungen - Emulation Hacks"
 
 msgid "Game Settings - Video"
 msgstr "Spieleinstellungen - Video"
@@ -216,9 +222,6 @@ msgstr "Ausblenden speichern RAM"
 
 msgid "High"
 msgstr "Hoch"
-
-msgid "Highest"
-msgstr "Sehr Hoch"
 
 msgid "Insert Coin"
 msgstr "Münze einwerfen"
@@ -283,8 +286,8 @@ msgstr "Lade Patch..."
 msgid "Loading..."
 msgstr "Lade..."
 
-msgid "Low (Recommended)"
-msgstr "Niedrig (Empfohlen)"
+msgid "Low"
+msgstr "Niedrig"
 
 msgid "Low Pass Filtering"
 msgstr "Tiefpassfilter"
@@ -319,12 +322,6 @@ msgstr "Nintendo Zapper"
 msgid "New"
 msgstr "Neu"
 
-msgid "New Snapshot"
-msgstr "Neuer Schnappschuss"
-
-msgid "New SRAM"
-msgstr "Neuer SRAM"
-
 msgid "No"
 msgstr "Nein"
 
@@ -333,9 +330,6 @@ msgstr "Keine Daten gespeichert!"
 
 msgid "No disc inserted!"
 msgstr "Keine Disc eingelegt!"
-
-msgid "No SRAM data to save!"
-msgstr "Keine SRAM Daten zum speichern!"
 
 msgid "No game saves found."
 msgstr "Kein Spielstand gefunden."
@@ -382,6 +376,9 @@ msgstr "Portugiesisch"
 msgid "Power off Wii"
 msgstr "Wii ausschalten"
 
+msgid "PPU Overclocking"
+msgstr "PPU Übertaktung"
+
 msgid "Preferences saved"
 msgstr "Einstellungen gespeichert"
 
@@ -417,9 +414,6 @@ msgstr "RAM speichern ist für FDS Spiele nicht verfügbar!"
 
 msgid "Reboot"
 msgstr "Neustart"
-
-msgid "Rendering"
-msgstr "Darstellung"
 
 msgid "Reset"
 msgstr "Zurücksetzen"
@@ -478,12 +472,6 @@ msgstr "Spiel speichern"
 msgid "Save RAM and State?"
 msgstr "RAM und Status speichern?"
 
-msgid "Save Snapshot?"
-msgstr "Schnappschuss speichern?"
-
-msgid "Save SRAM and Snapshot?"
-msgstr "SRAM und Schnappschuss speichern?"
-
 msgid "Save State?"
 msgstr "Status speichern?"
 
@@ -498,9 +486,6 @@ msgstr "Einstellungen werden gespeichert..."
 
 msgid "Saving..."
 msgstr "Speichern..."
-
-msgid "Scaling"
-msgstr "Auflösung"
 
 msgid "Screen Position"
 msgstr "Bildschirm Position"
@@ -523,14 +508,8 @@ msgstr "Einstellungen - Speichern & Laden"
 msgid "SD card not found!"
 msgstr "SD Card nicht gefunden!"
 
-msgid "Show Frame Rate"
-msgstr "Zeige Bildfrequenz"
-
-msgid "Snapshot"
-msgstr "Schnappschuss"
-
-msgid "Snapshot (Auto)"
-msgstr "Schnappschuss (Auto)"
+msgid "Show Crosshair"
+msgstr "Zeige Fadenkreuz"
 
 msgid "Sound Effects Volume"
 msgstr "SFX Lautstärke"
@@ -540,9 +519,6 @@ msgstr "Tonqualität"
 
 msgid "Spanish"
 msgstr "Spanisch"
-
-msgid "SRAM file not found"
-msgstr "SRAM Datei nicht gefunden"
 
 msgid "State"
 msgstr "Status"
@@ -557,19 +533,16 @@ msgid "Swap Duty Cycles"
 msgstr "Umkehrung der Zyklen"
 
 msgid "Turbo Mode"
-msgstr "Turbo-Modus"
+msgstr "Turbomodus"
 
 msgid "Turbo Mode Button"
-msgstr "Turbo-Modus-Taste"
+msgstr "Taste Turbomodus"
 
 msgid "Unable to locate a load device!"
 msgstr "Ladegerät konnte nicht gefunden werden!"
 
 msgid "Unable to locate a save device!"
 msgstr "Speichergerät konnte nicht gefunden werden!"
-
-msgid "Unfiltered"
-msgstr "Ungefiltert"
 
 msgid "Unknown file type!"
 msgstr "Unbekannter Dateityp!"
@@ -598,6 +571,9 @@ msgstr "USB Massenspeicher"
 msgid "Vertical"
 msgstr "Vertikal"
 
+msgid "Very High"
+msgstr "Sehr Hoch"
+
 msgid "Video"
 msgstr "Bild"
 
@@ -615,6 +591,3 @@ msgstr "Ja"
 
 msgid "Zapper"
 msgstr "Nintendo Zapper"
-
-msgid "Zapper Crosshair"
-msgstr "Zapper Fadenkreuz"

@@ -3,7 +3,6 @@
  * Nintendo Wii/GameCube Port
  *
  * Tantric 2008-2022
- *
  * Tanooki 2019-2022
  *
  * fceuxtx.cpp
@@ -462,21 +461,37 @@ int main(int argc, char *argv[])
 				MainMenu(MENU_GAME);
 		}
 
-		if (GCSettings.swapDuty == 0)
+		switch (GCSettings.sndquality)
+		{
+			case 0: FCEUI_SetSoundQuality(0); break;
+			case 1: FCEUI_SetSoundQuality(1); break;
+			case 2: FCEUI_SetSoundQuality(2); break;
+		}
+
+		if (GCSettings.swapduty == 0)
 			swapDuty = 0;
 		else
 			swapDuty = 1;
 
-		switch (GCSettings.sndquality)
+		switch (GCSettings.overclock)
 		{
 			case 0:
-				FCEUI_SetSoundQuality(0);
+				skip_7bit_overclocking = 1;
+				postrenderscanlines = 0;
+				vblankscanlines = 0;
+				overclock_enabled = 0;
 				break;
 			case 1:
-				FCEUI_SetSoundQuality(1);
+				skip_7bit_overclocking = 1;
+				postrenderscanlines = 266;
+				vblankscanlines = 0;
+				overclock_enabled = 1;
 				break;
 			case 2:
-				FCEUI_SetSoundQuality(2);
+				skip_7bit_overclocking = 1;
+				postrenderscanlines = 0;
+				vblankscanlines = 266;
+				overclock_enabled = 1;
 				break;
 		}
 
@@ -500,8 +515,14 @@ int main(int argc, char *argv[])
 		SetControllers();
 		setFrameTimer(); // set frametimer method before emulation
 		SetPalette();
-		FCEUI_DisableSpriteLimitation(GCSettings.spritelimit ^ 1);
 		FCEUI_SetLowPass(GCSettings.lowpass == 1);
+		FCEUI_SetSoundVolume(GCSettings.volume);
+		FCEUI_SetTriangleVolume(GCSettings.trianglevol);
+		FCEUI_SetSquare1Volume(GCSettings.square1vol);
+		FCEUI_SetSquare2Volume(GCSettings.square2vol);
+		FCEUI_SetNoiseVolume(GCSettings.noisevol);
+		FCEUI_SetPCMVolume(GCSettings.pcmvol);
+		FCEUI_DisableSpriteLimitation(GCSettings.spritelimit ^ 1);
 
 		fskip=0;
 		fskipc=0;

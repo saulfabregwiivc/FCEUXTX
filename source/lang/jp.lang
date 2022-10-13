@@ -4,6 +4,9 @@ msgstr "&"
 msgid "16:9 Correction"
 msgstr "16:9補正"
 
+msgid "240p Output"
+msgstr "240p出力"
+
 msgid "7z decompression failed: Archive contains too many files"
 msgstr "書庫内のファイルが多すぎです"
 
@@ -69,6 +72,9 @@ msgstr "自動(おすすめ)"
 
 msgid "B (Rapid)"
 msgstr "B (連打)"
+
+msgid "Bilinear Filtering"
+msgstr "バイリニアフィルタ"
 
 msgid "Both"
 msgstr "両方"
@@ -154,6 +160,9 @@ msgstr "ドイツ語"
 msgid "Empty or invalid ZIP file!"
 msgstr "不正なZIPファイルです"
 
+msgid "Emulation Hacks"
+msgstr "ハック"
+
 msgid "English"
 msgstr "英語"
 
@@ -199,9 +208,6 @@ msgstr "disksys.romが不正です"
 msgid "FDS BIOS file not found!"
 msgstr "disksys.romが見つかりません"
 
-msgid "Filtered"
-msgstr "フィルターする"
-
 msgid "Fire"
 msgstr "ファイア"
 
@@ -223,6 +229,9 @@ msgstr "ゲーム設定 - ボタン設定"
 msgid "Game Settings - Cheats"
 msgstr "ゲーム設定 - 改造コード"
 
+msgid "Game Settings - Emulation Hacks"
+msgstr "ゲーム設定 - ハック"
+
 msgid "Game Settings - Video"
 msgstr "ゲーム設定 - 映像"
 
@@ -240,9 +249,6 @@ msgstr "RAMセーブを隠す"
 
 msgid "High"
 msgstr "高い"
-
-msgid "Highest"
-msgstr "すごく高い"
 
 msgid "Horizontal"
 msgstr "横方向"
@@ -316,8 +322,8 @@ msgstr "パッチを読み込み中…"
 msgid "Loading..."
 msgstr "読み込み中…"
 
-msgid "Low (Recommended)"
-msgstr "低（おすすめ）"
+msgid "Low"
+msgstr "低"
 
 msgid "Low Pass Filtering"
 msgstr "ローパスフィルタ"
@@ -364,12 +370,6 @@ msgstr "ファミコンザッパー"
 msgid "New"
 msgstr "新しい"
 
-msgid "New Snapshot"
-msgstr "新しい中断データ"
-
-msgid "New SRAM"
-msgstr "新しいSRAM"
-
 msgid "No"
 msgstr "いいえ"
 
@@ -378,9 +378,6 @@ msgstr "セーブするデータがありません"
 
 msgid "No disc inserted!"
 msgstr "ディスクが挿入されていません"
-
-msgid "No SRAM data to save!"
-msgstr "セーブするSRAMデータがありません"
 
 msgid "No game saves found."
 msgstr "セーブデータが見つかりません"
@@ -405,9 +402,6 @@ msgstr "オン"
 
 msgid "ON"
 msgstr "オン"
-
-msgid "Original"
-msgstr "オリジナル"
 
 msgid "Out of memory!"
 msgstr "メモリが足りません"
@@ -475,9 +469,6 @@ msgstr "再起動"
 msgid "Region"
 msgstr "領域"
 
-msgid "Rendering"
-msgstr "描画"
-
 msgid "Reset"
 msgstr "リセット"
 
@@ -532,12 +523,6 @@ msgstr "セーブデータをセーブ"
 msgid "Save RAM and State?"
 msgstr "RAMと状態をセーブしますか?"
 
-msgid "Save Snapshot?"
-msgstr "中断データをセーブしますか?"
-
-msgid "Save SRAM and Snapshot?"
-msgstr "SRAMと中断データをセーブしますか?"
-
 msgid "Save State?"
 msgstr "状態をセーブしますか?"
 
@@ -552,9 +537,6 @@ msgstr "優先的にセーブ中…"
 
 msgid "Saving..."
 msgstr "セーブ中…"
-
-msgid "Scaling"
-msgstr "縮尺"
 
 msgid "Screenshots"
 msgstr "スクリーンショット"
@@ -583,14 +565,11 @@ msgstr "SD"
 msgid "SD card not found!"
 msgstr "SDが見つかりません"
 
+msgid "Show Crosshair"
+msgstr "十字線を表示"
+
 msgid "Chinese (Simplified)"
 msgstr "簡体字中国語"
-
-msgid "Snapshot"
-msgstr "中断データ"
-
-msgid "Snapshot (Auto)"
-msgstr "中断データ(自動)"
 
 msgid "Sound Effects Volume"
 msgstr "効果音の音量"
@@ -603,9 +582,6 @@ msgstr "スペイン語"
 
 msgid "Sprite Limit"
 msgstr "スプライト制限"
-
-msgid "SRAM file not found"
-msgstr "SRAMファイルが見つかりません"
 
 msgid "Start"
 msgstr "スタート"
@@ -630,9 +606,6 @@ msgstr "デバイスを見つけられませんでした"
 
 msgid "Unable to locate a save device!"
 msgstr "デバイスを見つけられませんでした"
-
-msgid "Unfiltered"
-msgstr "フィルタ無し"
 
 msgid "Unknown file type!"
 msgstr "不明なファイル形式です"
@@ -661,6 +634,9 @@ msgstr "USBデバイス"
 msgid "Vertical"
 msgstr "縦方向"
 
+msgid "Very High"
+msgstr "すごく高い"
+
 msgid "Video"
 msgstr "映像"
 
@@ -678,9 +654,6 @@ msgstr "はい"
 
 msgid "Zapper"
 msgstr "ザッパー"
-
-msgid "Zapper Crosshair"
-msgstr "ｻﾞｯﾊﾟｰの十字ｶｰｿﾙ"
 
 msgid "Automatic"
 msgstr "自動"

@@ -2,7 +2,10 @@
 msgstr "&"
 
 msgid "16:9 Correction"
-msgstr "16:9 校正"
+msgstr "16:9校正"
+
+msgid "240p Output"
+msgstr "240p输出"
 
 msgid "7z decompression failed: Archive contains too many files"
 msgstr "7z解压缩失败： 压缩包内有很多文件"
@@ -69,6 +72,9 @@ msgstr "B (连发)"
 
 msgid "Back"
 msgstr "返回"
+
+msgid "Bilinear Filtering"
+msgstr "双线性过滤"
 
 msgid "Both"
 msgstr "两者"
@@ -148,6 +154,9 @@ msgstr "荷兰语"
 msgid "Empty or invalid ZIP file!"
 msgstr "空或不正确的ZIP文件"
 
+msgid "Emulation Hacks"
+msgstr "仿真器黑客"
+
 msgid "English"
 msgstr "英语"
 
@@ -193,9 +202,6 @@ msgstr "任天堂磁盘驱动器 BIOS文件是无效的！"
 msgid "FDS BIOS file not found!"
 msgstr "任天堂磁盘驱动器 BIOS文件没有找到！"
 
-msgid "Filtered"
-msgstr "已过滤"
-
 msgid "Fire"
 msgstr "开火"
 
@@ -217,6 +223,9 @@ msgstr "游戏设定 - 按键映射"
 msgid "Game Settings - Cheats"
 msgstr "游戏设定 - 金手指"
 
+msgid "Game Settings - Emulation Hacks"
+msgstr "游戏设定 - 仿真器黑客"
+
 msgid "Game Settings - Video"
 msgstr "游戏设定 - 视频"
 
@@ -234,9 +243,6 @@ msgstr "隐藏RAM保存"
 
 msgid "High"
 msgstr "高的"
-
-msgid "Highest"
-msgstr "很高"
 
 msgid "Horizontal"
 msgstr "水平方向"
@@ -310,11 +316,11 @@ msgstr "从Patch读取中..."
 msgid "Loading..."
 msgstr "读取中..."
 
-msgid "Low (Recommended)"
-msgstr "低（推荐）"
+msgid "Low"
+msgstr "低"
 
 msgid "Low Pass Filtering"
-msgstr "低通滤波器"
+msgstr "低通滤波"
 
 msgid "Main Menu"
 msgstr "主菜单"
@@ -364,9 +370,6 @@ msgstr "不存在保存的数据"
 msgid "No disc inserted!"
 msgstr "没有插入光盘！"
 
-msgid "No SRAM data to save!"
-msgstr "不存在保存的SRAM数据"
-
 msgid "No game saves found."
 msgstr "不存在保存的游戏存档"
 
@@ -393,9 +396,6 @@ msgstr "开启"
 
 msgid "ON"
 msgstr "开启"
-
-msgid "Original"
-msgstr "原始"
 
 msgid "Out of memory!"
 msgstr "内存不足！"
@@ -426,6 +426,9 @@ msgstr "巴西葡萄牙语"
 
 msgid "Power off Wii"
 msgstr "关闭 Wii 主机"
+
+msgid "PPU Overclocking"
+msgstr "PPU超频"
 
 msgid "Preferences saved"
 msgstr "设定保存了"
@@ -465,9 +468,6 @@ msgstr "重新启动"
 
 msgid "Region"
 msgstr "地区"
-
-msgid "Rendering"
-msgstr "描绘"
 
 msgid "Reset"
 msgstr "重置"
@@ -523,9 +523,6 @@ msgstr "保存游戏"
 msgid "Save RAM and State?"
 msgstr "保存RAM和状态吗？"
 
-msgid "Save SRAM and State?"
-msgstr "保存SRAM和状态吗？"
-
 msgid "Save State?"
 msgstr "保存状态吗？"
 
@@ -540,9 +537,6 @@ msgstr "保存中..."
 
 msgid "Saving..."
 msgstr "保存中..."
-
-msgid "Scaling"
-msgstr "缩放"
 
 msgid "Screen Position"
 msgstr "画面位置"
@@ -568,6 +562,9 @@ msgstr "SD卡"
 msgid "SD card not found!"
 msgstr "未找到SD卡"
 
+msgid "Show Crosshair"
+msgstr "显示十字准星"
+
 msgid "Sound Effects Volume"
 msgstr "效果音的音量"
 
@@ -580,9 +577,6 @@ msgstr "西班牙语"
 msgid "Sprite Limit"
 msgstr "画面限制"
 
-msgid "SRAM file not found"
-msgstr "未找到SRAM文件"
-
 msgid "Start"
 msgstr "开始键"
 
@@ -593,7 +587,7 @@ msgid "State file not found"
 msgstr "未找到状态文件"
 
 msgid "Swap Duty Cycles"
-msgstr "反向循环"
+msgstr "交换占空比"
 
 msgid "Turbo Mode"
 msgstr "涡轮模式"
@@ -606,9 +600,6 @@ msgstr "无法定位读取的设备！"
 
 msgid "Unable to locate a save device!"
 msgstr "无法定位保存的设备！"
-
-msgid "Unfiltered"
-msgstr "没有过滤"
 
 msgid "Unknown file type!"
 msgstr "无法识别的文件类型！"
@@ -637,6 +628,9 @@ msgstr "USB大容量存储装置"
 msgid "Vertical"
 msgstr "垂直方向"
 
+msgid "Very High"
+msgstr "很高"
+
 msgid "Video"
 msgstr "图像"
 
@@ -654,9 +648,6 @@ msgstr "是"
 
 msgid "Zapper"
 msgstr "Zapper光线枪"
-
-msgid "Zapper Crosshair"
-msgstr "Zapper光枪十字准线"
 
 msgid "Color Palette"
 msgstr "调色板"
