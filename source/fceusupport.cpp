@@ -19,6 +19,7 @@
 
 bool turbo = false;
 bool paldeemphswap = 0;
+int eoptions = 0;
 int dendy;
 bool swapDuty;
 int KillFCEUXonFrame = 0;

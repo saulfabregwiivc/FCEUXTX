@@ -1,12 +1,6 @@
 msgid "&"
 msgstr ""
 
-msgid "16:9 Correction"
-msgstr "16:9 수정"
-
-msgid "240p Output"
-msgstr "240p 출력"
-
 msgid "7z decompression failed: Archive contains too many files."
 msgstr "7z 압축 해제 실패: 압축 파일에 너무 많은 파일이 포함되었습니다."
 
@@ -43,6 +37,9 @@ msgstr "삽화"
 msgid "Artwork Folder"
 msgstr "삽화 폴더"
 
+msgid "Aspect Ratio"
+msgstr "종횡비"
+
 msgid "Attempting to determine load device..."
 msgstr "불러온 장치 확인 시도 중..."
 
@@ -64,8 +61,8 @@ msgstr "자동 불러오기"
 msgid "Auto Save"
 msgstr "자동 저장하기"
 
-msgid "Automatic (Recommended)"
-msgstr "자동 (추천)"
+msgid "Automatic"
+msgstr "자동"
 
 msgid "Back"
 msgstr "뒤로"
@@ -79,6 +76,9 @@ msgstr "둘 다"
 msgid "Brazilian Portuguese"
 msgstr "브라질 포루투갈어"
 
+msgid "Button"
+msgstr "버튼"
+
 msgid "Button Mapping"
 msgstr "버튼 맵핑"
 
@@ -90,9 +90,6 @@ msgstr "취소"
 
 msgid "Caps"
 msgstr "대문자"
-
-msgid "Catalan"
-msgstr "카탈루니아어"
 
 msgid "Cheats"
 msgstr "치트"
@@ -114,6 +111,9 @@ msgstr "클래식 컨트롤러"
 
 msgid "Close"
 msgstr "닫기"
+
+msgid "Color Palette"
+msgstr "색상 팔레트"
 
 msgid "Controller"
 msgstr "컨트롤러"
@@ -198,6 +198,9 @@ msgstr "종료"
 
 msgid "Exit Action"
 msgstr "종료 작업"
+
+msgid "Fast Forward"
+msgstr "빨리 감기"
 
 msgid "FCEUX - Copyright (c) FCEUX Team 2008 - 2022"
 msgstr "FCEUX - 제작 (c) FCEUX 팀 2008-2022"
@@ -292,8 +295,8 @@ msgstr "불러오기 중..."
 msgid "Low"
 msgstr "낮음"
 
-msgid "Low Pass Filtering"
-msgstr "저역 통과 필터링"
+msgid "Low Pass Filter"
+msgstr "로우패스 필터"
 
 msgid "Main Menu"
 msgstr "메인 메뉴"
@@ -331,6 +334,9 @@ msgstr "게임 저장을 찾을 수 없습니다."
 msgid "None"
 msgstr "없음"
 
+msgid "NTSC Color"
+msgstr "NTSC 색상"
+
 msgid "Nunchuk"
 msgstr "눈챠크"
 
@@ -342,6 +348,15 @@ msgstr "확인"
 
 msgid "On"
 msgstr "켬"
+
+msgid "Original (16:9)"
+msgstr "오리지널 (16:9)"
+
+msgid "Original (240p)"
+msgstr "오리지널 (240p)"
+
+msgid "Original (4:3)"
+msgstr "오리지널 (4:3)"
 
 msgid "Out of memory: too many files!"
 msgstr "메모리 부족: 너무 많은 파일!"
@@ -355,7 +370,7 @@ msgstr "플러스"
 msgid "Portuguese"
 msgstr "포르투갈어"
 
-msgid "Power off Wii"
+msgid "Power Off Wii"
 msgstr "Wii 끄기"
 
 msgid "Preferences saved"
@@ -397,6 +412,9 @@ msgstr "재부팅"
 msgid "Region"
 msgstr "지역"
 
+msgid "Rendering"
+msgstr "렌더링"
+
 msgid "Reset"
 msgstr "리셋"
 
@@ -424,8 +442,8 @@ msgstr "오른쪽"
 msgid "RIGHT"
 msgstr "오른쪽"
 
-msgid "Right Stick (Default)"
-msgstr "오른쪽 스틱(기본값)"
+msgid "Right Stick"
+msgstr "오른쪽 스틱"
 
 msgid "Save"
 msgstr "저장하기"
@@ -502,6 +520,9 @@ msgstr "사운드 효과 볼륨"
 msgid "Sound Quality"
 msgstr "소리 품질"
 
+msgid "Sound Volume"
+msgstr "사운드 볼륨"
+
 msgid "Spanish"
 msgstr "스페인어"
 
@@ -528,12 +549,6 @@ msgstr "현재 IOS는 지원하지 않습니다. 기능 및 안정성에 부정�
 
 msgid "This software is open source and may be copied, distributed, or modified"
 msgstr "이 소프트웨어는 오픈 소스고 복사, 배포 또는 수정 될 수 있습니다."
-
-msgid "Turbo Mode"
-msgstr "터보 모드"
-
-msgid "Turbo Mode Button"
-msgstr "터보 모드 버튼"
 
 msgid "Turkish"
 msgstr "터키어"
@@ -598,9 +613,6 @@ msgstr "예"
 msgid "A (Rapid)"
 msgstr "A (연사)"
 
-msgid "Automatic"
-msgstr "자동"
-
 msgid "B (Rapid)"
 msgstr "B (연사)"
 
@@ -652,17 +664,20 @@ msgstr "NES 재퍼건"
 msgid "No data to save!"
 msgstr "저장 데이터가 없습니다!"
 
+msgid "No Sprite Limit"
+msgstr "스프라이트 제한 없음"
+
 msgid "OFF"
 msgstr "끔"
 
 msgid "ON"
 msgstr "켬"
 
-msgid "Color Palette"
-msgstr "팔레트"
-
 msgid "Progressive (480p)"
 msgstr "프로그레시브 (480p)"
+
+msgid "Progressive (576p)"
+msgstr "프로그레시브 (576p)"
 
 msgid "PPU Overclocking"
 msgstr "PPU 오버클럭"
@@ -682,14 +697,8 @@ msgstr "저장 파일을 찾을 수 없습니다"
 msgid "Show Crosshair"
 msgstr "십자선 보기"
 
-msgid "Sprite Limit"
-msgstr "스프라이트 제한"
-
 msgid "State file not found"
 msgstr "상태 파일을 찾을 수 없습니다"
 
 msgid "Unknown file type!"
 msgstr "알 수 없는 파일 유형!"
-
-msgid "Zapper"
-msgstr "재퍼건"

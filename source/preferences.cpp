@@ -3,7 +3,7 @@
  * Nintendo Wii/GameCube Port
  *
  * Tantric 2008-2022
- * Tanooki 2019-2022
+ * Tanooki 2019-2023
  *
  * preferences.cpp
  *
@@ -141,32 +141,28 @@ preparePrefsData ()
 	createXMLSetting("videomode", "Video Mode", toStr(GCSettings.videomode));
 	createXMLSetting("zoomHor", "Horizontal Zoom Level", FtoStr(GCSettings.zoomHor));
 	createXMLSetting("zoomVert", "Vertical Zoom Level", FtoStr(GCSettings.zoomVert));
-	createXMLSetting("render", "Video Rendering", toStr(GCSettings.render));
+	createXMLSetting("render", "Rendering", toStr(GCSettings.render));
 	createXMLSetting("bilinear", "Bilinear Filtering", toStr(GCSettings.bilinear));
-	createXMLSetting("widescreen", "Aspect Ratio Correction", toStr(GCSettings.widescreen));
+	createXMLSetting("aspect", "Aspect Ratio", toStr(GCSettings.aspect));
 	createXMLSetting("hideoverscan", "Crop Overscan", toStr(GCSettings.hideoverscan));
 	createXMLSetting("currpal", "Color Palette", toStr(GCSettings.currpal));
-	createXMLSetting("region", "Region", toStr(GCSettings.region));
+	createXMLSetting("ntsccolor", "NTSC Color", toStr(GCSettings.ntsccolor));
 	createXMLSetting("crosshair", "Show Crosshair", toStr(GCSettings.crosshair));
+	createXMLSetting("region", "Region", toStr(GCSettings.region));
 	createXMLSetting("xshift", "Horizontal Video Shift", toStr(GCSettings.xshift));
 	createXMLSetting("yshift", "Vertical Video Shift", toStr(GCSettings.yshift));
 
 	createXMLSection("Audio", "Audio Settings");
 
-	createXMLSetting("sndquality", "Sound Quality", toStr(GCSettings.sndquality));
-	createXMLSetting("lowpass", "Low Pass Filtering", toStr(GCSettings.lowpass));
+	createXMLSetting("soundvolume", "Sound Volume", toStr(GCSettings.soundvolume));
+	createXMLSetting("soundquality", "Sound Quality", toStr(GCSettings.soundquality));
+	createXMLSetting("lowpass", "Low Pass Filter", toStr(GCSettings.lowpass));
 	createXMLSetting("swapduty", "Swap Duty Cycles", toStr(GCSettings.swapduty));
-	createXMLSetting("volume", "Master Volume", toStr(GCSettings.volume));
-	createXMLSetting("trianglevol", "Triangle Volume", toStr(GCSettings.trianglevol));
-	createXMLSetting("square1vol", "Square1 Volume", toStr(GCSettings.square1vol));
-	createXMLSetting("square2vol", "Square2 Volume", toStr(GCSettings.square2vol));
-	createXMLSetting("noisevol", "Noise Volume", toStr(GCSettings.noisevol));
-	createXMLSetting("pcmvol", "PCM Volume", toStr(GCSettings.pcmvol));
 
 	createXMLSection("Emulation Hacks", "Emulation Hacks Settings");
 
 	createXMLSetting("overclock", "PPU Overclocking", toStr(GCSettings.overclock));
-	createXMLSetting("spritelimit", "Sprite Limit", toStr(GCSettings.spritelimit));
+	createXMLSetting("nospritelimit", "No Sprite Limit", toStr(GCSettings.nospritelimit));
 
 	createXMLSection("Menu", "Menu Settings");
 
@@ -183,8 +179,8 @@ preparePrefsData ()
 	createXMLSection("Controller", "Controller Settings");
 
 	createXMLSetting("Controller", "Controller", toStr(GCSettings.Controller));
-	createXMLSetting("TurboMode", "Turbo Mode", toStr(GCSettings.TurboMode));
-	createXMLSetting("TurboModeButton", "Turbo Mode Button", toStr(GCSettings.TurboModeButton));
+	createXMLSetting("FastForward", "Fast Forward", toStr(GCSettings.FastForward));
+	createXMLSetting("FastForwardButton", "Fast Forward Button", toStr(GCSettings.FastForwardButton));
 
 	createXMLController(btnmap[CTRL_PAD][CTRLR_GCPAD], "btnmap_pad_gcpad", "NES Pad - GameCube Controller");
 	createXMLController(btnmap[CTRL_PAD][CTRLR_WIIMOTE], "btnmap_pad_wiimote", "NES Pad - Wiimote");
@@ -325,30 +321,26 @@ decodePrefsData ()
 			loadXMLSetting(&GCSettings.zoomVert, "zoomVert");
 			loadXMLSetting(&GCSettings.render, "render");
 			loadXMLSetting(&GCSettings.bilinear, "bilinear");
-			loadXMLSetting(&GCSettings.widescreen, "widescreen");
+			loadXMLSetting(&GCSettings.aspect, "aspect");
 			loadXMLSetting(&GCSettings.hideoverscan, "hideoverscan");
 			loadXMLSetting(&GCSettings.currpal, "currpal");
-			loadXMLSetting(&GCSettings.region, "region");
+			loadXMLSetting(&GCSettings.ntsccolor, "ntsccolor");
 			loadXMLSetting(&GCSettings.crosshair, "crosshair");
+			loadXMLSetting(&GCSettings.region, "region");
 			loadXMLSetting(&GCSettings.xshift, "xshift");
 			loadXMLSetting(&GCSettings.yshift, "yshift");
 
 			// Audio Settings
 
-			loadXMLSetting(&GCSettings.sndquality, "sndquality");
+			loadXMLSetting(&GCSettings.soundvolume, "soundvolume");
+			loadXMLSetting(&GCSettings.soundquality, "soundquality");
 			loadXMLSetting(&GCSettings.lowpass, "lowpass");
 			loadXMLSetting(&GCSettings.swapduty, "swapduty");
-			loadXMLSetting(&GCSettings.volume, "volume");
-			loadXMLSetting(&GCSettings.trianglevol, "trianglevol");
-			loadXMLSetting(&GCSettings.square1vol, "square1vol");
-			loadXMLSetting(&GCSettings.square2vol, "square2vol");
-			loadXMLSetting(&GCSettings.noisevol, "noisevol");
-			loadXMLSetting(&GCSettings.pcmvol, "pcmvol");
 
 			// Emulation Hacks Settings
 
 			loadXMLSetting(&GCSettings.overclock, "overclock");
-			loadXMLSetting(&GCSettings.spritelimit, "spritelimit");
+			loadXMLSetting(&GCSettings.nospritelimit, "nospritelimit");
 
 			// Menu Settings
 
@@ -363,8 +355,8 @@ decodePrefsData ()
 			// Controller Settings
 
 			loadXMLSetting(&GCSettings.Controller, "Controller");
-			loadXMLSetting(&GCSettings.TurboMode, "TurboMode");
-			loadXMLSetting(&GCSettings.TurboModeButton, "TurboModeButton");
+			loadXMLSetting(&GCSettings.FastForward, "FastForward");
+			loadXMLSetting(&GCSettings.FastForwardButton, "FastForwardButton");
 
 			loadXMLController(btnmap[CTRL_PAD][CTRLR_GCPAD], "btnmap_pad_gcpad");
 			loadXMLController(btnmap[CTRL_PAD][CTRLR_WIIMOTE], "btnmap_pad_wiimote");
@@ -401,26 +393,16 @@ void FixInvalidSettings()
 	if(!(GCSettings.yshift > -50 && GCSettings.yshift < 50))
 		GCSettings.yshift = 0;
 	if(!(GCSettings.MusicVolume >= 0 && GCSettings.MusicVolume <= 100))
-		GCSettings.MusicVolume = 20;
+		GCSettings.MusicVolume = 80;
 	if(!(GCSettings.SFXVolume >= 0 && GCSettings.SFXVolume <= 100))
-		GCSettings.SFXVolume = 40;
+		GCSettings.SFXVolume = 20;
 	if(GCSettings.language < 0 || GCSettings.language >= LANG_LENGTH)
 		GCSettings.language = LANG_ENGLISH;
 	if(GCSettings.Controller > CTRL_PAD4 || GCSettings.Controller < CTRL_ZAPPER)
 		GCSettings.Controller = CTRL_PAD2;
-	if(!(GCSettings.volume >= 0 && GCSettings.volume <= 150))
-		GCSettings.volume = 100;
-	if(!(GCSettings.trianglevol >= 0 && GCSettings.trianglevol <= 256))
-		GCSettings.trianglevol = 256;
-	if(!(GCSettings.square1vol >= 0 && GCSettings.square1vol <= 256))
-		GCSettings.square1vol = 256;
-	if(!(GCSettings.square2vol >= 0 && GCSettings.square2vol <= 256))
-		GCSettings.square2vol = 256;
-	if(!(GCSettings.noisevol >= 0 && GCSettings.noisevol <= 256))
-		GCSettings.noisevol = 256;
-	if(!(GCSettings.pcmvol >= 0 && GCSettings.pcmvol <= 256))
-		GCSettings.pcmvol = 256;
-	if(!(GCSettings.videomode >= 0 && GCSettings.videomode < 5))
+	if(!(GCSettings.soundvolume >= 0 && GCSettings.soundvolume <= 150))
+		GCSettings.soundvolume = 100;
+	if(!(GCSettings.videomode >= 0 && GCSettings.videomode < 6))
 		GCSettings.videomode = 0;
 	if(!(GCSettings.render >= 0 && GCSettings.render < 2))
 		GCSettings.render = 0;
@@ -440,39 +422,34 @@ DefaultSettings ()
 
 	ResetControls(); // Controller button mappings
 
-	GCSettings.Controller = CTRL_PAD2; // NES Pad, Four Score, Zapper
-	GCSettings.TurboMode = 1; // Enabled by default
-	GCSettings.TurboModeButton = 0; // Default is right analog stick (0)
+	GCSettings.Controller = CTRL_PAD2; // NES Controllers, NES Zapper
+	GCSettings.FastForward = 1; // Enabled by default
+	GCSettings.FastForwardButton = 0; // Right analog stick
 
 	GCSettings.gamegenie = 0; // Disabled by default
 
-	GCSettings.sndquality = 1; // High quality
+	GCSettings.soundvolume = 100; // Sound volume at 100%
+	GCSettings.soundquality = 0; // Low sound quality
 	GCSettings.lowpass = 0; // Disabled by default
 	GCSettings.swapduty = 0; // Disabled by default
 
-	GCSettings.volume = 100;
-	GCSettings.trianglevol = 256;
-	GCSettings.square1vol = 256;
-	GCSettings.square2vol = 256;
-	GCSettings.noisevol = 256;
-	GCSettings.pcmvol = 256;
-
 	GCSettings.overclock = 0; // Disabled by default
-	GCSettings.spritelimit = 1; // Enabled by default
+	GCSettings.nospritelimit = 0; // Disabled by default
 
 	GCSettings.videomode = 0; // Automatic video mode detection
 	GCSettings.render = 0; // Default rendering mode
 	GCSettings.bilinear = 0; // Disabled by default
 	GCSettings.hideoverscan = 1; // Hide vertical
-	GCSettings.currpal = 1; // FBX's digital prime
-	GCSettings.region = 2; // Automatic region detection
+	GCSettings.currpal = 0; // Default color palette
+	GCSettings.ntsccolor = 0; // Disabled by default
 	GCSettings.crosshair = 1; // Enabled by default
+	GCSettings.region = 2; // Automatic region detection
 
-	GCSettings.widescreen = 0;
+	GCSettings.aspect = 0;
 
 #ifdef HW_RVL
 	if (CONF_GetAspectRatio() == CONF_ASPECT_16_9)
-		GCSettings.widescreen = 1;
+		GCSettings.aspect = 1;
 #endif
 
 	GCSettings.zoomHor = 1.0; // Horizontal zoom level
@@ -483,8 +460,8 @@ DefaultSettings ()
 	GCSettings.WiimoteOrientation = 0;
 	GCSettings.AutoloadGame = 0;
 	GCSettings.ExitAction = 0; // Auto
-	GCSettings.MusicVolume = 100;
-	GCSettings.SFXVolume = 40;
+	GCSettings.MusicVolume = 80;
+	GCSettings.SFXVolume = 20;
 	GCSettings.PreviewImage = 0;
 	GCSettings.HideRAMSaving = 0;
 	
@@ -669,7 +646,9 @@ bool LoadPrefs()
 		FixInvalidSettings();
 
 	// attempt to create directories if they don't exist
-	if(GCSettings.LoadMethod == DEVICE_SD || GCSettings.LoadMethod == DEVICE_USB) {
+	if((GCSettings.LoadMethod == DEVICE_SD && ChangeInterface(DEVICE_SD, SILENT))
+		|| (GCSettings.LoadMethod == DEVICE_USB && ChangeInterface(DEVICE_USB, SILENT)))  
+	{
 		char dirPath[MAXPATHLEN];
 		sprintf(dirPath, "%s%s", pathPrefix[GCSettings.LoadMethod], GCSettings.ScreenshotsFolder);
 		CreateDirectory(dirPath);

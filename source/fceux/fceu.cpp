@@ -889,7 +889,7 @@ void ResetNES(void) {
 	extern uint8 *XBackBuf;
 	memset(XBackBuf, 0, 256 * 256);
 
-	// FCEU_DispMessage("Reset", 0);
+	FCEU_DispMessage("", 0); //FCEU_DispMessage("Reset", 0);
 }
 
 
@@ -1033,7 +1033,7 @@ void PowerNES(void) {
 	Update_RAM_Search(); // Update_RAM_Watch() is also called.
 #endif
 
-	// FCEU_DispMessage("Power on", 0);
+	FCEU_DispMessage("", 0); //FCEU_DispMessage("Power on", 0);
 }
 
 void FCEU_ResetVidSys(void) {

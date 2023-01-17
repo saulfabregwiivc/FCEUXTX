@@ -1,12 +1,6 @@
 ﻿msgid "&"
 msgstr "&"
 
-msgid "16:9 Correction"
-msgstr "16:9校正"
-
-msgid "240p Output"
-msgstr "240p输出"
-
 msgid "7z decompression failed: Archive contains too many files"
 msgstr "7z解压缩失败： 压缩包内有很多文件"
 
@@ -40,6 +34,9 @@ msgstr "确定要重置你的控制器设定？"
 msgid "Are you sure that you want to reset your settings?"
 msgstr "确定要重置你的设定？"
 
+msgid "Aspect Ratio"
+msgstr "纵横比"
+
 msgid "Attempting to determine load device..."
 msgstr "正在试图从设备中读取…"
 
@@ -64,9 +61,6 @@ msgstr "自动保存"
 msgid "Automatic"
 msgstr "自动"
 
-msgid "Automatic (Recommended)"
-msgstr "自动（推荐）"
-
 msgid "B (Rapid)"
 msgstr "B (连发)"
 
@@ -78,6 +72,9 @@ msgstr "双线性过滤"
 
 msgid "Both"
 msgstr "两者"
+
+msgid "Button"
+msgstr "按键"
 
 msgid "Button Mapping"
 msgstr "按键映射"
@@ -108,6 +105,9 @@ msgstr "关闭"
 
 msgid "Coding"
 msgstr "编码"
+
+msgid "Color Palette"
+msgstr "调色板"
 
 msgid "Controles"
 msgstr "控制装置"
@@ -192,6 +192,9 @@ msgstr "退出"
 
 msgid "Exit Action"
 msgstr "离开后执行"
+
+msgid "Fast Forward"
+msgstr "快进"
 
 msgid "FCEUX - Copyright (c) FCEUX Team 2008 - 2022"
 msgstr "FCEUX - 版权(c) FCEUX开发小组2008-2022"
@@ -319,8 +322,8 @@ msgstr "读取中..."
 msgid "Low"
 msgstr "低"
 
-msgid "Low Pass Filtering"
-msgstr "低通滤波"
+msgid "Low Pass Filter"
+msgstr "低通滤波器"
 
 msgid "Main Menu"
 msgstr "主菜单"
@@ -347,16 +350,16 @@ msgid "Mute"
 msgstr "静音"
 
 msgid "NES Controller"
-msgstr "FC游戏机 控制器"
+msgstr "FC控制器"
 
 msgid "NES Controllers (2)"
-msgstr "FC游戏机 控制器(2)"
+msgstr "FC控制器(2)"
 
 msgid "NES Controllers (4)"
-msgstr "FC游戏机 控制器(4)"
+msgstr "FC控制器(4)"
 
 msgid "NES Zapper"
-msgstr "FC游戏机 Zapper光线枪"
+msgstr "Zapper光线枪"
 
 msgid "New"
 msgstr "新的"
@@ -373,11 +376,17 @@ msgstr "没有插入光盘！"
 msgid "No game saves found."
 msgstr "不存在保存的游戏存档"
 
+msgid "No Sprite Limit"
+msgstr "没有精灵限制"
+
 msgid "None"
 msgstr "无"
 
 msgid "NTSC (480i)"
 msgstr "NTSC制式(480i)"
+
+msgid "NTSC Color"
+msgstr "NTSC彩色"
 
 msgid "Nunchuk"
 msgstr "Wii左手柄"
@@ -396,6 +405,15 @@ msgstr "开启"
 
 msgid "ON"
 msgstr "开启"
+
+msgid "Original (16:9)"
+msgstr "原始(16:9)"
+
+msgid "Original (240p)"
+msgstr "原始(240p)"
+
+msgid "Original (4:3)"
+msgstr "原始(4:3)"
 
 msgid "Out of memory!"
 msgstr "内存不足！"
@@ -424,7 +442,7 @@ msgstr "葡萄牙语"
 msgid "Brazilian Portuguese"
 msgstr "巴西葡萄牙语"
 
-msgid "Power off Wii"
+msgid "Power Off Wii"
 msgstr "关闭 Wii 主机"
 
 msgid "PPU Overclocking"
@@ -451,6 +469,9 @@ msgstr "按下Wii左手柄或右手柄任意键 （HOME键清空映射）"
 msgid "Progressive (480p)"
 msgstr "逐行扫描(480p)"
 
+msgid "Progressive (576p)"
+msgstr "逐行扫描(576p)"
+
 msgid "Quit Game"
 msgstr "退出游戏"
 
@@ -468,6 +489,9 @@ msgstr "重新启动"
 
 msgid "Region"
 msgstr "地区"
+
+msgid "Rendering"
+msgstr "描绘"
 
 msgid "Reset"
 msgstr "重置"
@@ -499,8 +523,8 @@ msgstr "右"
 msgid "RIGHT"
 msgstr "右"
 
-msgid "Right Stick (Default)"
-msgstr "右摇杆（预设）"
+msgid "Right Stick"
+msgstr "右摇杆"
 
 msgid "Save"
 msgstr "保存"
@@ -571,11 +595,11 @@ msgstr "效果音的音量"
 msgid "Sound Quality"
 msgstr "音质"
 
+msgid "Sound Volume"
+msgstr "音的音量"
+
 msgid "Spanish"
 msgstr "西班牙语"
-
-msgid "Sprite Limit"
-msgstr "画面限制"
 
 msgid "Start"
 msgstr "开始键"
@@ -588,12 +612,6 @@ msgstr "未找到状态文件"
 
 msgid "Swap Duty Cycles"
 msgstr "交换占空比"
-
-msgid "Turbo Mode"
-msgstr "涡轮模式"
-
-msgid "Turbo Mode Button"
-msgstr "涡轮模式按钮"
 
 msgid "Unable to locate a load device!"
 msgstr "无法定位读取的设备！"
@@ -645,15 +663,6 @@ msgstr "Wii右手柄方向"
 
 msgid "Yes"
 msgstr "是"
-
-msgid "Zapper"
-msgstr "Zapper光线枪"
-
-msgid "Color Palette"
-msgstr "调色板"
-
-msgid "Catalan"
-msgstr "加泰罗尼亚语"
 
 msgid "The current IOS has been altered (fake-signed). Functionality and/or stability may be adversely affected."
 msgstr "当前IOS已被篡改， 软件功能或稳定性可能会受到影响"
@@ -742,8 +751,8 @@ msgstr "删除"
 msgid "Screenshots Folder"
 msgstr "截图目录"
 
-msgid "WiiU Pro controller"
-msgstr "WiiU Pro 控制器"
+msgid "Wii U Pro Controller"
+msgstr "Wii U Pro 控制器"
 
 msgid "Screenshot"
 msgstr "屏幕截图"
@@ -759,6 +768,3 @@ msgstr "预览图片"
 
 msgid "Artwork Folder"
 msgstr "插图目录"
-
-msgid "Wii U Pro Controller"
-msgstr "Wii U Pro 控制器"

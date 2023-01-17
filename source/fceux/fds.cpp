@@ -178,7 +178,7 @@ void FCEU_FDSInsert(void)
 {
 	if (TotalSides == 0)
 	{
-		FCEU_DispMessage("", 0);//FCEU_DispMessage("Not FDS; can't eject disk.", 0);
+		FCEU_DispMessage("", 0); //FCEU_DispMessage("Not FDS; can't eject disk.", 0);
 		return;
 	}
 
@@ -190,11 +190,11 @@ void FCEU_FDSInsert(void)
 
 	if (InDisk == 255)
 	{
-		//FCEU_DispMessage("Disk %d Side %s Inserted", 0, SelectDisk >> 1, (SelectDisk & 1) ? "B" : "A");
+		FCEU_DispMessage("", 0); //FCEU_DispMessage("Disk %d Side %s Inserted", 0, SelectDisk >> 1, (SelectDisk & 1) ? "B" : "A");
 		InDisk = SelectDisk;
 	} else
 	{
-		//FCEU_DispMessage("Disk %d Side %s Ejected", 0, SelectDisk >> 1, (SelectDisk & 1) ? "B" : "A");
+		FCEU_DispMessage("", 0); //FCEU_DispMessage("Disk %d Side %s Ejected", 0, SelectDisk >> 1, (SelectDisk & 1) ? "B" : "A");
 		InDisk = 255;
 	}
 }

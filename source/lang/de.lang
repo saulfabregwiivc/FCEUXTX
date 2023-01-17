@@ -1,12 +1,6 @@
 msgid "&"
 msgstr ""
 
-msgid "16:9 Correction"
-msgstr "16:9 Korrektur"
-
-msgid "240p Output"
-msgstr "240p Ausgabe"
-
 msgid "7z decompression failed: Archive contains too many files"
 msgstr "7z Dekomprimierung fehlgeschlagen: Archiv enthält zu viele Dateien"
 
@@ -43,6 +37,9 @@ msgstr "Bist du sicher das du die Einstellungen zurücksetzten willst?"
 msgid "Artwork Folder"
 msgstr "Ordner f. Artwork"
 
+msgid "Aspect Ratio"
+msgstr "Seitenverhältnis"
+
 msgid "Attempting to determine load device..."
 msgstr "Versuche Ladegerät zu ermitteln..."
 
@@ -58,8 +55,8 @@ msgstr "Auto. laden"
 msgid "Auto Save"
 msgstr "Auto. speichern"
 
-msgid "Automatic (Recommended)"
-msgstr "Automatisch (Empfohlen)"
+msgid "Automatic"
+msgstr "Automatisch"
 
 msgid "B (Rapid)"
 msgstr "B (Turbo)"
@@ -72,6 +69,9 @@ msgstr "Bilineare Filter"
 
 msgid "Both"
 msgstr "Beide"
+
+msgid "Button"
+msgstr "Taste"
 
 msgid "Button Mapping"
 msgstr "Tastenbelegung"
@@ -177,6 +177,9 @@ msgstr "Beenden"
 
 msgid "Exit Action"
 msgstr "Aktion beim Beenden"
+
+msgid "Fast Forward"
+msgstr "Schneller Vorlauf"
 
 msgid "FDS BIOS file is invalid!"
 msgstr "FDS BIOS Datei ist ungültig!"
@@ -289,7 +292,7 @@ msgstr "Lade..."
 msgid "Low"
 msgstr "Niedrig"
 
-msgid "Low Pass Filtering"
+msgid "Low Pass Filter"
 msgstr "Tiefpassfilter"
 
 msgid "Main Menu"
@@ -334,8 +337,14 @@ msgstr "Keine Disc eingelegt!"
 msgid "No game saves found."
 msgstr "Kein Spielstand gefunden."
 
+msgid "No Sprite Limit"
+msgstr "Kein Sprite Limit"
+
 msgid "None"
 msgstr "Nichts"
+
+msgid "NTSC Color"
+msgstr "NTSC Farbe"
 
 msgid "Off"
 msgstr "Aus"
@@ -373,8 +382,8 @@ msgstr "Bitte Warten"
 msgid "Portuguese"
 msgstr "Portugiesisch"
 
-msgid "Power off Wii"
-msgstr "Wii ausschalten"
+msgid "Power Off Wii"
+msgstr "Wii Ausschalten"
 
 msgid "PPU Overclocking"
 msgstr "PPU Übertaktung"
@@ -415,6 +424,9 @@ msgstr "RAM speichern ist für FDS Spiele nicht verfügbar!"
 msgid "Reboot"
 msgstr "Neustart"
 
+msgid "Rendering"
+msgstr "Darstellung"
+
 msgid "Reset"
 msgstr "Zurücksetzen"
 
@@ -425,7 +437,7 @@ msgid "Reset this game? Any unsaved progress will be lost."
 msgstr "Spiel zurücksetzen? Nicht gespeicherte Fortschritte gehen verloren."
 
 msgid "Reset Mappings"
-msgstr "Belegung zurücksetzen"
+msgstr "Zurücksetzen"
 
 msgid "Reset Settings"
 msgstr "Zurücksetzen"
@@ -445,8 +457,8 @@ msgstr "Rechts"
 msgid "RIGHT"
 msgstr "RECHTS"
 
-msgid "Right Stick (Default)"
-msgstr "Rechte Joystick (Standard)"
+msgid "Right Stick"
+msgstr "Rechte Joystick"
 
 msgid "Save"
 msgstr "Speichern"
@@ -517,6 +529,9 @@ msgstr "SFX Lautstärke"
 msgid "Sound Quality"
 msgstr "Tonqualität"
 
+msgid "Sound Volume"
+msgstr "Tonlautstärke"
+
 msgid "Spanish"
 msgstr "Spanisch"
 
@@ -530,13 +545,7 @@ msgid "State file not found"
 msgstr "Statusdatei nicht gefunden"
 
 msgid "Swap Duty Cycles"
-msgstr "Umkehrung der Zyklen"
-
-msgid "Turbo Mode"
-msgstr "Turbomodus"
-
-msgid "Turbo Mode Button"
-msgstr "Taste Turbomodus"
+msgstr "Zyklen Umkehren"
 
 msgid "Unable to locate a load device!"
 msgstr "Ladegerät konnte nicht gefunden werden!"
@@ -588,6 +597,3 @@ msgstr "Wii-FB Ausrichtung"
 
 msgid "Yes"
 msgstr "Ja"
-
-msgid "Zapper"
-msgstr "Nintendo Zapper"

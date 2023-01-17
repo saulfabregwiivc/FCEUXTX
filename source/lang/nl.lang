@@ -1,12 +1,6 @@
 msgid "&"
 msgstr "&"
 
-msgid "16:9 Correction"
-msgstr "16:9 Correctie"
-
-msgid "240p Output"
-msgstr "240p Uitgang"
-
 msgid "7z decompression failed: Archive contains too many files"
 msgstr "7z uitpakken mislukt: te veel bestanden in het archief"
 
@@ -40,6 +34,9 @@ msgstr "Weet je zeker dat je de controller instellingen wilt wissen?"
 msgid "Are you sure that you want to reset your settings?"
 msgstr "Weet je zeker dat je de instellingen wilt wissen?"
 
+msgid "Aspect Ratio"
+msgstr "Beeldverhouding"
+
 msgid "Attempting to determine load device..."
 msgstr "Poging om het laadapparaat te bepalen..."
 
@@ -55,8 +52,8 @@ msgstr "Automatisch Openen"
 msgid "Auto Save"
 msgstr "Automatisch Opslaan"
 
-msgid "Automatic (Recommended)"
-msgstr "Automatisch (Aanbevolen)"
+msgid "Automatic"
+msgstr "Automatisch"
 
 msgid "B (Rapid)"
 msgstr "B (Snel)"
@@ -69,6 +66,9 @@ msgstr "Bilineaire Filteren"
 
 msgid "Both"
 msgstr "Beide"
+
+msgid "Button"
+msgstr "Knop"
 
 msgid "Button Mapping"
 msgstr "Controller Instelling"
@@ -102,6 +102,9 @@ msgstr "Sluiten"
 
 msgid "Coding"
 msgstr "Programmering"
+
+msgid "Color Palette"
+msgstr "Kleurenpalet"
 
 msgid "Cover View"
 msgstr "Omslag Weergave"
@@ -180,6 +183,9 @@ msgstr "Afsluiten"
 
 msgid "Exit Action"
 msgstr "Actie afsluiten"
+
+msgid "Fast Forward"
+msgstr "Snel Vooruit"
 
 msgid "FDS BIOS file is invalid!"
 msgstr "FDS BIOS bestand is verkeerd!"
@@ -301,7 +307,7 @@ msgstr "Bezig met laden..."
 msgid "Low"
 msgstr "Laag"
 
-msgid "Low Pass Filtering"
+msgid "Low Pass Filter"
 msgstr "Laagdoorlaatfilter"
 
 msgid "Main Menu"
@@ -343,8 +349,14 @@ msgstr "Geen schijf ingevoerd!"
 msgid "No game saves found."
 msgstr "Geen opgeslagen spellen gevonden."
 
+msgid "No Sprite Limit"
+msgstr "Geen Sprite Limiet"
+
 msgid "None"
 msgstr "Geen"
+
+msgid "NTSC Color"
+msgstr "NTSC Kleur"
 
 msgid "Off"
 msgstr "Uit"
@@ -357,6 +369,15 @@ msgstr "Aan"
 
 msgid "ON"
 msgstr "AAN"
+
+msgid "Original (16:9)"
+msgstr "Origineel (16:9)"
+
+msgid "Original (240p)"
+msgstr "Origineel (240p)"
+
+msgid "Original (4:3)"
+msgstr "Origineel (4:3)"
 
 msgid "Out of memory!"
 msgstr "Te weinig geheugen!"
@@ -373,8 +394,8 @@ msgstr "PLUS"
 msgid "Portuguese"
 msgstr "Portugees"
 
-msgid "Power off Wii"
-msgstr "Wii uitschakelen"
+msgid "Power Off Wii"
+msgstr "Wii Uitschakelen"
 
 msgid "PPU Overclocking"
 msgstr "PPU Overklokken"
@@ -400,6 +421,9 @@ msgstr "Druk op een knop op de Wiimote of Nunchuck. Druk op Home om de instellin
 msgid "Progressive (480p)"
 msgstr "Progressief (480p)"
 
+msgid "Progressive (576p)"
+msgstr "Progressief (576p)"
+
 msgid "Quit Game"
 msgstr "Spel Afsluiten"
 
@@ -417,6 +441,9 @@ msgstr "Herstart"
 
 msgid "Region"
 msgstr "Regio"
+
+msgid "Rendering"
+msgstr "Renderen"
 
 msgid "Reset"
 msgstr "Herstart"
@@ -448,8 +475,8 @@ msgstr "Rechts"
 msgid "RIGHT"
 msgstr "RECHTS"
 
-msgid "Right Stick (Default)"
-msgstr "Rechts Joystick (Standaard)"
+msgid "Right Stick"
+msgstr "Rechts Joystick"
 
 msgid "Save"
 msgstr "Opslaan"
@@ -520,11 +547,11 @@ msgstr "Volume Geluidseffecten"
 msgid "Sound Quality"
 msgstr "Geluidskwaliteit"
 
+msgid "Sound Volume"
+msgstr "Geluidsvolume"
+
 msgid "Spanish"
 msgstr "Spaans"
-
-msgid "Sprite Limit"
-msgstr "Sprite Limiet"
 
 msgid "State"
 msgstr "Status"
@@ -536,13 +563,7 @@ msgid "State file not found"
 msgstr "Status bestand niet gevonden"
 
 msgid "Swap Duty Cycles"
-msgstr "Omkering Van Cycli"
-
-msgid "Turbo Mode"
-msgstr "Turbo Modus"
-
-msgid "Turbo Mode Button"
-msgstr "Turbo Modus Knop"
+msgstr "De Cycli Omkeren"
 
 msgid "Unable to locate a load device!"
 msgstr "Kan laadapparaat niet vinden!"
@@ -582,6 +603,3 @@ msgstr "Heel Hoog"
 
 msgid "Video Mode"
 msgstr "Video Modus"
-
-msgid "Zapper"
-msgstr "Nintendo Zapper"

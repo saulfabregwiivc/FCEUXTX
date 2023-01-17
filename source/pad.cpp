@@ -30,6 +30,15 @@
 
 #define ANALOG_SENSITIVITY 30
 
+#ifdef HW_RVL
+ extern "C"{
+#include "utils/sicksaxis.h"
+}
+static ss_instance_t sicksaxis;
+int ds3chan = 0;
+#define SICKSAXIS_DEADZONE 115
+#endif
+
 int playerMapping[4] = {0,1,2,3};
 GuiTrigger userInput[4];
 
@@ -256,8 +265,27 @@ UpdatePads()
 	XBOX360_ScanPads();
 	WPAD_ScanPads();
 	#endif
-	
+
 	PAD_ScanPads();
+
+	#ifdef HW_RVL
+	u16 buttonsHeld = WPAD_ButtonsHeld(0);
+	if(sicksaxis.connected)
+	{
+		if(buttonsHeld & WPAD_BUTTON_1  && buttonsHeld & WPAD_BUTTON_2)
+		{
+			ss_close(&sicksaxis);
+		}
+	}
+	else
+	{
+			if(ss_open(&sicksaxis) > 0)
+			{
+				ss_set_led(&sicksaxis, 1);
+				ss_start_reading(&sicksaxis);
+			}
+	}
+	#endif
 
 	for(int i=3; i >= 0; i--)
 	{
@@ -294,6 +322,11 @@ void
 SetupPads()
 {
 	PAD_Init();
+
+	#ifdef HW_RVL
+	ss_init();
+	if(ss_open(&sicksaxis) > 0) ss_start_reading(&sicksaxis);
+	#endif
 
 	#ifdef HW_RVL
 	// read wiimote accelerometer and IR data
@@ -414,7 +447,7 @@ static unsigned char DecodeJoy(unsigned short chan)
 	u32 jp = userInput[chan].pad.btns_h;
 	unsigned char J = 0;
 
-	#ifdef HW_RVL
+#ifdef HW_RVL
 	s8 wm_ax = userInput[chan].WPAD_StickX(0);
 	s8 wm_ay = userInput[chan].WPAD_StickY(0);
 	u32 wp = userInput[chan].wpad->btns_h;
@@ -430,7 +463,46 @@ static unsigned char DecodeJoy(unsigned short chan)
 
 	jp |= Mayflash_ButtonsHeld(chan);
     jp |= XBOX360_ButtonsHeld(chan);
-	#endif
+#endif
+
+#ifdef HW_RVL
+	if(sicksaxis.connected )
+	{
+		if(sicksaxis.gamepad.buttons.PSB &&  sicksaxis.gamepad.buttons.R1 && sicksaxis.gamepad.buttons.triangle) ds3chan = 0;
+		if(sicksaxis.gamepad.buttons.PSB &&  sicksaxis.gamepad.buttons.R1 && sicksaxis.gamepad.buttons.circle) ds3chan = 1;
+		if(sicksaxis.gamepad.buttons.PSB &&  sicksaxis.gamepad.buttons.R1 && sicksaxis.gamepad.buttons.cross) ds3chan = 2;
+		if(sicksaxis.gamepad.buttons.PSB &&  sicksaxis.gamepad.buttons.R1 && sicksaxis.gamepad.buttons.square) ds3chan = 3;
+
+		if(chan == ds3chan){
+			int8_t aX = sicksaxis.gamepad.leftAnalog.x - 128;
+			int8_t aY = sicksaxis.gamepad.leftAnalog.y - 128;
+
+			uint8_t up    = sicksaxis.gamepad.buttons.up    ||  (aY < -SICKSAXIS_DEADZONE);
+			uint8_t down  = sicksaxis.gamepad.buttons.down  ||  (aY > SICKSAXIS_DEADZONE);
+			uint8_t right = sicksaxis.gamepad.buttons.right ||  (aX > SICKSAXIS_DEADZONE);
+			uint8_t left  = sicksaxis.gamepad.buttons.left  ||  (aX < -SICKSAXIS_DEADZONE);
+
+			jp |= up    ? PAD_BUTTON_UP    : 0;
+			jp |= down  ? PAD_BUTTON_DOWN  : 0;
+			jp |= right ? PAD_BUTTON_RIGHT : 0;
+			jp |= left  ? PAD_BUTTON_LEFT  : 0;
+
+			jp |= sicksaxis.gamepad.buttons.circle   ? PAD_BUTTON_A : 0;
+			jp |= sicksaxis.gamepad.buttons.cross    ? PAD_BUTTON_B : 0;
+			jp |= sicksaxis.gamepad.buttons.triangle ? PAD_BUTTON_X : 0;
+			jp |= sicksaxis.gamepad.buttons.square   ? PAD_BUTTON_Y : 0;
+
+			jp |= sicksaxis.gamepad.buttons.L1 ? PAD_TRIGGER_L : 0;
+			jp |= sicksaxis.gamepad.buttons.R1 ? PAD_TRIGGER_R : 0;
+
+			jp |= sicksaxis.gamepad.buttons.select ? PAD_TRIGGER_Z : 0;
+			jp |= sicksaxis.gamepad.buttons.start ? PAD_BUTTON_START : 0;
+
+			jp |= sicksaxis.gamepad.buttons.L2 ? PAD_TRIGGER_L : 0;
+			jp |= sicksaxis.gamepad.buttons.R2 ? PAD_TRIGGER_R : 0;
+		}
+	}
+#endif
 
 	/***
 	GameCube Joystick input
@@ -583,8 +655,8 @@ bool MenuRequested()
 	{
 		if (
 		    (userInput[i].pad.substickX < -70) ||
-			(userInput[i].pad.btns_h & PAD_TRIGGER_L &&
-			userInput[i].pad.btns_h & PAD_TRIGGER_R &&
+			(userInput[i].pad.btns_h & PAD_BUTTON_A &&
+			userInput[i].pad.btns_h & PAD_BUTTON_B &&
 			userInput[i].pad.btns_h & PAD_BUTTON_START)
 			#ifdef HW_RVL
 			|| (userInput[i].wpad->btns_h & WPAD_BUTTON_HOME) ||
@@ -602,76 +674,76 @@ bool MenuRequested()
 	return false;
 }
 
-bool IsTurboModeInputPressed()
+bool IsFastForwardInputPressed()
 {
-	switch(GCSettings.TurboModeButton)
+	switch(GCSettings.FastForwardButton)
 	{
-		case TURBO_BUTTON_RSTICK:
+		case FASTFORWARD_BUTTON_RSTICK:
 			return (
 				userInput[0].pad.substickX > 70 ||
 				userInput[0].WPAD_StickX(1) > 70 ||
 				userInput[0].wiidrcdata.substickX > 45);
-		case TURBO_BUTTON_A:
+		case FASTFORWARD_BUTTON_A:
 			return (
 				userInput[0].wpad->btns_h & WPAD_CLASSIC_BUTTON_A ||
 				userInput[0].wpad->btns_h & WPAD_BUTTON_A ||
 				userInput[0].pad.btns_h & PAD_BUTTON_A ||
 				userInput[0].wiidrcdata.btns_h & WIIDRC_BUTTON_A);
-		case TURBO_BUTTON_B:
+		case FASTFORWARD_BUTTON_B:
 			return (
 				userInput[0].wpad->btns_h & WPAD_CLASSIC_BUTTON_B ||
 				userInput[0].wpad->btns_h & WPAD_BUTTON_B ||
 				userInput[0].pad.btns_h & PAD_BUTTON_B ||
 				userInput[0].wiidrcdata.btns_h & WIIDRC_BUTTON_B);
-		case TURBO_BUTTON_X:
+		case FASTFORWARD_BUTTON_X:
 			return (
 				userInput[0].wpad->btns_h & WPAD_CLASSIC_BUTTON_X ||
 				userInput[0].pad.btns_h & PAD_BUTTON_X ||
 				userInput[0].wiidrcdata.btns_h & WIIDRC_BUTTON_X);
-		case TURBO_BUTTON_Y:
+		case FASTFORWARD_BUTTON_Y:
 			return (
 				userInput[0].wpad->btns_h & WPAD_CLASSIC_BUTTON_Y ||
 				userInput[0].pad.btns_h & PAD_BUTTON_Y ||
 				userInput[0].wiidrcdata.btns_h & WIIDRC_BUTTON_Y);
-		case TURBO_BUTTON_L:
+		case FASTFORWARD_BUTTON_L:
 			return (
 				userInput[0].wpad->btns_h & WPAD_CLASSIC_BUTTON_FULL_L ||
 				userInput[0].pad.btns_h & PAD_TRIGGER_L ||
 				userInput[0].wiidrcdata.btns_h & WIIDRC_BUTTON_L);
-		case TURBO_BUTTON_R:
+		case FASTFORWARD_BUTTON_R:
 			return (
 				userInput[0].wpad->btns_h & WPAD_CLASSIC_BUTTON_FULL_R ||
 				userInput[0].pad.btns_h & PAD_TRIGGER_R ||
 				userInput[0].wiidrcdata.btns_h & WIIDRC_BUTTON_R);
-		case TURBO_BUTTON_ZL:
+		case FASTFORWARD_BUTTON_ZL:
 			return (
 				userInput[0].wpad->btns_h & WPAD_CLASSIC_BUTTON_ZL ||
 				userInput[0].wiidrcdata.btns_h & WIIDRC_BUTTON_ZL);
-		case TURBO_BUTTON_ZR:
+		case FASTFORWARD_BUTTON_ZR:
 			return (
 				userInput[0].wpad->btns_h & WPAD_CLASSIC_BUTTON_ZR ||
 				userInput[0].wiidrcdata.btns_h & WIIDRC_BUTTON_ZR);
-		case TURBO_BUTTON_Z:
+		case FASTFORWARD_BUTTON_Z:
 			return (
 				userInput[0].pad.btns_h & PAD_TRIGGER_Z ||
 				(userInput[0].wpad->exp.type == WPAD_EXP_NUNCHUK &&
 				userInput[0].wpad->btns_h & WPAD_NUNCHUK_BUTTON_Z));
-		case TURBO_BUTTON_C:
+		case FASTFORWARD_BUTTON_C:
 			return (
 				userInput[0].wpad->exp.type == WPAD_EXP_NUNCHUK &&
 				userInput[0].wpad->btns_h & WPAD_NUNCHUK_BUTTON_C);
-		case TURBO_BUTTON_1:
+		case FASTFORWARD_BUTTON_1:
 			return (
 				userInput[0].wpad->btns_h & WPAD_BUTTON_1);
-		case TURBO_BUTTON_2:
+		case FASTFORWARD_BUTTON_2:
 			return (
 				userInput[0].wpad->btns_h & WPAD_BUTTON_2);
-		case TURBO_BUTTON_PLUS:
+		case FASTFORWARD_BUTTON_PLUS:
 			return (
 				userInput[0].wpad->btns_h & WPAD_CLASSIC_BUTTON_PLUS ||
 				userInput[0].wpad->btns_h & WPAD_BUTTON_PLUS ||
 				userInput[0].wiidrcdata.btns_h & WIIDRC_BUTTON_PLUS);
-		case TURBO_BUTTON_MINUS:
+		case FASTFORWARD_BUTTON_MINUS:
 			return (
 				userInput[0].wpad->btns_h & WPAD_CLASSIC_BUTTON_MINUS ||
 				userInput[0].wpad->btns_h & WPAD_BUTTON_MINUS ||
@@ -689,9 +761,9 @@ void GetJoy()
 
 	UpdatePads();
 
-	if (GCSettings.TurboMode == 1)
+	if (GCSettings.FastForward == 1)
 	{
-		turbomode = IsTurboModeInputPressed();
+		fastforward = IsFastForwardInputPressed();
 	}
 
 	// request to go back to menu

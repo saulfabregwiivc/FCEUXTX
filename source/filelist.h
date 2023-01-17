@@ -30,7 +30,6 @@
 #include "ko_lang.h"
 #include "pt_lang.h"
 #include "pt_br_lang.h"
-#include "ca_lang.h"
 #include "tr_lang.h"
 
 // Sounds
@@ -65,7 +64,7 @@
 #include "icon_settings_drc_png.h"
 #include "icon_settings_nescontroller_png.h"
 #include "icon_settings_zapper_png.h"
-#include "icon_settings_turbo_png.h"
+#include "icon_settings_fastforward_png.h"
 #include "icon_settings_file_png.h"
 #include "icon_settings_mappings_png.h"
 #include "icon_settings_menu_png.h"

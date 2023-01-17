@@ -3,7 +3,7 @@
  * Nintendo Wii/GameCube Port
  *
  * Tantric 2008-2022
- * Tanooki 2019-2022
+ * Tanooki 2019-2023
  *
  * gcvideo.cpp
  *
@@ -216,7 +216,7 @@ void SyncSpeed()
 	now = gettime();
 	u32 diff = diff_usec(prev, now);
 	
-	if(turbomode)
+	if(fastforward)
 	{
 		// do nothing
 	}
@@ -396,7 +396,7 @@ UpdateScaling()
 	int xscale, yscale;
 
 	// update scaling
-	if (GCSettings.render == 1)	// 240p render mode
+	if (GCSettings.render == 1)	// original rendering mode
 	{
 		xscale = 256;
 		yscale = TEX_HEIGHT / 2;
@@ -407,12 +407,12 @@ UpdateScaling()
 		yscale = vmode->efbHeight / 2;
 	}
 
-	if (GCSettings.widescreen)
+	if (GCSettings.aspect)
 	{
 		if(GCSettings.render == 1)
 			xscale = (3*xscale)/4;
 		else
-			xscale = 256; // match the original console's width for "widescreen" to prevent flickering
+			xscale = 256; // match the original console's width for 16:9 to prevent flickering
 	}
 
 	xscale *= GCSettings.zoomHor;
@@ -430,7 +430,7 @@ UpdateScaling()
  * FindVideoMode
  *
  * Finds the optimal video mode, or uses the user-specified one
- * Also configures rendering modes
+ * Also configures original video modes
  ***************************************************************************/
 static GXRModeObj * FindVideoMode()
 {
@@ -445,10 +445,13 @@ static GXRModeObj * FindVideoMode()
 		case 2: // Progressive (480p)
 			mode = &TVNtsc480Prog;
 			break;
-		case 3: // PAL (50Hz)
+		case 3: // Progressive (576p)
+			mode = &TVPal576ProgScale;
+			break;
+		case 4: // PAL (50Hz)
 			mode = &TVPal576IntDfScale;
 			break;
-		case 4: // PAL (60Hz)
+		case 5: // PAL (60Hz)
 			mode = &TVEurgb60Hz480IntDf;
 			break;
 		default:
@@ -460,18 +463,21 @@ static GXRModeObj * FindVideoMode()
 			 * on the Wii, the user can do this themselves on their Wii Settings */
 			if(VIDEO_HaveComponentCable())
 				mode = &TVNtsc480Prog;
+			else
+				mode = &TVPal576ProgScale;
 			#endif
 
 			break;
 	}
 
-	// configure rendering modes
+	// configure original modes
 	switch (mode->viTVMode >> 2)
 	{
 		case VI_PAL:
 			// 576 lines (PAL 50Hz)
 			vmode_60hz = false;
 
+			// Original Video modes (forced to PAL 50Hz)
 			// set video signal mode
 			TV60hz_240p.viTVMode = VI_TVMODE_PAL_DS;
 			TV60hz_240p.viYOrigin = (VI_MAX_HEIGHT_PAL - 480)/2;
@@ -481,6 +487,7 @@ static GXRModeObj * FindVideoMode()
 			// 480 lines (NTSC 60Hz)
 			vmode_60hz = true;
 
+			// Original Video modes (forced to NTSC 60hz)
 			// set video signal mode
 			TV60hz_240p.viTVMode = VI_TVMODE_NTSC_DS;
 			TV60hz_240p.viYOrigin = (VI_MAX_HEIGHT_NTSC - 480)/2;
@@ -490,6 +497,7 @@ static GXRModeObj * FindVideoMode()
 			// 480 lines (PAL 60Hz)
 			vmode_60hz = true;
 
+			// Original Video modes (forced to PAL 60hz)
 			// set video signal mode
 			TV60hz_240p.viTVMode = VI_TVMODE(mode->viTVMode >> 2, VI_NON_INTERLACE);
 			TV60hz_240p.viYOrigin = (VI_MAX_HEIGHT_NTSC - 480)/2;
@@ -497,7 +505,7 @@ static GXRModeObj * FindVideoMode()
 	}
 
 	// check for progressive scan
-	if (mode->viTVMode == VI_TVMODE_NTSC_PROG)
+	if (mode->viTVMode == VI_TVMODE_NTSC_PROG || VI_TVMODE_PAL_PROG)
 		progressive = true;
 	else
 		progressive = false;
@@ -622,8 +630,7 @@ ResetVideo_Emu ()
 	GXRModeObj *rmode;
 	Mtx44 p;
 
-	// set VI mode and audio sample rate depending on if 240p mode is used
-
+	// set VI mode and audio sample rate depending on if original mode is used
 	if (GCSettings.render == 1)
 	{
 		rmode = tvmodes[FCEUI_GetCurrentVidSystem(NULL, NULL)];
@@ -637,7 +644,7 @@ ResetVideo_Emu ()
 	{
 		rmode = FindVideoMode();
 
-		if (GCSettings.widescreen)
+		if (GCSettings.aspect)
 			ResetFbWidth(640, rmode);
 		else
 			ResetFbWidth(512, rmode);
@@ -683,7 +690,7 @@ ResetVideo_Emu ()
 	GX_InitTexObj (&texobj, texturemem, TEX_WIDTH, TEX_HEIGHT, GX_TF_RGB565, GX_CLAMP, GX_CLAMP, GX_FALSE);	// initialize the texture obj we are going to use
 	
 	if (GCSettings.bilinear == 0)
-		GX_InitTexObjLOD(&texobj,GX_NEAR,GX_NEAR_MIP_NEAR,2.5,9.0,0.0,GX_FALSE,GX_FALSE,GX_ANISO_1); // bilinear filtering OFF
+		GX_InitTexObjLOD(&texobj,GX_NEAR,GX_NEAR_MIP_NEAR,2.5,9.0,0.0,GX_FALSE,GX_FALSE,GX_ANISO_1); // bilinear filtering
 	
 	GX_LoadTexObj (&texobj, GX_TEXMAP0);
 	memset(texturemem, 0, TEXTUREMEM_SIZE); // clear texture memory
@@ -776,7 +783,7 @@ void RenderFrame(unsigned char *XBuf)
 
 	if(ScreenshotRequested)
 	{
-		if(GCSettings.render == 1) // we can't take a screenshot in 240p rendering mode
+		if(GCSettings.render == 1) // we can't take a screenshot in original rendering mode
 		{
 			oldRenderMode = 1;
 			GCSettings.render = 0; // switch to default rendering mode
@@ -901,7 +908,7 @@ void RenderStereoFrames(unsigned char *XBufLeft, unsigned char *XBufRight)
 
 	if(ScreenshotRequested)
 	{
-		if(GCSettings.render == 1) // we can't take a screenshot in 240p rendering mode
+		if(GCSettings.render == 1) // we can't take a screenshot in original rendering mode
 		{
 			oldRenderMode = 1;
 			GCSettings.render = 0; // switch to default rendering mode
@@ -1278,7 +1285,7 @@ void FCEUD_GetPalette(u8 i, u8 *r, u8 *g, u8 *b)
 
 void SetPalette()
 {
-	if ( GCSettings.currpal == 0 )
+	if (GCSettings.currpal == 0 || (GameInfo->type == GIT_VSUNI))
 	{
 		// Do palette reset
 		FCEU_ResetPalette();
@@ -1356,24 +1363,6 @@ struct st_palettes palettes[] = {
 		    0xF1F0AA, 0xDAFAA9, 0xC9FFBC, 0xC3FBD7,
 		    0xC4F6F6, 0xBEBEBE, 0x000000, 0x000000 }
 	},
-	{ "sony-cxa2025as-us", "Sony CXA2025AS US",
-		{ 0x585858, 0x00238C, 0x00139B, 0x2D0585,
-		    0x5D0052, 0x7A0017, 0x7A0800, 0x5F1800,
-		    0x352A00, 0x093900, 0x003F00, 0x003C22,
-		    0x00325D, 0x000000, 0x000000, 0x000000,
-		    0xA1A1A1, 0x0053EE, 0x153CFE, 0x6028E4,
-		    0xA91D98, 0xD41E41, 0xD22C00, 0xAA4400,
-		    0x6C5E00, 0x2D7300, 0x007D06, 0x007852,
-		    0x0069A9, 0x000000, 0x000000, 0x000000,
-		    0xFFFFFF, 0x1FA5FE, 0x5E89FE, 0xB572FE,
-		    0xFE65F6, 0xFE6790, 0xFE773C, 0xFE9308,
-		    0xC4B200, 0x79CA10, 0x3AD54A, 0x11D1A4,
-		    0x06BFFE, 0x424242, 0x000000, 0x000000,
-		    0xFFFFFF, 0xA0D9FE, 0xBDCCFE, 0xE1C2FE,
-		    0xFEBCFB, 0xFEBDD0, 0xFEC5A9, 0xFED18E,
-		    0xE9DE86, 0xC7E992, 0xA8EEB0, 0x95ECD9,
-		    0x91E4FE, 0xACACAC, 0x000000, 0x000000 }
-	},
 	{ "pal-r57shell", "r57shell's PAL",
 		{ 0x585858, 0x002094, 0x0104C4, 0x3000C4,
 		    0x5D0095, 0x790042, 0x790000, 0x5E0A00,
@@ -1391,6 +1380,24 @@ struct st_palettes palettes[] = {
 		    0xEDC6EF, 0xF5C6E1, 0xF5CBCA, 0xEDD4B3,
 		    0xDFDDA6, 0xCEE5A6, 0xC1E9B3, 0xB9E8CA,
 		    0xB9E3E2, 0xACACAC, 0x000000, 0x000000 }
+	},
+	{ "sony-cxa2025as-us", "Sony CXA2025AS US",
+		{ 0x585858, 0x00238C, 0x00139B, 0x2D0585,
+		    0x5D0052, 0x7A0017, 0x7A0800, 0x5F1800,
+		    0x352A00, 0x093900, 0x003F00, 0x003C22,
+		    0x00325D, 0x000000, 0x000000, 0x000000,
+		    0xA1A1A1, 0x0053EE, 0x153CFE, 0x6028E4,
+		    0xA91D98, 0xD41E41, 0xD22C00, 0xAA4400,
+		    0x6C5E00, 0x2D7300, 0x007D06, 0x007852,
+		    0x0069A9, 0x000000, 0x000000, 0x000000,
+		    0xFFFFFF, 0x1FA5FE, 0x5E89FE, 0xB572FE,
+		    0xFE65F6, 0xFE6790, 0xFE773C, 0xFE9308,
+		    0xC4B200, 0x79CA10, 0x3AD54A, 0x11D1A4,
+		    0x06BFFE, 0x424242, 0x000000, 0x000000,
+		    0xFFFFFF, 0xA0D9FE, 0xBDCCFE, 0xE1C2FE,
+		    0xFEBCFB, 0xFEBDD0, 0xFEC5A9, 0xFED18E,
+		    0xE9DE86, 0xC7E992, 0xA8EEB0, 0x95ECD9,
+		    0x91E4FE, 0xACACAC, 0x000000, 0x000000 }
 	},
 	{ "rgb", "Nintendo RGB PPU",
 		{ 0x6D6D6D, 0x002492, 0x0000DB, 0x6D49DB,

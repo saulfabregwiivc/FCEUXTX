@@ -3,7 +3,7 @@
  * Nintendo Wii/GameCube Port
  *
  * Tantric 2008-2022
- * Tanooki 2019-2022
+ * Tanooki 2019-2023
  *
  * fceuxtx.h
  *
@@ -17,10 +17,10 @@
 
 #include "fceux/driver.h"
 
-#define APPNAME			"FCEUX TX"
-#define APPVERSION		"1.1.6"
-#define APPFOLDER 		"fceuxtx"
-#define PREF_FILE_NAME	"settings.xml"
+#define APPNAME 			"FCEUX TX"
+#define APPVERSION 			"1.1.7"
+#define APPFOLDER 			"fceuxtx"
+#define PREF_FILE_NAME		"settings.xml"
 
 #define MAXPATHLEN 1024
 #define NOTSILENT 0
@@ -59,21 +59,21 @@ const char ctrlName[6][20] =
 { "NES Controller", "NES Zapper", "NES Controllers (2)", "NES Controllers (4)" };
 
 enum {
-	TURBO_BUTTON_RSTICK = 0,
-	TURBO_BUTTON_A,
-	TURBO_BUTTON_B,
-	TURBO_BUTTON_X,
-	TURBO_BUTTON_Y,
-	TURBO_BUTTON_L,
-	TURBO_BUTTON_R,
-	TURBO_BUTTON_ZL,
-	TURBO_BUTTON_ZR,
-	TURBO_BUTTON_Z,
-	TURBO_BUTTON_C,
-	TURBO_BUTTON_1,
-	TURBO_BUTTON_2,
-	TURBO_BUTTON_PLUS,
-	TURBO_BUTTON_MINUS
+	FASTFORWARD_BUTTON_RSTICK = 0,
+	FASTFORWARD_BUTTON_A,
+	FASTFORWARD_BUTTON_B,
+	FASTFORWARD_BUTTON_X,
+	FASTFORWARD_BUTTON_Y,
+	FASTFORWARD_BUTTON_L,
+	FASTFORWARD_BUTTON_R,
+	FASTFORWARD_BUTTON_ZL,
+	FASTFORWARD_BUTTON_ZR,
+	FASTFORWARD_BUTTON_Z,
+	FASTFORWARD_BUTTON_C,
+	FASTFORWARD_BUTTON_1,
+	FASTFORWARD_BUTTON_2,
+	FASTFORWARD_BUTTON_PLUS,
+	FASTFORWARD_BUTTON_MINUS
 };
 
 enum {
@@ -89,7 +89,6 @@ enum {
 	LANG_KOREAN,
 	LANG_PORTUGUESE,
 	LANG_BRAZILIAN_PORTUGUESE,
-	LANG_CATALAN,
 	LANG_TURKISH,
 	LANG_LENGTH
 };
@@ -111,30 +110,26 @@ struct SGCSettings{
 
 	float	zoomHor; // Horizontal zoom amount
 	float	zoomVert; // Vertical zoom amount
-	int		videomode; // 0 - Automatic, 1 - NTSC (480i), 2 - Progressive (480p), 3 - PAL (50Hz), 4 - PAL (60Hz)
-	int		render;		// 0 - Default, 1 - 240p Output
-	int		bilinear;    // Bilinear filter
+	int		videomode; // 0 - Automatic, 1 - NTSC (480i), 2 - Progressive (480p), 3 - Progressive (576p), 4 - PAL (50Hz), 5 - PAL (60Hz)
+	int		render;		// 0 - Default, 1 - Original (240p)
+	int		bilinear;    // Bilinear filtering
 	int		hideoverscan; // 0 = None, 1 = Vertical, 2 = Horizontal, 3 = Both
 	int		Controller;
-	int		TurboMode;
-	int		TurboModeButton;
+	int		FastForward;
+	int		FastForwardButton;
 	int		currpal;
-	int		region;		// 0 - NTSC, 1 - PAL, 2 - Automatic
+	int		ntsccolor;
 	int		crosshair;
-	int		widescreen;
+	int		region;
+	int		aspect;
 	int		xshift;		// Video output shift
 	int		yshift;
-	int		sndquality; // 0 - Low, 1 - High, 2 - Very High
+	int		soundvolume;
+	int		soundquality;
 	int		lowpass;
 	int		swapduty;
-	int		volume;
-	int		trianglevol;
-	int		square1vol;
-	int		square2vol;
-	int		noisevol;
-	int		pcmvol;
-	int		overclock;  // 0 - None, 1 - 2x Postrender, 2 - 2x VBlank
-	int		spritelimit;
+	int		overclock;
+	int		nospritelimit;
 	int		gamegenie;
 	int		WiimoteOrientation;
 	int		ExitAction;
@@ -158,7 +153,7 @@ extern char appPath[];
 extern int frameskip;
 extern int fskip;
 extern int fskipc;
-extern int turbomode;
+extern int fastforward;
 extern bool romLoaded;
 extern bool isWiiVC;
 static inline bool IsWiiU(void)

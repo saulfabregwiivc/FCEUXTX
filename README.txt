@@ -7,24 +7,49 @@ FCEUX TX is a fork of FCE Ultra GX: https://github.com/dborth/fceugx
 Update History
 --------------
 
+---FCEUX TX 1.1.7---
+---January 15 2023---
+
+- Updated to the latest FCEUX (git 4dd8943)
+- Updated to the latest FCE Ultra GX (git 145490b)
+- Added option to turn on/off NTSC color (only for NTSC games with default color palette)
+- Added automatic swapping of de-emphasis bits color based on PAL or NTSC region
+- Added automatic use of default color palette with VS games (other palettes are not supported)
+- Added progressive PAL video mode (576p)
+- Removed Triangle/Square 1/Square 2/Noise/PCM volume settings (keep sound volume setting)
+  Too messy and requires high sound quality (restored low sound quality by default)
+- Fixed clicking with a gamepad on the Game Genie button (thanks InfiniteBlue!)
+- Reorganized menu options
+- Renamed turbo mode option to "fast forward" (turbo mode name is reminiscent of auto fire)
+- Removed catalan and updated all other language files
+- Fixed sound effects volume setting and replace enter.ogg audio file
+- Updated UI PNG images
+- Added DualShock 3 (wired) support based on SickSaxis lib by xerpi (thanks niuus and JabuPL!)
+  How to use:
+  1. Start up FCEUX TX
+  2. Start a game with your Wiimote/GC Controller/etc
+  3. Press the PS button on your DualShock 3 and connect it to your Wii with a USB cable
+  4. It should connect, one led on the controller should light up
+  5. Done, you can play now on a DualShock 3 Controller
+
 ---FCEUX TX 1.1.6---
 ---September 25 2022---
 
 - Updated to the latest FCEUX (git 06b53e9)
-- Changed low sound quality to high by default (to take full advantage of the new sound settings)
-- Added option to choose master/triangle/square 1/square 2/noise/pcm sound volume in audio settings
+- Changed low sound quality to high by default (to take full advantage of new sound settings)
+- Added option to choose Sound/Triangle/Square 1/Square 2/Noise/PCM volume in audio settings
 - Updated french language file
 
 ---FCEUX TX 1.1.5---
 ---September 4 2022---
 
 - Updated to the latest FCEUX (git 069727c)
-  except git c37f86d (does not compile)
+  Except git c37f86d (does not compile)
 - Updated to the latest FCE Ultra GX (git 2246982)
 - Removed exit sound of UI (sometimes causes a small audio crackle when returning to game)
 - Removed filtered render and replaced render option by an option to turn on/off 240p output
 - Added option to turn on/off bilinear filtering in video setting (works with 240p output)
-- Added 2x-postrender/2x-vblank PPU overclocking option in emulation hacks settings
+- Added 2x-Postrender/2x-VBlank PPU overclocking option in emulation hacks settings
 - Added new emulation hacks settings button and moved screenshot button to main game menu
 - Fixed not loading vertical video shift setting preference
 - Updated video code
@@ -186,7 +211,7 @@ Update History
 
 - Updated to the latest FCE Ultra GX (git a8caf23)
 - Added Restored Wii VC color palette (thanks SuperrSonic!)
-  restored version adjusts brightness levels significantly
+  Restored version adjusts brightness levels significantly
 - Updated to the latest FCEUX (git 0b4be4b)
 - Updated UI color and added Wii/vWii Forwarder Channel (1.1)
 - Removed turbo mode on right joystick
@@ -198,7 +223,7 @@ Update History
 - Added vWii Forwarder Channel for Wii U
 - Updated PPU color palettes (libretro fceumm)
 - Added A+B+START trigger to go back to menu with Classic Controller
-  work with NES/Snes Classic Mini controllers
+  Work with NES/Snes Classic Mini controllers
 - Fixed dialogue box text color to screen position and controller settings
 - Corrected PAL audio sample rate
 

@@ -1,12 +1,6 @@
 msgid "&"
 msgstr "&"
 
-msgid "16:9 Correction"
-msgstr "Correzione 16:9"
-
-msgid "240p Output"
-msgstr "Uscita 240p"
-
 msgid "7z decompression failed: Archive contains too many files"
 msgstr "7z decompressione fallita: L'archivio contiene troppi file"
 
@@ -43,6 +37,9 @@ msgstr "Sei sicuro di voler resettare le tue impostazioni?"
 msgid "Artwork Folder"
 msgstr "Cartella Artwork"
 
+msgid "Aspect Ratio"
+msgstr "Proporzioni"
+
 msgid "Attempting to determine load device..."
 msgstr "Cercando di determinare la periferica di caricamento..."
 
@@ -61,8 +58,8 @@ msgstr "Caricamento Automatico"
 msgid "Auto Save"
 msgstr "Salvataggio Automatico"
 
-msgid "Automatic (Recommended)"
-msgstr "Automatico (Raccomandato)"
+msgid "Automatic"
+msgstr "Automatico"
 
 msgid "B (Rapid)"
 msgstr "B (Rapido)"
@@ -72,6 +69,9 @@ msgstr "Filtrando Bilineare"
 
 msgid "Both"
 msgstr "Entrambi"
+
+msgid "Button"
+msgstr "Pulsante"
 
 msgid "Button Mapping"
 msgstr "Mappatura Pulsanti"
@@ -106,6 +106,9 @@ msgstr "Chiudi"
 msgid "Coding"
 msgstr "Programmazione"
 
+msgid "Color Palette"
+msgstr "Palette di Colori"
+
 msgid "Controles"
 msgstr "Controlli"
 
@@ -123,6 +126,9 @@ msgstr "Ritaglio"
 
 msgid "Data DVD"
 msgstr "DVD Dati"
+
+msgid "Default"
+msgstr "Predefinita"
 
 msgid "Delete"
 msgstr "Eliminare"
@@ -186,6 +192,9 @@ msgstr "Esci"
 
 msgid "Exit Action"
 msgstr "Uscita"
+
+msgid "Fast Forward"
+msgstr "Avanti Veloce"
 
 msgid "FDS BIOS file is invalid!"
 msgstr "File BIOS FDS non valido!"
@@ -304,7 +313,7 @@ msgstr "Caricando..."
 msgid "Low"
 msgstr "Basso"
 
-msgid "Low Pass Filtering"
+msgid "Low Pass Filter"
 msgstr "Filtro Passa Basso"
 
 msgid "Main Menu"
@@ -352,8 +361,23 @@ msgstr "Disco non inserito!"
 msgid "No game saves found."
 msgstr "Nessun salvataggio trovato."
 
+msgid "No Sprite Limit"
+msgstr "Nessun Limite di Sprite"
+
 msgid "None"
 msgstr "Nessuno"
+
+msgid "NTSC Color"
+msgstr "Colore NTSC"
+
+msgid "Original (16:9)"
+msgstr "Originale (16:9)"
+
+msgid "Original (240p)"
+msgstr "Originale (240p)"
+
+msgid "Original (4:3)"
+msgstr "Originale (4:3)"
 
 msgid "Out of memory!"
 msgstr "Memoria esaurita!"
@@ -370,7 +394,7 @@ msgstr "PIU'"
 msgid "Portuguese"
 msgstr "Portoghese"
 
-msgid "Power off Wii"
+msgid "Power Off Wii"
 msgstr "Spegnimento Wii"
 
 msgid "Preferences saved"
@@ -393,6 +417,9 @@ msgstr "Premi un pulsante del Wiimote o del Nunchuk ora. Premi Home per pulire l
 
 msgid "Progressive (480p)"
 msgstr "Progressiva (480p)"
+
+msgid "Progressive (576p)"
+msgstr "Progressiva (576p)"
 
 msgid "Preview Image"
 msgstr "Immagine di Anteprima"
@@ -425,7 +452,7 @@ msgid "Reset this game? Any unsaved progress will be lost."
 msgstr "Resettare il gioco? Tutti i progressi saranno perduti."
 
 msgid "Reset Mappings"
-msgstr "Resetta Mappatura"
+msgstr "Resetta"
 
 msgid "Reset Settings"
 msgstr "Resetta Impostazioni"
@@ -445,8 +472,8 @@ msgstr "Destra"
 msgid "RIGHT"
 msgstr "DESTRA"
 
-msgid "Right Stick (Default)"
-msgstr "Levetta Destro (Predefinita)"
+msgid "Right Stick"
+msgstr "Levetta Destro"
 
 msgid "Save"
 msgstr "Salva"
@@ -517,11 +544,11 @@ msgstr "Volume Effetti Sonori"
 msgid "Sound Quality"
 msgstr "Qualità del Suono"
 
+msgid "Sound Volume"
+msgstr "Volume del Suono"
+
 msgid "Spanish"
 msgstr "Spagnolo"
-
-msgid "Sprite Limit"
-msgstr "Limite di Sprite"
 
 msgid "State"
 msgstr "Stato"
@@ -533,13 +560,7 @@ msgid "State file not found"
 msgstr "File di stato non trovato"
 
 msgid "Swap Duty Cycles"
-msgstr "Inversione del Ciclo"
-
-msgid "Turbo Mode"
-msgstr "Modalità Turbo"
-
-msgid "Turbo Mode Button"
-msgstr "Pulsante Turbo"
+msgstr "Invertire i Cicli"
 
 msgid "Unable to locate a load device!"
 msgstr "Impossibile localizzare una periferica di caricamento!"
@@ -585,12 +606,3 @@ msgstr "Orientamento Wiimote"
 
 msgid "Yes"
 msgstr "Si"
-
-msgid "Zapper"
-msgstr "Nintendo Zapper"
-
-msgid "Automatic"
-msgstr "Automatico"
-
-msgid "Color Palette"
-msgstr "Paletta"

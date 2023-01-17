@@ -3,7 +3,7 @@
  * Nintendo Wii/GameCube Port
  *
  * Tantric 2008-2022
- * Tanooki 2019-2022
+ * Tanooki 2019-2023
  *
  * fceuxtx.cpp
  *
@@ -77,7 +77,7 @@ bool isWiiVC = false;
 char appPath[1024] = { 0 };
 
 int frameskip = 0;
-int turbomode = 0;
+int fastforward = 0;
 unsigned char * nesrom = NULL;
 
 /****************************************************************************
@@ -461,7 +461,7 @@ int main(int argc, char *argv[])
 				MainMenu(MENU_GAME);
 		}
 
-		switch (GCSettings.sndquality)
+		switch (GCSettings.soundquality)
 		{
 			case 0: FCEUI_SetSoundQuality(0); break;
 			case 1: FCEUI_SetSoundQuality(1); break;
@@ -472,6 +472,11 @@ int main(int argc, char *argv[])
 			swapDuty = 0;
 		else
 			swapDuty = 1;
+
+		if (GCSettings.ntsccolor == 0)
+			ntsccol_enable = 0;
+		else
+			ntsccol_enable = 1;
 
 		switch (GCSettings.overclock)
 		{
@@ -495,7 +500,7 @@ int main(int argc, char *argv[])
 				break;
 		}
 
-		if(currentRegion != GCSettings.region)
+		if (currentRegion != GCSettings.region)
 		{
 			GameInfo->vidsys=(EGIV)GCSettings.region;
 			FCEU_ResetVidSys(); // causes a small 'pop' in the audio
@@ -515,14 +520,9 @@ int main(int argc, char *argv[])
 		SetControllers();
 		setFrameTimer(); // set frametimer method before emulation
 		SetPalette();
+		FCEUI_SetSoundVolume(GCSettings.soundvolume);
 		FCEUI_SetLowPass(GCSettings.lowpass == 1);
-		FCEUI_SetSoundVolume(GCSettings.volume);
-		FCEUI_SetTriangleVolume(GCSettings.trianglevol);
-		FCEUI_SetSquare1Volume(GCSettings.square1vol);
-		FCEUI_SetSquare2Volume(GCSettings.square2vol);
-		FCEUI_SetNoiseVolume(GCSettings.noisevol);
-		FCEUI_SetPCMVolume(GCSettings.pcmvol);
-		FCEUI_DisableSpriteLimitation(GCSettings.spritelimit ^ 1);
+		FCEUI_DisableSpriteLimitation(GCSettings.nospritelimit ^ 0);
 
 		fskip=0;
 		fskipc=0;
@@ -532,7 +532,7 @@ int main(int argc, char *argv[])
 		{
 			fskip = 0;
 			
-			if(turbomode)
+			if(fastforward)
 			{
 				fskip = 1;
 								
@@ -574,6 +574,11 @@ int main(int argc, char *argv[])
 				FCEUD_UpdateLeft(gfx, sound, ssize);
 
 			SyncSpeed();
+
+			if (FCEUI_GetCurrentVidSystem(NULL, NULL) == 1)
+				paldeemphswap = 1;
+			else
+				paldeemphswap = 0;
 
 			if(ResetRequested)
 			{

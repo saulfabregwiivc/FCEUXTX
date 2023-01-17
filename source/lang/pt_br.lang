@@ -1,12 +1,6 @@
 msgid "&"
 msgstr "&"
 
-msgid "16:9 Correction"
-msgstr "Correção 16:9"
-
-msgid "240p Output"
-msgstr "Saída 240p"
-
 msgid "7z decompression failed: Archive contains too many files"
 msgstr "Falha na descompressão 7z: Arquivo contém arquivos demais"
 
@@ -46,6 +40,9 @@ msgstr "Ilustrações"
 msgid "Artwork Folder"
 msgstr "Pasta de Ilustrações"
 
+msgid "Aspect Ratio"
+msgstr "Proporção da Tela"
+
 msgid "Attempting to determine load device..."
 msgstr "Determinando o dispositivo de carregamento..."
 
@@ -64,8 +61,8 @@ msgstr "Auto Carregar"
 msgid "Auto Save"
 msgstr "Auto Salvar"
 
-msgid "Automatic (Recommended)"
-msgstr "Automático (Recomendado)"
+msgid "Automatic"
+msgstr "Automático"
 
 msgid "B (Rapid)"
 msgstr "B (Rápido)"
@@ -81,6 +78,9 @@ msgstr "Ambos"
 
 msgid "Brazilian Portuguese"
 msgstr "Português do Brasil"
+
+msgid "Button"
+msgstr "Botão"
 
 msgid "Button Mapping"
 msgstr "Mapeamento de Botão"
@@ -114,6 +114,9 @@ msgstr "Fechar"
 
 msgid "Coding"
 msgstr "Programação"
+
+msgid "Color Palette"
+msgstr "Paleta de Cores"
 
 msgid "Controller"
 msgstr "Controle"
@@ -210,6 +213,9 @@ msgstr "Sair"
 
 msgid "Exit Action"
 msgstr "Ação ao Sair"
+
+msgid "Fast Forward"
+msgstr "Avanço Rápido"
 
 msgid "FDS BIOS file is invalid!"
 msgstr "Arquivo BIOS do FDS (Famicom Disk System) é inválido!"
@@ -334,8 +340,8 @@ msgstr "Carregando..."
 msgid "Low"
 msgstr "Baixo"
 
-msgid "Low Pass Filtering"
-msgstr "Filtragem Passa Baixa"
+msgid "Low Pass Filter"
+msgstr "Filtro Passa Baixa"
 
 msgid "Main Menu"
 msgstr "Menu Principal"
@@ -362,16 +368,16 @@ msgid "Mute"
 msgstr "Mudo"
 
 msgid "NES Controller"
-msgstr "Controles do Nintendinho"
+msgstr "Controle do NES"
 
 msgid "NES Controllers (2)"
-msgstr "Controles do Nintendinho (2)"
+msgstr "Controle do NES (2)"
 
 msgid "NES Controllers (4)"
-msgstr "Controles do Nintendinho (4)"
+msgstr "Controle do NES (4)"
 
 msgid "NES Zapper"
-msgstr "Zapper do Nintendinho"
+msgstr "Pistola do NES"
 
 msgid "New"
 msgstr "Novo"
@@ -388,8 +394,14 @@ msgstr "Sem disco inserido!"
 msgid "No game saves found."
 msgstr "Nenhum jogo salvo encontrado."
 
+msgid "No Sprite Limit"
+msgstr "Sem Limite de Sprite"
+
 msgid "None"
 msgstr "Nenhum"
+
+msgid "NTSC Color"
+msgstr "Cor NTSC"
 
 msgid "Out of memory!"
 msgstr "Memória insuficiente!"
@@ -406,7 +418,7 @@ msgstr "MAIS (+)"
 msgid "Portuguese"
 msgstr "Português"
 
-msgid "Power off Wii"
+msgid "Power Off Wii"
 msgstr "Desligar o Wii"
 
 msgid "Preferences saved"
@@ -433,6 +445,9 @@ msgstr "Pressione qualquer botão no WiiMote ou Nunchuck. Pressione Home para li
 msgid "Progressive (480p)"
 msgstr "Progressivo (480p)"
 
+msgid "Progressive (576p)"
+msgstr "Progressivo (576p)"
+
 msgid "Preview Image"
 msgstr "Imagem de Visualização"
 
@@ -457,6 +472,9 @@ msgstr "Reiniciar"
 msgid "Region"
 msgstr "Região"
 
+msgid "Rendering"
+msgstr "Renderização"
+
 msgid "Reset"
 msgstr "Resetar"
 
@@ -467,10 +485,10 @@ msgid "Reset this game? Any unsaved progress will be lost."
 msgstr "Quer mesmo reiniciar esse jogo? Qualquer progresso não-salvo será perdido."
 
 msgid "Reset Mappings"
-msgstr "Resetar o Mapeamento"
+msgstr "Resetar"
 
 msgid "Reset Settings"
-msgstr "Resetar as Configurações"
+msgstr "Resetar Configurações"
 
 msgid "Retry"
 msgstr "Tentar Novamente"
@@ -487,8 +505,8 @@ msgstr "Direita”
 msgid "RIGHT"
 msgstr "DIREITA"
 
-msgid "Right Stick (Default)"
-msgstr "Manípulo Direito (Padrão)"
+msgid "Right Stick"
+msgstr "Manípulo Direito"
 
 msgid "Save"
 msgstr "Salvar"
@@ -574,17 +592,17 @@ msgstr "Volume dos Efeitos Sonoros"
 msgid "Sound Quality"
 msgstr "Qualidade de Som"
 
+msgid "Sound Volume"
+msgstr "Volume do Som"
+
 msgid "Spanish"
 msgstr "Espanhol"
-
-msgid "Sprite Limit"
-msgstr "Limite de Sprite"
 
 msgid "State file not found"
 msgstr "Arquivo de State não foi encontrado"
 
 msgid "Swap Duty Cycles"
-msgstr "Reversão de Ciclos"
+msgstr "Inverter os Ciclos"
 
 msgid "The current IOS has been altered (fake-signed). Functionality and/or stability may be adversely affected."
 msgstr "A IOS atual foi alterada (feita falsa assinatura). Funcionalidade e/ou estabilidade pode ser negativamente afetada."
@@ -594,12 +612,6 @@ msgstr "A IOS atual não é suportada. Funcionalidade e/ou estabilidade pode ser
 
 msgid "This software is open source and may be copied, distributed, or modified"
 msgstr "Esse programa é em código aberto e poderá ser copiado, distribuído ou modificado."
-
-msgid "Turbo Mode"
-msgstr "Modo Turbo"
-
-msgid "Turbo Mode Button"
-msgstr "Botão Modo Turbo"
 
 msgid "Turkish"
 msgstr "Turco"

@@ -1,12 +1,6 @@
 msgid "&"
 msgstr "&"
 
-msgid "16:9 Correction"
-msgstr "Correcção 16:9"
-
-msgid "240p Output"
-msgstr "Saída 240p"
-
 msgid "7z decompression failed: Archive contains too many files"
 msgstr "Extracção 7z falhou: o ficheiro 7z contém demasiados ficheiros"
 
@@ -40,6 +34,9 @@ msgstr "Quer mesmo repor os controlos mapeados?"
 msgid "Are you sure that you want to reset your settings?"
 msgstr "Quer mesmo repor as configurações?"
 
+msgid "Aspect Ratio"
+msgstr "Proporção do Ecrã"
+
 msgid "Attempting to determine load device..."
 msgstr "A determinar dispositivo de carregamento..."
 
@@ -64,9 +61,6 @@ msgstr "Auto gravar"
 msgid "Automatic"
 msgstr "Automático"
 
-msgid "Automatic (Recommended)"
-msgstr "Automático (Recomendado)"
-
 msgid "B (Rapid)"
 msgstr "B (Rápido)"
 
@@ -78,6 +72,9 @@ msgstr "Filtragem Bilinear"
 
 msgid "Both"
 msgstr "Ambos"
+
+msgid "Button"
+msgstr "Botão"
 
 msgid "Button Mappings"
 msgstr "Mapear Botões"
@@ -111,6 +108,9 @@ msgstr "Fechar"
 
 msgid "Coding"
 msgstr "Programação"
+
+msgid "Color Palette"
+msgstr "Paleta de Cores"
 
 msgid "Controles"
 msgstr "Controlos"
@@ -195,6 +195,9 @@ msgstr "Sair"
 
 msgid "Exit Action"
 msgstr "Acção ao Sair"
+
+msgid "Fast Forward"
+msgstr "Avanço Rápido"
 
 msgid "FCEUX - Copyright (c) FCEUX Team 2008 - 2022"
 msgstr "FCEUX - Direitos de autor (c) Equipa FCEUX 2008 - 2022"
@@ -319,8 +322,8 @@ msgstr "A carregar..."
 msgid "Low"
 msgstr "Baixo"
 
-msgid "Low Pass Filtering"
-msgstr "Filtragem Passa Baixa"
+msgid "Low Pass Filter"
+msgstr "Filtro Passa Baixa"
 
 msgid "Main Menu"
 msgstr "Menu Principal"
@@ -373,8 +376,14 @@ msgstr "Nenhum disco inserido!"
 msgid "No game saves found."
 msgstr "Nenhum jogo gravado encontrado."
 
+msgid "No Sprite Limit"
+msgstr "Sem Limite de Sprite"
+
 msgid "None"
 msgstr "Nenhum"
+
+msgid "NTSC Color"
+msgstr "Cor NTSC"
 
 msgid "Off"
 msgstr "Desligado"
@@ -418,7 +427,7 @@ msgstr "Português"
 msgid "Brazilian Portuguese"
 msgstr "Português (BR)"
 
-msgid "Power off Wii"
+msgid "Power Off Wii"
 msgstr "Desligar Wii"
 
 msgid "Preferences saved"
@@ -442,6 +451,9 @@ msgstr "Pressione um botão no Wii Remote ou no Nunchuk. Pressione HOME para eli
 msgid "Progressive (480p)"
 msgstr "Progressivo (480p)"
 
+msgid "Progressive (576p)"
+msgstr "Progressivo (576p)"
+
 msgid "Quit Game"
 msgstr "Sair do Jogo"
 
@@ -460,6 +472,9 @@ msgstr "Reiniciar"
 msgid "Region"
 msgstr "Região"
 
+msgid "Rendering"
+msgstr "Renderização"
+
 msgid "Reset"
 msgstr "Reiniciar"
 
@@ -470,7 +485,7 @@ msgid "Reset this game? Any unsaved progress will be lost."
 msgstr "Reiniciar Jogo? Qualquer progresso não gravado será perdido."
 
 msgid "Reset Mappings"
-msgstr "Repor mapeamentos"
+msgstr "Reiniciar"
 
 msgid "Reset Settings"
 msgstr "Repor configurações"
@@ -490,8 +505,8 @@ msgstr "Direita"
 msgid "RIGHT"
 msgstr "DIREITA"
 
-msgid "Right Stick (Default)"
-msgstr "Manípulo direito (Padrão)"
+msgid "Right Stick"
+msgstr "Manípulo Direito"
 
 msgid "Save"
 msgstr "Gravar"
@@ -562,11 +577,11 @@ msgstr "Volume de Efeitos Sonoros"
 msgid "Sound Quality"
 msgstr "Qualidade de Som"
 
+msgid "Sound Volume"
+msgstr "Volume do Som"
+
 msgid "Spanish"
 msgstr "Espanhol"
-
-msgid "Sprite Limit"
-msgstr "Limite de Sprite"
 
 msgid "State"
 msgstr "Estado"
@@ -578,13 +593,7 @@ msgid "State file not found"
 msgstr "Ficheiro de estado não encontrado"
 
 msgid "Swap Duty Cycles"
-msgstr "Reversão de Ciclos"
-
-msgid "Turbo Mode"
-msgstr "Modo Turbo"
-
-msgid "Turbo Mode Button"
-msgstr "Botão Modo Turbo"
+msgstr "Inverter os Ciclos"
 
 msgid "Unable to locate a load device!"
 msgstr "Dispositivo de carregamento não encontrado!"
@@ -627,12 +636,6 @@ msgstr "Orientação do Wii Remote"
 
 msgid "Yes"
 msgstr "Sim"
-
-msgid "Zapper"
-msgstr "Nintendo Zapper"
-
-msgid "Catalan"
-msgstr "Catalão"
 
 msgid "The current IOS has been altered (fake-signed). Functionality and/or stability may be adversely affected."
 msgstr "O IOS actual foi alterado (fake-signed). A funcionalidade e/ou estabilidade podem ser adversamente afectadas."

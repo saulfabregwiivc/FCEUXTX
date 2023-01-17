@@ -1,12 +1,6 @@
 msgid "&"
 msgstr "&"
 
-msgid "16:9 Correction"
-msgstr "Correction 16:9"
-
-msgid "240p Output"
-msgstr "Sortie 240p"
-
 msgid "7z decompression failed: Archive contains too many files"
 msgstr "La décompression 7z a échoué : l'archive contient trop de fichiers"
 
@@ -46,6 +40,9 @@ msgstr "Illustrations"
 msgid "Artwork Folder"
 msgstr "Dossier des Illustrations"
 
+msgid "Aspect Ratio"
+msgstr "Ratio d'Aspect"
+
 msgid "Attempting to determine load device..."
 msgstr "Tentative de détection du périphérique d'entrée..."
 
@@ -64,9 +61,6 @@ msgstr "Sauvegarde Auto"
 msgid "Automatic"
 msgstr "Automatique"
 
-msgid "Automatic (Recommended)"
-msgstr "Automatique (Recommandé)"
-
 msgid "B (Rapid)"
 msgstr "B (Rapide)"
 
@@ -81,6 +75,9 @@ msgstr "Les Deux"
 
 msgid "Brazilian Portuguese"
 msgstr "Portugais Brésilien"
+
+msgid "Button"
+msgstr "Touche"
 
 msgid "Button Mapping"
 msgstr "Contrôles"
@@ -102,6 +99,9 @@ msgstr "Fichier de triches non trouvé !"
 
 msgid "Cheats Folder"
 msgstr "Dossier des Triches"
+
+msgid "Chinese (Simplified)"
+msgstr "Chinois (Simplifié)"
 
 msgid "Choose Game"
 msgstr "Choisir un Jeu"
@@ -216,6 +216,9 @@ msgstr "Sortir"
 
 msgid "Exit Action"
 msgstr "Sortie de l'Émulateur"
+
+msgid "Fast Forward"
+msgstr "Avance Rapide"
 
 msgid "FDS BIOS file is invalid!"
 msgstr "Le fichier BIOS du FDS est invalide !"
@@ -340,8 +343,8 @@ msgstr "Chargement en cours..."
 msgid "Low"
 msgstr "Basse"
 
-msgid "Low Pass Filtering"
-msgstr "Filtrage Passe-Bas"
+msgid "Low Pass Filter"
+msgstr "Filtre Passe Bas"
 
 msgid "Main Menu"
 msgstr "Menu Principal"
@@ -394,8 +397,14 @@ msgstr "Aucun disque inséré !"
 msgid "No game saves found."
 msgstr "Aucune sauvegarde trouvée."
 
+msgid "No Sprite Limit"
+msgstr "Aucune Limite de Sprite"
+
 msgid "None"
 msgstr "Aucun"
+
+msgid "NTSC Color"
+msgstr "Couleur NTSC"
 
 msgid "Out of memory!"
 msgstr "Mémoire insuffisante !"
@@ -421,7 +430,7 @@ msgstr "Veuillez Patienter"
 msgid "Portuguese"
 msgstr "Portugais"
 
-msgid "Power off Wii"
+msgid "Power Off Wii"
 msgstr "Éteindre la Wii"
 
 msgid "Preferences saved"
@@ -444,6 +453,9 @@ msgstr "Presser un bouton de la Wiimote ou du Nunchuk. Presser HOME pour effacer
 
 msgid "Progressive (480p)"
 msgstr "Progressif (480p)"
+
+msgid "Progressive (576p)"
+msgstr "Progressif (576p)"
 
 msgid "Preview Image"
 msgstr "Aperçu de l'Image"
@@ -469,6 +481,9 @@ msgstr "Redémarrer"
 msgid "Region"
 msgstr "Région"
 
+msgid "Rendering"
+msgstr "Rendu"
+
 msgid "Reset"
 msgstr "Réinitialiser"
 
@@ -479,7 +494,7 @@ msgid "Reset this game? Any unsaved progress will be lost."
 msgstr "Réinitialiser ce jeu ? Toute progression non sauvegardée sera perdue."
 
 msgid "Reset Mappings"
-msgstr "Réinit. les Touches"
+msgstr "Réinitialiser"
 
 msgid "Reset Settings"
 msgstr "Réinitialiser"
@@ -499,8 +514,8 @@ msgstr "Droite"
 msgid "RIGHT"
 msgstr "DROITE"
 
-msgid "Right Stick (Default)"
-msgstr "Joystick Droit (Par Défaut)"
+msgid "Right Stick"
+msgstr "Joystick Droit"
 
 msgid "Save"
 msgstr "Sauver"
@@ -580,20 +595,17 @@ msgstr "Maj"
 msgid "Show Crosshair"
 msgstr "Afficher le Viseur"
 
-msgid "Chinese (Simplified)"
-msgstr "Chinois (Simplifié)"
-
 msgid "Sound Effects Volume"
 msgstr "Volume des Effets Sonores"
 
 msgid "Sound Quality"
 msgstr "Qualité Sonore"
 
+msgid "Sound Volume"
+msgstr "Volume Sonore"
+
 msgid "Spanish"
 msgstr "Espagnol"
-
-msgid "Sprite Limit"
-msgstr "Limite de Sprites"
 
 msgid "State"
 msgstr "Sauvegarde d'État"
@@ -605,7 +617,7 @@ msgid "State file not found"
 msgstr "Pas de sauvegarde d'état trouvée"
 
 msgid "Swap Duty Cycles"
-msgstr "Inversion des Cycles"
+msgstr "Inverser les Cycles"
 
 msgid "The current IOS has been altered (fake-signed). Functionality and/or stability may be adversely affected."
 msgstr "L'IOS utilisé est altéré (fausse signature). Les fonctionnalités et/ou la stabilité peuvent en être affectées."
@@ -615,12 +627,6 @@ msgstr "L'IOS utilisé n'est pas supporté. Les fonctionnalités et/ou la stabil
 
 msgid "This software is open source and may be copied, distributed, or modified"
 msgstr "Ce logiciel est open source et peut être copié, distribué ou modifié"
-
-msgid "Turbo Mode"
-msgstr "Mode Turbo"
-
-msgid "Turbo Mode Button"
-msgstr "Bouton du Mode Turbo"
 
 msgid "Turkish"
 msgstr "Turc"
@@ -675,6 +681,3 @@ msgstr "Manette Wii U Pro"
 
 msgid "Yes"
 msgstr "Oui"
-
-msgid "Zapper"
-msgstr "Nintendo Zapper"
